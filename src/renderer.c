@@ -3,13 +3,15 @@
 #include <stdio.h>
 #include <string.h>
 #include <stddef.h>
+#include "include/camera.h"
 #include "include/core.h"
 
 #define QUADS_CAP    10000
 #define VERTICES_CAP (QUADS_CAP * 4)
 #define INDICES_CAP  (QUADS_CAP * 6)
 
-typedef u32 Shader, Object;
+typedef u32 ShaderId, Object;
+typedef i32 Uniform;
 
 typedef struct {
   struct {
@@ -17,7 +19,13 @@ typedef struct {
   } position;
 } Vertex;
 
+typedef struct {
+  ShaderId id;
+  Uniform camera;
+} Shader;
+
 static Shader sh_quad;
+static Shader current_shader = { -1, -1 };
 
 static Object vertex_array;
 static Object vertex_buffer;
@@ -30,10 +38,10 @@ static Vertex vertices[VERTICES_CAP] = {
   { { -0.5f, +0.5f } },
 };
 
-static Shader
+static ShaderId
 renderer_shader_load_specific(const char *name, GLenum type) {
   const char *type_str = type == GL_VERTEX_SHADER ? "vertex" : "fragment";
-  Shader shader = glCreateShader(type);
+  ShaderId shader = glCreateShader(type);
   /* load source */
   usize shader_path_size = strlen(name) + strlen("res/shaders//.glsl") + strlen(type_str) + 1;
   char *shader_path = malloc(shader_path_size);
@@ -66,32 +74,43 @@ renderer_shader_load_specific(const char *name, GLenum type) {
 
 static Shader
 renderer_shader_load(const char *name) {
-  Shader shader = glCreateProgram();
-  Shader vertex = renderer_shader_load_specific(name, GL_VERTEX_SHADER);
-  Shader fragment = renderer_shader_load_specific(name, GL_FRAGMENT_SHADER);
+  Shader shader;
+  shader.id = glCreateProgram();
+  ShaderId vertex = renderer_shader_load_specific(name, GL_VERTEX_SHADER);
+  ShaderId fragment = renderer_shader_load_specific(name, GL_FRAGMENT_SHADER);
   /* link shaders */
   i32 status;
-  glAttachShader(shader, vertex);
-  glAttachShader(shader, fragment);
-  glLinkProgram(shader);
+  glAttachShader(shader.id, vertex);
+  glAttachShader(shader.id, fragment);
+  glLinkProgram(shader.id);
   glDeleteShader(vertex);
   glDeleteShader(fragment);
-  glGetProgramiv(shader, GL_LINK_STATUS, &status);
+  glGetProgramiv(shader.id, GL_LINK_STATUS, &status);
   if (!status) {
      i32 log_size;
-     glGetProgramiv(shader, GL_INFO_LOG_LENGTH, &log_size);
+     glGetProgramiv(shader.id, GL_INFO_LOG_LENGTH, &log_size);
      char *log = malloc(log_size);
-     glGetProgramInfoLog(shader, log_size, 0, log);
+     glGetProgramInfoLog(shader.id, log_size, 0, log);
      ERROR("Shader '%s': linking: %.*s", name, log_size, log);
   }
+  /* camera uniform */
+  shader.camera = glGetUniformLocation(shader.id, "u_camera");
+  if (shader.camera == -1) {
+    ERROR("Missing 'u_camera' on shader '%s'", name);
+  }
   return shader;
+}
+
+static void
+renderer_shader_set(Shader shader) {
+  current_shader = shader;
 }
 
 void
 renderer_create(void) {
   /* shaders */
   sh_quad = renderer_shader_load("quad");
-  glUseProgram(sh_quad);
+  renderer_shader_set(sh_quad);
   /* indices setup */
   u32 indices[INDICES_CAP];
   {
@@ -122,6 +141,8 @@ renderer_create(void) {
 
 void
 renderer_update(void) {
+  glUseProgram(current_shader.id);
+  glUniformMatrix3fv(current_shader.camera, true, 1, camera_matrix());
   glClearColor(0.8f, 0.2f, 0.2f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

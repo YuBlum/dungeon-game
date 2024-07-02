@@ -78,5 +78,25 @@
     "directory": "/home/blum/dev/dungeon-game",
     "file": "/home/blum/dev/dungeon-game/src/renderer.c",
     "output": "/home/blum/dev/dungeon-game/game"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-I",
+      "src/",
+      "-I",
+      "vendor/glad/include/",
+      "-o",
+      "game",
+      "src/camera.c"
+    ],
+    "directory": "/home/blum/dev/dungeon-game",
+    "file": "/home/blum/dev/dungeon-game/src/camera.c",
+    "output": "/home/blum/dev/dungeon-game/game"
   }
 ]
