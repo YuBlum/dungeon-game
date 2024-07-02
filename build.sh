@@ -1,8 +1,9 @@
 CC="bear -- cc"
 FLAGS="-Wall -Wextra -Werror -g"
-SRCS="src/main.c"
-INCS="-I src/"
+VENDOR="vendor/glad/src/glad.c"
+SRCS="src/main.c src/window.c src/renderer.c"
+INCS="-I src/ -I vendor/glad/include/"
 LIBS="-lGL -lglfw -lm"
 OUT="-o game"
 
-$CC $FLAGS $SRCS $INCS $LIBS $OUT
+$CC $FLAGS $VENDOR $SRCS $INCS $LIBS $OUT
