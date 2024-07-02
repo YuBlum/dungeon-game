@@ -1,0 +1,20 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-I",
+      "src/",
+      "-o",
+      "game",
+      "src/main.c"
+    ],
+    "directory": "/home/blum/dev/dungeon-game",
+    "file": "/home/blum/dev/dungeon-game/src/main.c",
+    "output": "/home/blum/dev/dungeon-game/game"
+  }
+]
