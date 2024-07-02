@@ -1,6 +1,7 @@
-#include "include/core.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "include/types.h"
+#include "include/core.h"
 
 #define ERROR_GLFW(MSG) do {\
   const char *desc;\

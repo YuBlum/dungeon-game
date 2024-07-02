@@ -1,8 +1,10 @@
 #version 330
 
-out vec4 f_color;
+out vec4 f_blend;
+
+in vec4 v_blend;
 
 void
 main() {
-  f_color = vec4(0.8f, 0.8f, 0.2f, 1.0f);
+  f_blend = v_blend;
 }

@@ -1,5 +1,6 @@
 #include "include/camera.h"
 #include "include/core.h"
+#include "include/types.h"
 
 #define LEFT   -(GAME_W * 0.5f)
 #define RIGHT  +(GAME_W * 0.5f)

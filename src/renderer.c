@@ -1,3 +1,4 @@
+#include "include/renderer.h"
 #include <errno.h>
 #include <glad/glad.h>
 #include <stdio.h>
@@ -5,24 +6,35 @@
 #include <stddef.h>
 #include "include/camera.h"
 #include "include/core.h"
+#include "include/math.h"
+#include "include/types.h"
 
 #define QUADS_CAP    10000
 #define VERTICES_CAP (QUADS_CAP * 4)
 #define INDICES_CAP  (QUADS_CAP * 6)
 
+#define LAYERS_CAP 7
+#define LAYER_MIN -(LAYERS_CAP>>1)
+#define LAYER_MAX +(LAYERS_CAP>>1)
+
 typedef u32 ShaderId, Object;
 typedef i32 Uniform;
 
+typedef struct { f32 r, g, b, a; } Blend;
+
 typedef struct {
-  struct {
-    f32 x, y;
-  } position;
+  V2f position;
+  Blend blend;
 } Vertex;
 
 typedef struct {
   ShaderId id;
   Uniform camera;
 } Shader;
+
+typedef struct {
+  Vertex v[4];
+} Quad;
 
 static Shader sh_quad;
 static Shader current_shader = { -1, -1 };
@@ -31,12 +43,12 @@ static Object vertex_array;
 static Object vertex_buffer;
 static Object index_buffer;
 
-static Vertex vertices[VERTICES_CAP] = {
-  { { -0.5f, -0.5f } },
-  { { +0.5f, -0.5f } },
-  { { +0.5f, +0.5f } },
-  { { -0.5f, +0.5f } },
-};
+static usize render_requests_amount[LAYERS_CAP];
+static Quad  render_requests[LAYERS_CAP][QUADS_CAP];
+
+static usize quads_amount;
+
+static Vertex vertices[VERTICES_CAP];
 
 static ShaderId
 renderer_shader_load_specific(const char *name, GLenum type) {
@@ -131,19 +143,66 @@ renderer_create(void) {
   glGenBuffers(1, &index_buffer);
   glBindVertexArray(vertex_array);
   glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-  glBufferData(GL_ARRAY_BUFFER, sizeof (vertices), vertices, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof (vertices), vertices, GL_DYNAMIC_DRAW);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof (indices), indices, GL_STATIC_DRAW);
   /* attributes */
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 2, GL_FLOAT, false, sizeof (Vertex), (void *)offsetof (Vertex, position));
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 4, GL_FLOAT, false, sizeof (Vertex), (void *)offsetof (Vertex, blend));
 }
 
 void
-renderer_update(void) {
+__renderer_request_quad(V2f position, V2f size, Color color, Layer layer, const char *file, u32 line) {
+  quads_amount++;
+  if (quads_amount >= QUADS_CAP) {
+    ERROR("%s:%u: Quads capacity exceeded", file, line);
+  }
+  if (layer < LAYER_MIN || layer > LAYER_MAX) {
+    ERROR("%s:%u: Layer out of bounds (%d to %d)", file, line, LAYER_MIN, LAYER_MAX);
+  }
+  layer += LAYER_MAX;
+  Quad *quad = &render_requests[layer][render_requests_amount[layer]++];
+  Blend blend = {
+    (color >> 24) & 0xFF,
+    (color >> 16) & 0xFF,
+    (color >>  8) & 0xFF,
+    (color >>  0) & 0xFF
+  };
+
+  quad->v[0].blend = blend;
+  quad->v[1].blend = blend;
+  quad->v[2].blend = blend;
+  quad->v[3].blend = blend;
+
+  quad->v[0].position = V2F(position.x - size.x * 0.5f, position.y - size.y * 0.5f);
+  quad->v[1].position = V2F(position.x + size.x * 0.5f, position.y - size.y * 0.5f);
+  quad->v[2].position = V2F(position.x + size.x * 0.5f, position.y + size.y * 0.5f);
+  quad->v[3].position = V2F(position.x - size.x * 0.5f, position.y + size.y * 0.5f);
+}
+
+void
+renderer_batch_start(void) {
+  quads_amount = 0;
   glUseProgram(current_shader.id);
   glUniformMatrix3fv(current_shader.camera, true, 1, camera_matrix());
   glClearColor(0.8f, 0.2f, 0.2f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
-  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+}
+
+void
+renderer_batch_end(void) {
+  Vertex *vertex = vertices;
+  for (usize layer = 0; layer < LAYERS_CAP; layer++) {
+    for (usize quad = 0; quad < render_requests_amount[layer]; quad++) {
+      *vertex++ = render_requests[layer][quad].v[0];
+      *vertex++ = render_requests[layer][quad].v[1];
+      *vertex++ = render_requests[layer][quad].v[2];
+      *vertex++ = render_requests[layer][quad].v[3];
+    }
+    render_requests_amount[layer] = 0;
+  }
+  glBufferSubData(GL_ARRAY_BUFFER, 0, quads_amount * 4 * sizeof (Vertex), vertices);
+  glDrawElements(GL_TRIANGLES, quads_amount * 6, GL_UNSIGNED_INT, 0);
 }
