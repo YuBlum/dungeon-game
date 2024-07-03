@@ -57,13 +57,13 @@ main(void) {
   ecs_system_create(move_system, SYS_UPDATE, "position", "velocity");
   ecs_system_create(draw_system, SYS_DRAW, "position", "size", "color");
 
-  movable_rect_create(V2F(-5.0f, +4.0f), V2S(1.0f), V2F(0.05f, 0.00f), C_YELLOW);
-  movable_rect_create(V2F(-7.0f, +3.0f), V2S(0.6f), V2F(0.05f, 0.00f), C_YELLOW);
-  movable_rect_create(V2F(-4.0f, +2.0f), V2S(0.4f), V2F(0.05f, 0.00f), C_YELLOW);
-  movable_rect_create(V2F(-3.0f, -1.0f), V2S(0.3f), V2F(0.05f, 0.00f), C_YELLOW);
-  movable_rect_create(V2F(-5.0f, -2.0f), V2S(1.2f), V2F(0.05f, 0.00f), C_YELLOW);
-  movable_rect_create(V2F(-4.0f, -3.0f), V2S(0.4f), V2F(0.05f, 0.00f), C_YELLOW);
-  movable_rect_create(V2F(-6.0f, -4.0f), V2S(1.0f), V2F(0.05f, 0.00f), C_YELLOW);
+  movable_rect_create(V2F(-5.0f, +4.0f), V2S(1.0f), V2F(0.01f, 0.00f), C_YELLOW);
+  movable_rect_create(V2F(-7.0f, +3.0f), V2S(0.6f), V2F(0.01f, 0.00f), C_WHITE);
+  movable_rect_create(V2F(-4.0f, +2.0f), V2S(0.4f), V2F(0.01f, 0.00f), C_BLUE);
+  movable_rect_create(V2F(-3.0f, -1.0f), V2S(0.3f), V2F(0.01f, 0.00f), C_GREEN);
+  movable_rect_create(V2F(-5.5f, -2.0f), V2S(1.2f), V2F(0.01f, 0.00f), C_BLACK);
+  movable_rect_create(V2F(-4.5f, -3.0f), V2S(0.4f), V2F(0.01f, 0.00f), C_MAGENTA);
+  movable_rect_create(V2F(-6.0f, -4.0f), V2S(1.0f), V2F(0.01f, 0.00f), C_YELLOW);
   
   /*
   static_rect_create(V2F(+5.0f, +0.0f), V2F(1.0f, 1.0f), C_YELLOW);

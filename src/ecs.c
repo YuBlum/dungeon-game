@@ -232,13 +232,14 @@ ecs_update(void) {
   /* destroy queued entities */
   for (ArchetypeID i = 0; i < list_size(world.archetypes); i++) {
     if (list_size(world.archetypes[i].entity_destroy_queue) == 0) continue;
-    for (usize j = 0; j < list_size(world.archetypes[i].entity_destroy_queue); j++) {
+    for (usize j = list_size(world.archetypes[i].entity_destroy_queue) - 1;; j--) {
       Entity e = world.archetypes[i].entity_destroy_queue[j];
       for (ComponentID k = 0; k < list_size(world.archetypes[i].component_buffs); k++) {
         list_remove(world.archetypes[i].component_buffs[k], e);
       }
       world.archetypes[i].entities_amount--;
       world.entities_amount--;
+      if (j == 0) break;
     }
     list_clear(world.archetypes[i].entity_destroy_queue);
   }
