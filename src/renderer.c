@@ -17,7 +17,7 @@
 #define LAYER_MIN -(LAYERS_CAP>>1)
 #define LAYER_MAX +(LAYERS_CAP>>1)
 
-typedef u32 ShaderId, Object;
+typedef u32 ShaderID, Object;
 typedef i32 Uniform;
 
 typedef struct { f32 r, g, b, a; } Blend;
@@ -28,7 +28,7 @@ typedef struct {
 } Vertex;
 
 typedef struct {
-  ShaderId id;
+  ShaderID id;
   Uniform camera;
 } Shader;
 
@@ -50,10 +50,10 @@ static usize quads_amount;
 
 static Vertex vertices[VERTICES_CAP];
 
-static ShaderId
+static ShaderID
 renderer_shader_load_specific(const char *name, GLenum type) {
   const char *type_str = type == GL_VERTEX_SHADER ? "vertex" : "fragment";
-  ShaderId shader = glCreateShader(type);
+  ShaderID shader = glCreateShader(type);
   /* load source */
   usize shader_path_size = strlen(name) + strlen("res/shaders//.glsl") + strlen(type_str) + 1;
   char *shader_path = malloc(shader_path_size);
@@ -88,8 +88,8 @@ static Shader
 renderer_shader_load(const char *name) {
   Shader shader;
   shader.id = glCreateProgram();
-  ShaderId vertex = renderer_shader_load_specific(name, GL_VERTEX_SHADER);
-  ShaderId fragment = renderer_shader_load_specific(name, GL_FRAGMENT_SHADER);
+  ShaderID vertex = renderer_shader_load_specific(name, GL_VERTEX_SHADER);
+  ShaderID fragment = renderer_shader_load_specific(name, GL_FRAGMENT_SHADER);
   /* link shaders */
   i32 status;
   glAttachShader(shader.id, vertex);
