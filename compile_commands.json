@@ -138,5 +138,25 @@
     "directory": "/home/blum/dev/dungeon-game",
     "file": "/home/blum/dev/dungeon-game/src/hashtable.c",
     "output": "/home/blum/dev/dungeon-game/game"
+  },
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-I",
+      "src/",
+      "-I",
+      "vendor/glad/include/",
+      "-o",
+      "game",
+      "src/ecs.c"
+    ],
+    "directory": "/home/blum/dev/dungeon-game",
+    "file": "/home/blum/dev/dungeon-game/src/ecs.c",
+    "output": "/home/blum/dev/dungeon-game/game"
   }
 ]

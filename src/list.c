@@ -57,6 +57,11 @@ list_shift_right(void *list, u32 index) {
 }
 
 void
+list_clear(void *list) {
+  LIST_HEADER(list)->size = 0;
+}
+
+void
 list_destroy(void *list) {
   free(LIST_HEADER(list));
 }

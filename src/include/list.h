@@ -9,6 +9,7 @@ void *__list_grow(void *list);
 void  list_shrink(void *list);
 void  list_shift_left(void *list, u32 index);
 void  list_shift_right(void *list, u32 index);
+void list_clear(void *list);
 void  list_destroy(void *list);
 
 #define list_capacity(LIST) (*(((usize *)(LIST)) - 3))

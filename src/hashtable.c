@@ -1,11 +1,11 @@
 #include "include/hashtable.h"
 #include <stdlib.h>
+#include <string.h>
 #include "include/core.h"
-#include "include/string.h"
 #include "include/types.h"
 
 typedef struct {
-  String str;
+  const char *str;
   bool occupied;
 } HTKey;
 
@@ -28,9 +28,10 @@ typedef struct Hashtable {
 
 /* http://www.cse.yorku.ca/~oz/hash.html */
 static usize
-hash(const String *str) {
+hash(const char *str) {
   usize hash = 5381;
-  for (usize i = 0; i < str->size; i++) hash = ((hash << 5) + hash) + str->buff[i]; /* hash * 33 + c */
+  i32 c;
+  while ((c = *str++)) hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
   return hash;
 }
 
@@ -49,7 +50,7 @@ hashtable_create(usize type) {
 }
 
 i32
-__hashtable_insert(void **hashtable, const String *key, const char *file, u32 line) {
+__hashtable_insert(void **hashtable, const char *key, const char *file, u32 line) {
   Hashtable *ht = GET_HASHTABLE(*hashtable);
   /* rehash */
   if ((ht->size / (f32)ht->capa) >= 0.75f) {
@@ -61,9 +62,9 @@ __hashtable_insert(void **hashtable, const String *key, const char *file, u32 li
     memset(new_keys, 0, sizeof (HTKey) * new_capa);
     for (usize i = 0; i < ht->capa; i++) {
       if (!ht->keys[i].occupied) continue;
-      usize index = hash(&ht->keys[i].str) % new_capa;
+      usize index = hash(ht->keys[i].str) % new_capa;
       while (new_keys[index].occupied) {
-        if (string_compare(&new_keys[index].str, &ht->keys[i].str)) ERROR("%s:%u: unreachable", file, line);
+        if (strcmp(new_keys[index].str, ht->keys[i].str) == 0) ERROR("%s:%u: unreachable", file, line);
         index = (index + 1) % new_capa;
       }
       new_keys[index].str = ht->keys[i].str;
@@ -81,40 +82,51 @@ __hashtable_insert(void **hashtable, const String *key, const char *file, u32 li
   /* add new value */
   usize index = hash(key) % ht->capa;
   while (ht->keys[index].occupied) {
-    if (string_compare(&ht->keys[index].str, key)) ERROR("%s:%u: Adding '%.*s' two times to a hashtable", file, line, (u32)key->size, key->buff);
+    if (strcmp(ht->keys[index].str, key) == 0) ERROR("%s:%u: Adding '%s' two times to a hashtable", file, line, key);
     index = (index + 1) % ht->capa;
   }
-  ht->keys[index].str = *key;
+  ht->keys[index].str = key;
   ht->keys[index].occupied = true;
   ht->size++;
   return index;
 }
 
 void
-__hashtable_remove(void *hashtable, const String *key, const char *file, u32 line) {
+__hashtable_remove(void *hashtable, const char *key, const char *file, u32 line) {
   Hashtable *ht = GET_HASHTABLE(hashtable);
   usize index = hash(key) % ht->capa;
   bool finded = false;
   while (ht->keys[index].occupied) {
-    if (string_compare(&ht->keys[index].str, key)) {
+    if (strcmp(ht->keys[index].str, key) == 0) {
       finded = true;
       break;
     }
   }
-  if (!finded) ERROR("%s:%u: Trying to remove an unexisting value '%.*s' of a hashtable", file, line, (u32)key->size, key->buff);
+  if (!finded) ERROR("%s:%u: Trying to remove an unexisting value '%s' of a hashtable", file, line, key);
   ht->keys[index].occupied = false;
   ht->size--;
 }
 
 i32
-__hashtable_index(void *hashtable, const String *key, const char *file, u32 line) {
+__hashtable_index(void *hashtable, const char *key, const char *file, u32 line) {
   Hashtable *ht = GET_HASHTABLE(hashtable);
   usize index = hash(key) % ht->capa;
   while (ht->keys[index].occupied) {
-    if (string_compare(&ht->keys[index].str, key)) return index;
+    if (strcmp(ht->keys[index].str, key) == 0) return index;
     index = (index + 1) % ht->capa;
   }
-  ERROR("%s:%u: '%.*s' is not a key for this hashtable", file, line, (u32)key->size, key->buff);
+  ERROR("%s:%u: '%s' is not a key for this hashtable", file, line, key);
+}
+
+bool
+__hashtable_has(void *hashtable, const char *key) {
+  Hashtable *ht = GET_HASHTABLE(hashtable);
+  usize index = hash(key) % ht->capa;
+  while (ht->keys[index].occupied) {
+    if (strcmp(ht->keys[index].str, key) == 0) return true;
+    index = (index + 1) % ht->capa;
+  }
+  return false;
 }
 
 void
