@@ -7,14 +7,6 @@
 
 typedef u32 ComponentID, ArchetypeID;
 
-typedef union {
-  struct {
-    u32 archetype;
-    u32 id;
-  };
-  Entity e;
-} EntityInternal;
-
 typedef struct {
   ArchetypeID id;
   usize entities_amount;
@@ -22,6 +14,7 @@ typedef struct {
   ComponentID *components_ids;
   usize *component_sizes;
   void  **component_buffs;
+  Entity *entity_destroy_queue;
   void *entity_creation_queue;
   usize entity_size;
 } Archetype;
@@ -43,8 +36,8 @@ typedef struct {
   Archetype **archetype_queue;
   Archetype *archetype_cur;
   usize entities_amount;
-  EntityInternal entity_cur;
   bool on_entity_creation;
+  bool on_system;
 } World;
 
 static World world;
@@ -124,6 +117,7 @@ ecs_find_archetype(usize comps_amount, const char *comps_names[comps_amount], co
       archetype->entity_size += comp->size;
     }
     archetype->entity_creation_queue = list_create(archetype->entity_size);
+    archetype->entity_destroy_queue = list_create(sizeof (Entity));
   }
   return archetype;
 }
@@ -134,15 +128,14 @@ __ecs_entity_creation_begin(usize comps_amount, const char *comps_names[comps_am
   if (comps_amount == 0) ERROR("%s:%u: Trying to start an entity creation without components", file, line);
   world.on_entity_creation = true;
   Archetype *archetype = ecs_find_archetype(comps_amount, comps_names, file, line);
-  world.entity_cur.archetype = archetype->id;
-  world.entity_cur.id = list_size(archetype->entity_creation_queue);
+  world.archetype_cur = archetype;
   list_grow(archetype->entity_creation_queue);
 }
 
 void *
 __ecs_entity_creation_setup_component(const char *comp_name, const char *file, u32 line) {
   if (!world.on_entity_creation) ERROR("%s:%u: Trying to setup a component outside of an entity creation.", file, line);
-  Archetype *archetype = &world.archetypes[world.entity_cur.archetype];
+  Archetype *archetype = world.archetype_cur;
   if (!hashtable_has(world.components, comp_name)) ERROR("%s:%u: '%s' component doesn't exists", file, line, comp_name);
   if (!hashtable_has(archetype->components_ids, comp_name)) ERROR("%s:%u: Entity doesn't have '%s' component", file, line, comp_name);
   ComponentID cid = hashtable_get(archetype->components_ids, comp_name);
@@ -150,22 +143,21 @@ __ecs_entity_creation_setup_component(const char *comp_name, const char *file, u
   for (usize i = 0; i < cid; i++) {
     offset += archetype->component_sizes[i];
   }
-  return archetype->entity_creation_queue + (world.entity_cur.id * archetype->entity_size) + offset;
+  return archetype->entity_creation_queue + (list_size(archetype->entity_creation_queue) - 1) * archetype->entity_size + offset;
 }
 
 void
 __ecs_entity_creation_end(const char *file, u32 line) {
   if (!world.on_entity_creation) ERROR("%s:%u: Trying to end an entity creation without one existing.", file, line);
   world.on_entity_creation = false;
+  world.archetype_cur = 0;
 }
 
-void *
-__ecs_get_component_list(const char *comp_name, const char *file, u32 line) {
-  if (!world.archetype_cur) ERROR("%s:%u: Function 'ecs_get_component_list' needs to be called inside of a system.", file, line);
-  if (!hashtable_has(world.components, comp_name)) ERROR("%s:%u: '%s' component doesn't exists", file, line, comp_name);
-  if (!hashtable_has(world.archetype_cur->components_ids, comp_name)) ERROR("%s:%u: Component '%s' is not required by system. Next batch of entities does not have it.", file, line, comp_name);
-  ComponentID cid = hashtable_get(world.archetype_cur->components_ids, comp_name);
-  return world.archetype_cur->component_buffs[cid];
+void
+__ecs_entity_destroy(Entity e, const char *file, u32 line) {
+  if (!world.on_system) ERROR("%s:%u: Function 'ecs_entity_destroy' needs to be called inside of a system.", file, line);
+  if (e >= world.archetype_cur->entities_amount) ERROR("%s:%u: Trying to destroy unexisting entity.", file, line);
+  list_push(world.archetype_cur->entity_destroy_queue, e);
 }
 
 usize
@@ -173,14 +165,13 @@ ecs_entities_amount(void) {
   return world.archetype_cur->entities_amount;
 }
 
-Entity
-__ecs_get_entity_from_id(EntityID id, const char *file, u32 line) {
-  if (!world.archetype_cur) ERROR("%s:%u: Function 'ecs_get_entity_from_id' needs to be called inside of a system.", file, line);
-  EntityInternal entity;
-  entity.archetype = world.archetype_cur->id;
-  entity.id = id;
-  if (entity.id >= world.archetype_cur->entities_amount) ERROR("%s:%u: Trying to get invalid entity (%u:%u)", file, line, entity.archetype, entity.id);
-  return entity.e;
+void *
+__ecs_get_component_list(const char *comp_name, const char *file, u32 line) {
+  if (!world.on_system) ERROR("%s:%u: Function 'ecs_get_component_list' needs to be called inside of a system.", file, line);
+  if (!hashtable_has(world.components, comp_name)) ERROR("%s:%u: '%s' component doesn't exists", file, line, comp_name);
+  if (!hashtable_has(world.archetype_cur->components_ids, comp_name)) ERROR("%s:%u: Component '%s' is not required by system. Next batch of entities does not have it.", file, line, comp_name);
+  ComponentID cid = hashtable_get(world.archetype_cur->components_ids, comp_name);
+  return world.archetype_cur->component_buffs[cid];
 }
 
 /*
@@ -228,7 +219,9 @@ ecs_run_event_systems(SystemEvent event) {
     }
     for (usize i = 0; i < list_size(world.archetype_queue); i++) {
       world.archetype_cur = world.archetype_queue[i];
+      world.on_system = true;
       system->fn();
+      world.on_system = false;
     }
     world.archetype_cur = 0;
   }
@@ -236,7 +229,20 @@ ecs_run_event_systems(SystemEvent event) {
 
 void
 ecs_update(void) {
-  /* create entities queued for creation */
+  /* destroy queued entities */
+  for (ArchetypeID i = 0; i < list_size(world.archetypes); i++) {
+    if (list_size(world.archetypes[i].entity_destroy_queue) == 0) continue;
+    for (usize j = 0; j < list_size(world.archetypes[i].entity_destroy_queue); j++) {
+      Entity e = world.archetypes[i].entity_destroy_queue[j];
+      for (ComponentID k = 0; k < list_size(world.archetypes[i].component_buffs); k++) {
+        list_remove(world.archetypes[i].component_buffs[k], e);
+      }
+      world.archetypes[i].entities_amount--;
+      world.entities_amount--;
+    }
+    list_clear(world.archetypes[i].entity_destroy_queue);
+  }
+  /* create queued entities */
   for (ArchetypeID i = 0; i < list_size(world.archetypes); i++) {
     if (list_size(world.archetypes[i].entity_creation_queue) == 0) continue;
     for (usize j = 0; j < list_size(world.archetypes[i].entity_creation_queue); j++) {

@@ -4,8 +4,7 @@
 
 #include "include/types.h"
 
-typedef u64 Entity;
-typedef u32 EntityID;
+typedef usize Entity;
 
 typedef void(*SystemFn)(void);
 typedef enum {
@@ -21,11 +20,12 @@ typedef enum {
 
 void ecs_create(void);
 void __ecs_component_create(usize size, const char *name, const char *file, u32 line);
-void *__ecs_get_component_list(const char *comp_name, const char *file, u32 line);
-usize ecs_entities_amount(void);
 void __ecs_entity_creation_begin(usize comps_amount, const char *comps_names[comps_amount], const char *file, u32 line);
 void *__ecs_entity_creation_setup_component(const char *comp_name, const char *file, u32 line);
 void __ecs_entity_creation_end(const char *file, u32 line);
+void __ecs_entity_destroy(Entity e, const char *file, u32 line);
+void *__ecs_get_component_list(const char *comp_name, const char *file, u32 line);
+usize ecs_entities_amount(void);
 void __ecs_system_create(SystemFn fn, SystemEvent event, usize comps_amount, const char *comps_names[comps_amount], const char *file, u32 line);
 void ecs_update(void);
 void ecs_draw(void);
