@@ -1,43 +1,36 @@
-#include "include/hashtable.h"
 #include <stdlib.h>
 #include <string.h>
-#include "include/core.h"
+#include <xxhash.h>
+#include "include/hashtable.h"
 #include "include/types.h"
+#include "include/core.h"
+#include "include/hash.h"
 
 typedef struct {
   const char *str;
   bool occupied;
 } HTKey;
 
-typedef struct Hashtable Hashtable;
+typedef struct HashTable HashTable;
 
 typedef struct {
-  Hashtable *ht;
+  HashTable *ht;
 } HTValuesHeader;
 
-typedef struct Hashtable {
+typedef struct HashTable {
   usize capa;
   usize size;
   usize type;
   HTValuesHeader *values_header;
   void *values;
   HTKey *keys;
-} Hashtable;
+} HashTable;
 
 #define GET_HASHTABLE(HASHTABLE) (((HTValuesHeader *)HASHTABLE) - 1)->ht
 
-/* http://www.cse.yorku.ca/~oz/hash.html */
-static usize
-hash(const char *str) {
-  usize hash = 5381;
-  i32 c;
-  while ((c = *str++)) hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-  return hash;
-}
-
 void *
 hashtable_create(usize type) {
-  Hashtable *ht = malloc(sizeof (Hashtable));
+  HashTable *ht = malloc(sizeof (HashTable));
   ht->type = type;
   ht->size = 0;
   ht->capa = 17;
@@ -51,7 +44,7 @@ hashtable_create(usize type) {
 
 i32
 __hashtable_insert(void **hashtable, const char *key, const char *file, u32 line) {
-  Hashtable *ht = GET_HASHTABLE(*hashtable);
+  HashTable *ht = GET_HASHTABLE(*hashtable);
   /* rehash */
   if ((ht->size / (f32)ht->capa) >= 0.75f) {
     usize new_capa = ht->capa * 2;
@@ -62,7 +55,7 @@ __hashtable_insert(void **hashtable, const char *key, const char *file, u32 line
     memset(new_keys, 0, sizeof (HTKey) * new_capa);
     for (usize i = 0; i < ht->capa; i++) {
       if (!ht->keys[i].occupied) continue;
-      usize index = hash(ht->keys[i].str) % new_capa;
+      usize index = hash_string(ht->keys[i].str) % new_capa;
       while (new_keys[index].occupied) {
         if (strcmp(new_keys[index].str, ht->keys[i].str) == 0) ERROR("%s:%u: unreachable", file, line);
         index = (index + 1) % new_capa;
@@ -80,7 +73,7 @@ __hashtable_insert(void **hashtable, const char *key, const char *file, u32 line
     *hashtable = new_values;
   }
   /* add new value */
-  usize index = hash(key) % ht->capa;
+  usize index = hash_string(key) % ht->capa;
   while (ht->keys[index].occupied) {
     if (strcmp(ht->keys[index].str, key) == 0) ERROR("%s:%u: Adding '%s' two times to a hashtable", file, line, key);
     index = (index + 1) % ht->capa;
@@ -93,14 +86,15 @@ __hashtable_insert(void **hashtable, const char *key, const char *file, u32 line
 
 void
 __hashtable_remove(void *hashtable, const char *key, const char *file, u32 line) {
-  Hashtable *ht = GET_HASHTABLE(hashtable);
-  usize index = hash(key) % ht->capa;
+  HashTable *ht = GET_HASHTABLE(hashtable);
+  usize index = hash_string(key) % ht->capa;
   bool finded = false;
   while (ht->keys[index].occupied) {
     if (strcmp(ht->keys[index].str, key) == 0) {
       finded = true;
       break;
     }
+    index = (index + 1) % ht->capa;
   }
   if (!finded) ERROR("%s:%u: Trying to remove an unexisting value '%s' of a hashtable", file, line, key);
   ht->keys[index].occupied = false;
@@ -109,8 +103,8 @@ __hashtable_remove(void *hashtable, const char *key, const char *file, u32 line)
 
 i32
 __hashtable_index(void *hashtable, const char *key, const char *file, u32 line) {
-  Hashtable *ht = GET_HASHTABLE(hashtable);
-  usize index = hash(key) % ht->capa;
+  HashTable *ht = GET_HASHTABLE(hashtable);
+  usize index = hash_string(key) % ht->capa;
   while (ht->keys[index].occupied) {
     if (strcmp(ht->keys[index].str, key) == 0) return index;
     index = (index + 1) % ht->capa;
@@ -120,8 +114,8 @@ __hashtable_index(void *hashtable, const char *key, const char *file, u32 line) 
 
 bool
 __hashtable_has(void *hashtable, const char *key) {
-  Hashtable *ht = GET_HASHTABLE(hashtable);
-  usize index = hash(key) % ht->capa;
+  HashTable *ht = GET_HASHTABLE(hashtable);
+  usize index = hash_string(key) % ht->capa;
   while (ht->keys[index].occupied) {
     if (strcmp(ht->keys[index].str, key) == 0) return true;
     index = (index + 1) % ht->capa;
@@ -131,7 +125,7 @@ __hashtable_has(void *hashtable, const char *key) {
 
 void
 hashtable_destroy(void *hashtable) {
-  Hashtable *ht = GET_HASHTABLE(hashtable);
+  HashTable *ht = GET_HASHTABLE(hashtable);
   free(ht->keys);
   free(ht->values_header);
   free(ht);
