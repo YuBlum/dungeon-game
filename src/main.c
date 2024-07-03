@@ -1,3 +1,4 @@
+#include "include/core.h"
 #include "include/ecs.h"
 #include "include/math.h"
 #include "include/types.h"
@@ -10,7 +11,7 @@ move_system(void) {
   V2f *velocity = ecs_get_component_list("velocity");
   for (Entity e = 0; e < ecs_entities_amount(); e++) {
     position[e] = v2_add(position[e], velocity[e]);
-    if (position[e].x > -.5) ecs_entity_destroy(e);
+    if (position[e].x > -.5) ecs_entity_remove_component(e, "velocity");
   }
 }
 
@@ -64,8 +65,8 @@ main(void) {
   movable_rect_create(V2F(-5.5f, -2.0f), V2S(1.2f), V2F(0.01f, 0.00f), C_BLACK);
   movable_rect_create(V2F(-4.5f, -3.0f), V2S(0.4f), V2F(0.01f, 0.00f), C_MAGENTA);
   movable_rect_create(V2F(-6.0f, -4.0f), V2S(1.0f), V2F(0.01f, 0.00f), C_YELLOW);
-  
   /*
+  
   static_rect_create(V2F(+5.0f, +0.0f), V2F(1.0f, 1.0f), C_YELLOW);
   static_rect_create(V2F(+7.0f, -4.0f), V2F(5.0f, 1.0f), C_WHITE);
   static_rect_create(V2F(-6.0f, +4.0f), V2F(2.0f, 1.5f), C_BLUE);

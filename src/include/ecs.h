@@ -4,7 +4,8 @@
 
 #include "include/types.h"
 
-typedef usize Entity;
+typedef u32 Entity;
+typedef i64 SignedEntity;
 
 typedef void(*SystemFn)(void);
 typedef enum {
@@ -23,6 +24,7 @@ void __ecs_component_create(usize size, const char *name, const char *file, u32 
 void __ecs_entity_creation_begin(usize comps_amount, const char *comps_names[comps_amount], const char *file, u32 line);
 void *__ecs_entity_creation_setup_component(const char *comp_name, const char *file, u32 line);
 void __ecs_entity_creation_end(const char *file, u32 line);
+void __ecs_entity_remove_component(Entity e, const char *comp_name, const char *file, u32 line);
 void __ecs_entity_destroy(Entity e, const char *file, u32 line);
 void *__ecs_get_component_list(const char *comp_name, const char *file, u32 line);
 usize ecs_entities_amount(void);
@@ -35,6 +37,7 @@ void ecs_draw(void);
 #define ecs_entity_creation_begin(...) do { const char *comps_names[] = { __VA_ARGS__ }; __ecs_entity_creation_begin(sizeof (comps_names) / sizeof (comps_names[0]), comps_names, __FILE__, __LINE__); } while(0)
 #define ecs_entity_creation_setup_component(TYPE, COMPONENT, VALUE) do { *((TYPE *)__ecs_entity_creation_setup_component(COMPONENT, __FILE__, __LINE__)) = (VALUE); } while(0)
 #define ecs_entity_creation_end() __ecs_entity_creation_end(__FILE__, __LINE__);
+#define ecs_entity_remove_component(ENTITY, COMPONENT) __ecs_entity_remove_component(ENTITY, COMPONENT, __FILE__, __LINE__)
 #define ecs_entity_destroy(ENTITY) __ecs_entity_destroy(ENTITY, __FILE__, __LINE__)
 #define ecs_system_create(FN, EVENT, ...) do { const char *comps_names[] = { __VA_ARGS__ }; __ecs_system_create(FN, EVENT, sizeof (comps_names) / sizeof (comps_names[0]), comps_names, __FILE__, __LINE__); } while(0)
 
