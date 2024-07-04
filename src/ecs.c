@@ -1,4 +1,6 @@
 #include "include/ecs.h"
+#include "include/components.h"
+#include "include/systems.h"
 #include "include/core.h"
 #include "include/hashtable.h"
 #include "include/types.h"
@@ -6,6 +8,11 @@
 #include <string.h>
 
 typedef u32 ComponentID, ArchetypeID;
+
+typedef struct {
+  u32 index;
+  SystemEvent event;
+} SystemID;
 
 typedef struct {
   const char **component_names;
@@ -33,6 +40,7 @@ typedef struct {
 
 typedef struct System {
   SystemFn fn;
+  bool active;
   const char **must_have;
   const char **must_not_have;
   const char *creation_file;
@@ -43,6 +51,7 @@ typedef struct {
   Component *components;
   Archetype *archetypes;
   System  *systems[SYSTEM_EVENTS_AMOUNT];
+  SystemID *system_ids;
   Archetype **archetype_queue;
   Archetype *archetype_cur;
   usize entities_amount;
@@ -66,15 +75,18 @@ _Static_assert(sizeof (system_event_str) / sizeof (char *) == SYSTEM_EVENTS_AMOU
 void
 ecs_create(void) {
   world.components = hashtable_create(sizeof (Component));
-  world.archetypes = list_create(sizeof (Archetype));
+  world.system_ids = hashtable_create(sizeof (SystemID));
   for (SystemEvent event = 0; event < SYSTEM_EVENTS_AMOUNT; event++) {
     world.systems[event] = list_create(sizeof (System));
   }
+  world.archetypes = list_create(sizeof (Archetype));
   world.archetype_queue = list_create(sizeof (Archetype *));
   world.temp_comps_names = list_create(sizeof (const char *));
   world.archetype_cur = 0;
   world.on_entity_creation = false;
   world.on_system = false;
+  ecs_create_components();
+  ecs_create_systems();
 }
 
 void
@@ -216,6 +228,32 @@ ecs_entities_amount(void) {
   return world.archetype_cur->entities_amount;
 }
 
+void
+ecs_entities_terminate(void) {
+  for (ArchetypeID a = 0; a < list_size(world.archetypes); a++) {
+    for (Entity e = 0; e < world.archetypes[a].entities_amount; e++) {
+      usize size = list_size(world.archetypes[a].entity_insert_component_data[e]);
+      for (u32 i = 0; i < size; i++) {
+        free(world.archetypes[a].entity_insert_component_data[e][i]);
+      }
+      list_destroy(world.archetypes[a].entity_insert_component_data[e]);
+      list_destroy(world.archetypes[a].entity_insert_component_data[e]);
+      list_destroy(world.archetypes[a].entity_insert_component[e]);
+      list_destroy(world.archetypes[a].entity_remove_component[e]);
+    }
+    for (ComponentID c = 0; c < list_size(world.archetypes[a].component_buffs); c++) {
+      list_clear(world.archetypes[a].component_buffs[c]);
+    }
+    list_clear(world.archetypes[a].entity_creation_queue);
+    list_clear(world.archetypes[a].entity_destroy);
+    world.archetypes[a].entity_requested_insert_component_amount = 0;
+    world.archetypes[a].entity_requested_remove_component_amount = 0;
+    world.archetypes[a].entity_requested_destroy = 0;
+    world.archetypes[a].entities_amount = 0;
+  }
+  world.entities_amount = 0;
+}
+
 void *
 __ecs_get_component_list(const char *comp_name, const char *file, u32 line) {
   if (!world.on_system) ERROR("%s:%u: Function 'ecs_get_component_list' must be called inside of a system.", file, line);
@@ -225,26 +263,36 @@ __ecs_get_component_list(const char *comp_name, const char *file, u32 line) {
   return world.archetype_cur->component_buffs[cid];
 }
 
-System *
-__ecs_system_create(SystemFn fn, SystemEvent event, const char *file, u32 line) {
+void
+__ecs_system_create(const char *name, SystemFn fn, SystemEvent event, const char *file, u32 line) {
   if (!fn) ERROR("%s:%u: System function is NULL", file, line);
   for (SystemEvent j = 0; j < SYSTEM_EVENTS_AMOUNT; j++) {
     for (usize i = 0; i < list_size(world.systems[j]); i++) {
       if (fn == world.systems[j][i].fn) ERROR("%s:%u: System already exists on event %s", file, line, system_event_str[j]);
     }
   }
+  SystemID id = {
+    .index = list_size(world.systems[event]),
+    .event = event
+  };
   list_grow(world.systems[event]);
-  System *system = &world.systems[event][list_size(world.systems[event]) - 1];
+  System *system = &world.systems[event][id.index];
   system->fn = fn;
   system->must_have = list_create(sizeof (const char *));
   system->must_not_have = list_create(sizeof (const char *));
   system->creation_file = file;
   system->creation_line = line;
-  return system;
+  system->active = false;
+  hashtable_insert(world.system_ids, name, id);
 }
 
+
+
 void
-__ecs_system_must_have(System *system, usize comps_amount, const char *comps_names[comps_amount], const char *file, u32 line) {
+__ecs_system_must_have(const char *name, usize comps_amount, const char *comps_names[comps_amount], const char *file, u32 line) {
+  if (!hashtable_has(world.system_ids, name)) ERROR("%s:%u: '%s' is not a system", file, line, name);
+  SystemID id = hashtable_get(world.system_ids, name);
+  System *system = &world.systems[id.event][id.index];
   for (usize i = 0; i < comps_amount; i++) {
     if (!hashtable_has(world.components, comps_names[i])) ERROR("%s:%u: '%s' component doesn't exists", file, line, comps_names[i]);
     for (usize j = 0; j < list_size(system->must_not_have); j++) {
@@ -265,7 +313,10 @@ __ecs_system_must_have(System *system, usize comps_amount, const char *comps_nam
 }
 
 void
-__ecs_system_must_not_have(System *system, usize comps_amount, const char *comps_names[comps_amount], const char *file, u32 line) {
+__ecs_system_must_not_have(const char *name, usize comps_amount, const char *comps_names[comps_amount], const char *file, u32 line) {
+  if (!hashtable_has(world.system_ids, name)) ERROR("%s:%u: '%s' is not a system", file, line, name);
+  SystemID id = hashtable_get(world.system_ids, name);
+  System *system = &world.systems[id.event][id.index];
   for (u32 i = 0; i < comps_amount; i++) {
     if (!hashtable_has(world.components, comps_names[i])) ERROR("%s:%u: '%s' component doesn't exists", file, line, comps_names[i]);
     for (usize j = 0; j < list_size(system->must_have); j++) {
@@ -285,6 +336,31 @@ __ecs_system_must_not_have(System *system, usize comps_amount, const char *comps
   }
 }
 
+void
+__ecs_system_activate(const char *name, const char *file, u32 line) {
+  if (!hashtable_has(world.system_ids, name)) ERROR("%s:%u: '%s' is not a system", file, line, name);
+  SystemID id = hashtable_get(world.system_ids, name);
+  System *system = &world.systems[id.event][id.index];
+  system->active = true;
+}
+
+void
+__ecs_system_deactivate(const char *name, const char *file, u32 line) {
+  if (!hashtable_has(world.system_ids, name)) ERROR("%s:%u: '%s' is not a system", file, line, name);
+  SystemID id = hashtable_get(world.system_ids, name);
+  System *system = &world.systems[id.event][id.index];
+  system->active = false;
+}
+
+void
+ecs_system_deactivate_all(void) {
+  for (SystemEvent event = 0; event < SYSTEM_EVENTS_AMOUNT; event++) {
+    for (usize system_id = 0; system_id < list_size(world.systems[event]); system_id++) {
+      world.systems[event][system_id].active = false;
+    }
+  }
+}
+
 static void
 ecs_run_event_systems(SystemEvent event) {
   for (usize system_id = 0; system_id < list_size(world.systems[event]); system_id++) {
@@ -292,6 +368,7 @@ ecs_run_event_systems(SystemEvent event) {
     if (!list_size(system->must_have)) {
       ERROR("%s:%u: System must have a component filter. Forgot 'ecs_system_must_have'?", system->creation_file, system->creation_line);
     }
+    if (!system->active) continue;
     /* get all qualified archetypes */
     list_clear(world.archetype_queue);
     Component *comp = hashtable_get_address(world.components, system->must_have[0]);
@@ -439,7 +516,6 @@ ecs_update(void) {
   }
   /* create queued entities */
   for (ArchetypeID i = 0; i < list_size(world.archetypes); i++) {
-    if (list_size(world.archetypes[i].entity_creation_queue) == 0) continue;
     for (usize j = 0; j < list_size(world.archetypes[i].entity_creation_queue); j++) {
       void *base_entity = world.archetypes[i].entity_creation_queue + (j * world.archetypes[i].entity_size);
       for (ComponentID c = 0; c < world.archetypes[i].component_amount; c++) {
