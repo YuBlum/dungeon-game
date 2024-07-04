@@ -12,7 +12,10 @@ move_system(void) {
   V2f *velocity = ecs_get_component_list("velocity");
   for (Entity e = 0; e < ecs_entities_amount(); e++) {
     position[e] = v2_add(position[e], velocity[e]);
-    if (position[e].x > -.5) ecs_entity_remove_component(e, "velocity");
+    if (position[e].x > -.5) {
+      ecs_entity_remove_component(e, "velocity");
+      ecs_entity_remove_component(e, "color");
+    }
   }
 }
 
@@ -74,9 +77,13 @@ main(void) {
   ecs_component_create(V2f, "velocity");
   ecs_component_create(Color, "color");
 
-  ecs_system_create(move_system, SYS_UPDATE, "position", "velocity");
-  ecs_system_create(draw_color_system, SYS_DRAW, "position", "size", "color");
-  ecs_system_create(draw_white_system, SYS_DRAW, "position", "size");
+  System *move_system_id = ecs_system_create(move_system, SYS_UPDATE);
+  System *draw_white_system_id = ecs_system_create(draw_white_system, SYS_DRAW);
+  System *draw_color_system_id = ecs_system_create(draw_color_system, SYS_DRAW);
+  ecs_system_must_have(move_system_id, "position", "velocity");
+  ecs_system_must_have(draw_white_system_id, "position", "size");
+  ecs_system_must_have(draw_color_system_id, "position", "size", "color");
+  ecs_system_must_not_have(draw_white_system_id, "color");
 
   movable_colored_rect_create(V2F(-5.0f, +4.0f), V2S(1.0f), V2F(0.1f, 0.00f), C_YELLOW);
   /*

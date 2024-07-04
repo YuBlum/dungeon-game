@@ -28,9 +28,12 @@ typedef struct {
   usize size;
 } Component;
 
-typedef struct {
+typedef struct System {
   SystemFn fn;
-  const char **comps;
+  const char **must_have;
+  const char **must_not_have;
+  const char *creation_file;
+  u32 creation_line;
 } System;
 
 typedef struct {
@@ -202,46 +205,90 @@ __ecs_get_component_list(const char *comp_name, const char *file, u32 line) {
   return world.archetype_cur->component_buffs[cid];
 }
 
-/*
-void
-__ecs_entity_add_component(Entity entity, const char *comp, const char *file, u32 line) {
-}
-*/
-
-void
-__ecs_system_create(SystemFn fn, SystemEvent event, usize comps_amount, const char *comps_names[comps_amount], const char *file, u32 line) {
+System *
+__ecs_system_create(SystemFn fn, SystemEvent event, const char *file, u32 line) {
+  if (!fn) ERROR("%s:%u: System function is NULL", file, line);
   for (SystemEvent j = 0; j < SYSTEM_EVENTS_AMOUNT; j++) {
     for (usize i = 0; i < list_size(world.systems[j]); i++) {
       if (fn == world.systems[j][i].fn) ERROR("%s:%u: System already exists on event %s", file, line, system_event_str[j]);
     }
   }
+  list_grow(world.systems[event]);
+  System *system = &world.systems[event][list_size(world.systems[event]) - 1];
+  system->fn = fn;
+  system->must_have = list_create(sizeof (const char *));
+  system->must_not_have = list_create(sizeof (const char *));
+  system->creation_file = file;
+  system->creation_line = line;
+  return system;
+}
+
+void
+__ecs_system_must_have(System *system, usize comps_amount, const char *comps_names[comps_amount], const char *file, u32 line) {
+  for (usize i = 0; i < comps_amount; i++) {
+    if (!hashtable_has(world.components, comps_names[i])) ERROR("%s:%u: '%s' component doesn't exists", file, line, comps_names[i]);
+    for (usize j = 0; j < list_size(system->must_not_have); j++) {
+      if (strcmp(system->must_not_have[j], comps_names[i]) != 0) continue;
+      ERROR("%s:%u: Entity must not have the component '%s'. No entity will be effected by the system", file, line, comps_names[i]);
+    }
+  }
+  for (usize i = 0; i < comps_amount; i++) {
+    bool skip = false;
+    for (usize j = 0; j < list_size(system->must_have); j++) {
+      if (strcmp(system->must_have[j], comps_names[i]) != 0) continue;
+      skip = true;
+      break;
+    }
+    if (skip) continue;
+    list_push(system->must_have, comps_names[i]);
+  }
+}
+
+void
+__ecs_system_must_not_have(System *system, usize comps_amount, const char *comps_names[comps_amount], const char *file, u32 line) {
   for (u32 i = 0; i < comps_amount; i++) {
     if (!hashtable_has(world.components, comps_names[i])) ERROR("%s:%u: '%s' component doesn't exists", file, line, comps_names[i]);
+    for (usize j = 0; j < list_size(system->must_have); j++) {
+      if (strcmp(system->must_have[j], comps_names[i]) != 0) continue;
+      ERROR("%s:%u: Entity must have the component '%s'. No entity will be effected by the system", file, line, comps_names[i]);
+    }
   }
-  System system = {
-    .fn = fn,
-    .comps = list_create(sizeof (const char *))
-  };
   for (usize i = 0; i < comps_amount; i++) {
-    list_push(system.comps, comps_names[i]);
+    bool skip = false;
+    for (usize j = 0; j < list_size(system->must_not_have); j++) {
+      if (strcmp(system->must_not_have[j], comps_names[i]) != 0) continue;
+      skip = true;
+      break;
+    }
+    if (skip) continue;
+    list_push(system->must_not_have, comps_names[i]);
   }
-  list_push(world.systems[event], system);
 }
 
 static void
 ecs_run_event_systems(SystemEvent event) {
   for (usize system_id = 0; system_id < list_size(world.systems[event]); system_id++) {
     System *system = &world.systems[event][system_id];
-    /* get all archetypes that has the correct components */
+    if (!list_size(system->must_have)) {
+      ERROR("%s:%u: System must have a component filter. Forgot 'ecs_system_must_have'?", system->creation_file, system->creation_line);
+    }
+    /* get all qualified archetypes */
     list_clear(world.archetype_queue);
-    Component *comp = hashtable_get_address(world.components, system->comps[0]);
+    Component *comp = hashtable_get_address(world.components, system->must_have[0]);
     for (usize i = 0; i < list_size(comp->archetypes); i++) {
+      /* must have components */
       Archetype *archetype = &world.archetypes[comp->archetypes[i]];
-      for (usize j = 1; j < list_size(system->comps); j++) {
-        if (!hashtable_has(archetype->component_id, system->comps[j])) {
-          archetype = 0;
-          break;
-        }
+      for (usize j = 1; j < list_size(system->must_have); j++) {
+        if (hashtable_has(archetype->component_id, system->must_have[j])) continue;
+        archetype = 0;
+        break;
+      }
+      if (!archetype) continue;
+      /* must not have components */
+      for (usize j = 0; j < list_size(system->must_not_have); j++) {
+        if (!hashtable_has(archetype->component_id, system->must_not_have[j])) continue;
+        archetype = 0;
+        break;
       }
       if (archetype) list_push(world.archetype_queue, archetype);
     }

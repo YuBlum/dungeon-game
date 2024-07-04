@@ -6,6 +6,7 @@
 
 typedef u32 Entity;
 typedef i64 SignedEntity;
+typedef struct System System;
 
 typedef void(*SystemFn)(void);
 typedef enum {
@@ -29,7 +30,9 @@ void *__ecs_entity_insert_component(Entity e, const char *comp_name, const char 
 void __ecs_entity_destroy(Entity e, const char *file, u32 line);
 void *__ecs_get_component_list(const char *comp_name, const char *file, u32 line);
 usize ecs_entities_amount(void);
-void __ecs_system_create(SystemFn fn, SystemEvent event, usize comps_amount, const char *comps_names[comps_amount], const char *file, u32 line);
+System *__ecs_system_create(SystemFn fn, SystemEvent event, const char *file, u32 line);
+void __ecs_system_must_have(System *system, usize comps_amount, const char *comps_names[comps_amount], const char *file, u32 line);
+void __ecs_system_must_not_have(System *system, usize comps_amount, const char *comps_names[comps_amount], const char *file, u32 line);
 void ecs_update(void);
 void ecs_draw(void);
 
@@ -41,6 +44,8 @@ void ecs_draw(void);
 #define ecs_entity_remove_component(ENTITY, COMPONENT) __ecs_entity_remove_component(ENTITY, COMPONENT, __FILE__, __LINE__)
 #define ecs_entity_insert_component(ENTITY, TYPE, COMPONENT, VALUE) do { *(TYPE *)__ecs_entity_insert_component(ENTITY, COMPONENT, __FILE__, __LINE__) = VALUE; } while(0)
 #define ecs_entity_destroy(ENTITY) __ecs_entity_destroy(ENTITY, __FILE__, __LINE__)
-#define ecs_system_create(FN, EVENT, ...) do { const char *comps_names[] = { __VA_ARGS__ }; __ecs_system_create(FN, EVENT, sizeof (comps_names) / sizeof (comps_names[0]), comps_names, __FILE__, __LINE__); } while(0)
+#define ecs_system_create(FN, EVENT) __ecs_system_create(FN, EVENT, __FILE__, __LINE__)
+#define ecs_system_must_have(SYSTEM, ...) do { const char *comps_names[] = { __VA_ARGS__ }; __ecs_system_must_have(SYSTEM, sizeof (comps_names) / sizeof (comps_names[0]), comps_names, __FILE__, __LINE__); } while(0)
+#define ecs_system_must_not_have(SYSTEM, ...) do { const char *comps_names[] = { __VA_ARGS__ }; __ecs_system_must_not_have(SYSTEM, sizeof (comps_names) / sizeof (comps_names[0]), comps_names, __FILE__, __LINE__); } while(0)
 
 #endif/*__ECS_H__*/
