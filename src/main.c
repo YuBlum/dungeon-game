@@ -1,4 +1,5 @@
 #include "include/ecs.h"
+#include "include/input.h"
 #include "include/math.h"
 #include "include/types.h"
 #include "include/window.h"
@@ -112,6 +113,10 @@ main(void) {
 
   while (window_is_running()) {
     window_frame_start();
+    input_update();
+    if (input_key_down(KEY_A)) {
+      window_destroy();
+    }
     ecs_update();
     renderer_batch_start();
     ecs_draw();
