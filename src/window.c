@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "include/global.h"
 #include "include/input.h"
 #include "include/types.h"
 #include "include/core.h"
@@ -11,7 +12,7 @@
 } while (0)
 
 static GLFWwindow *window;
-
+static f32 frame_start_time;
 
 void
 window_create(void) {
@@ -26,6 +27,7 @@ window_create(void) {
   glfwMakeContextCurrent(window);
   gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
   glfwSetKeyCallback(window, (GLFWkeyfun)input_key_callback);
+  global.dt = 1.0f/60.0f;
 }
 
 bool
@@ -35,12 +37,14 @@ window_is_running(void) {
 
 void
 window_frame_start(void) {
+  frame_start_time = glfwGetTime();
 }
 
 void
 window_frame_end(void) {
   glfwPollEvents();
   glfwSwapBuffers(window);
+  global.dt = glfwGetTime() - frame_start_time;
 }
 
 void
