@@ -4,17 +4,14 @@
 #include "include/window.h"
 #include "include/renderer.h"
 
-//_Static_assert(0, "problem: can't remove more than one component per system");
-
 void
 move_system(void) {
   V2f *position = ecs_get_component_list("position");
   V2f *velocity = ecs_get_component_list("velocity");
   for (Entity e = 0; e < ecs_entities_amount(); e++) {
     position[e] = v2_add(position[e], velocity[e]);
-    if (position[e].x > -.5) {
-      ecs_entity_remove_component(e, "velocity");
-      ecs_entity_remove_component(e, "color");
+    if (position[e].x > -.5 && !ecs_entity_has_component(e, "color")) {
+      ecs_entity_insert_component(e, Color, "color", C_YELLOW);
     }
   }
 }
@@ -85,14 +82,21 @@ main(void) {
   ecs_system_must_have(draw_color_system_id, "position", "size", "color");
   ecs_system_must_not_have(draw_white_system_id, "color");
 
-  movable_colored_rect_create(V2F(-5.0f, +4.0f), V2S(1.0f), V2F(0.1f, 0.00f), C_YELLOW);
+  movable_rect_create(V2F(-5.0f, +4.0f), V2S(1.0f), V2F(0.01f, 0.00f));
+  movable_rect_create(V2F(-7.0f, +3.0f), V2S(0.6f), V2F(0.01f, 0.00f));
+  movable_rect_create(V2F(-4.0f, +2.0f), V2S(0.4f), V2F(0.01f, 0.00f));
+  movable_rect_create(V2F(-3.0f, -1.0f), V2S(0.3f), V2F(0.01f, 0.00f));
+  movable_rect_create(V2F(-5.5f, -2.0f), V2S(1.2f), V2F(0.01f, 0.00f));
+  movable_rect_create(V2F(-4.5f, -3.0f), V2S(0.4f), V2F(0.01f, 0.00f));
+  movable_rect_create(V2F(-6.0f, -4.0f), V2S(1.0f), V2F(0.01f, 0.00f));
+
   /*
-  movable_rect_create(V2F(-7.0f, +3.0f), V2S(0.6f), V2F(0.01f, 0.00f), C_WHITE);
-  movable_rect_create(V2F(-4.0f, +2.0f), V2S(0.4f), V2F(0.01f, 0.00f), C_BLUE);
-  movable_rect_create(V2F(-3.0f, -1.0f), V2S(0.3f), V2F(0.01f, 0.00f), C_GREEN);
-  movable_rect_create(V2F(-5.5f, -2.0f), V2S(1.2f), V2F(0.01f, 0.00f), C_BLACK);
-  movable_rect_create(V2F(-4.5f, -3.0f), V2S(0.4f), V2F(0.01f, 0.00f), C_MAGENTA);
-  movable_rect_create(V2F(-6.0f, -4.0f), V2S(1.0f), V2F(0.01f, 0.00f), C_YELLOW);
+  movable_colored_rect_create(V2F(-7.0f, +3.0f), V2S(0.6f), V2F(0.01f, 0.00f), C_WHITE);
+  movable_colored_rect_create(V2F(-4.0f, +2.0f), V2S(0.4f), V2F(0.01f, 0.00f), C_BLUE);
+  movable_colored_rect_create(V2F(-3.0f, -1.0f), V2S(0.3f), V2F(0.01f, 0.00f), C_GREEN);
+  movable_colored_rect_create(V2F(-5.5f, -2.0f), V2S(1.2f), V2F(0.01f, 0.00f), C_BLACK);
+  movable_colored_rect_create(V2F(-4.5f, -3.0f), V2S(0.4f), V2F(0.01f, 0.00f), C_MAGENTA);
+  movable_colored_rect_create(V2F(-6.0f, -4.0f), V2S(1.0f), V2F(0.01f, 0.00f), C_YELLOW);
   
   static_rect_create(V2F(+5.0f, +0.0f), V2F(1.0f, 1.0f), C_YELLOW);
   static_rect_create(V2F(+7.0f, -4.0f), V2F(5.0f, 1.0f), C_WHITE);

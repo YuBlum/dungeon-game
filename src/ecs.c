@@ -15,9 +15,12 @@ typedef struct {
   usize component_amount;
   usize entities_amount;
   bool *entity_destroy;
+  void ***entity_insert_component_data;
+  const char ***entity_insert_component;
   const char ***entity_remove_component;
-  usize entity_remove_component_amount;
-  usize entity_destroy_amount;
+  bool entity_requested_remove_component;
+  bool entity_requested_insert_component;
+  bool entity_requested_destroy;
   void *entity_creation_queue;
   usize entity_size;
   ArchetypeID id;
@@ -128,9 +131,12 @@ ecs_find_archetype(usize comps_amount, const char *comps_names[comps_amount], co
     }
     archetype->entity_creation_queue = list_create(archetype->entity_size);
     archetype->entity_destroy = list_create(sizeof (bool));
+    archetype->entity_insert_component_data = list_create(sizeof (void **));
+    archetype->entity_insert_component = list_create(sizeof (const char **));
     archetype->entity_remove_component = list_create(sizeof (const char **));
-    archetype->entity_destroy_amount = 0;
-    archetype->entity_remove_component_amount = 0;
+    archetype->entity_requested_destroy = false;
+    archetype->entity_requested_insert_component = false;
+    archetype->entity_requested_remove_component = false;
   }
   return archetype;
 }
@@ -169,26 +175,40 @@ __ecs_entity_creation_end(const char *file, u32 line) {
 void
 __ecs_entity_remove_component(Entity e, const char *comp_name, const char *file, u32 line) {
   if (!world.on_system) ERROR("%s:%u: Function 'ecs_entity_remove_component' must be called inside of a system.", file, line);
+  if (!hashtable_has(world.components, comp_name)) ERROR("%s:%u: '%s' component doesn't exists", file, line, comp_name);
   if (e >= world.archetype_cur->entities_amount) ERROR("%s:%u: Trying to remove component '%s' of unexisting entity.", file, line, comp_name);
   if (!hashtable_has(world.archetype_cur->component_id, comp_name)) ERROR("%s:%u: Trying to remove component '%s', but the entity doesn't have it.", file, line, comp_name);
-  if (list_size(world.archetype_cur->entity_remove_component[e]) == 0) world.archetype_cur->entity_remove_component_amount++;
+  world.archetype_cur->entity_requested_remove_component = true;
   list_push(world.archetype_cur->entity_remove_component[e], comp_name);
 }
 
 void *
 __ecs_entity_insert_component(Entity e, const char *comp_name, const char *file, u32 line) {
   if (!world.on_system) ERROR("%s:%u: Function 'ecs_entity_insert_component' must be called inside of a system.", file, line);
+  if (!hashtable_has(world.components, comp_name)) ERROR("%s:%u: '%s' component doesn't exists", file, line, comp_name);
   if (e >= world.archetype_cur->entities_amount) ERROR("%s:%u: Trying to insert component '%s' to an unexisting entity.", file, line, comp_name);
   if (hashtable_has(world.archetype_cur->component_id, comp_name)) ERROR("%s:%u: Trying to insert component '%s', but the entity already have it.", file, line, comp_name);
-  return 0;
+  world.archetype_cur->entity_requested_insert_component = true;
+  void *data = malloc(hashtable_get(world.components, comp_name).size);
+  list_push(world.archetype_cur->entity_insert_component[e], comp_name);
+  list_push(world.archetype_cur->entity_insert_component_data[e], data);
+  return data;
+}
+
+bool
+__ecs_entity_has_component(Entity e, const char *comp_name, const char *file, u32 line) {
+  if (!world.on_system) ERROR("%s:%u: Function '__ecs_entity_has_component' must be called inside of a system.", file, line);
+  if (!hashtable_has(world.components, comp_name)) ERROR("%s:%u: '%s' component doesn't exists", file, line, comp_name);
+  if (e >= world.archetype_cur->entities_amount) ERROR("%s:%u: Trying to insert component '%s' to an unexisting entity.", file, line, comp_name);
+  return hashtable_has(world.archetype_cur->component_id, comp_name);
 }
 
 void
 __ecs_entity_destroy(Entity e, const char *file, u32 line) {
   if (!world.on_system) ERROR("%s:%u: Function 'ecs_entity_destroy' must be called inside of a system.", file, line);
   if (e >= world.archetype_cur->entities_amount) ERROR("%s:%u: Trying to destroy unexisting entity.", file, line);
+  world.archetype_cur->entity_requested_destroy = true;
   world.archetype_cur->entity_destroy[e] = true;
-  world.archetype_cur->entity_destroy_amount++;
 }
 
 usize
@@ -306,7 +326,7 @@ void
 ecs_update(void) {
   /* remove component from entities */
   for (ArchetypeID i = 0; i < list_size(world.archetypes); i++) {
-    if (world.archetypes[i].entity_remove_component_amount == 0) continue;
+    if (!world.archetypes[i].entity_requested_remove_component) continue;
     for (SignedEntity e = world.archetypes->entities_amount - 1; e >= 0; e--) {
       if (list_size(world.archetypes[i].entity_remove_component[e]) == 0 || world.archetypes[i].entity_destroy[e]) continue;
       list_clear(world.temp_comps_names);
@@ -334,29 +354,82 @@ ecs_update(void) {
         ComponentID removed_component = hashtable_get(world.archetypes[i].component_id, world.archetypes[i].entity_remove_component[e][j]);
         list_remove(world.archetypes[i].component_buffs[removed_component], e);
       }
+      list_clear(world.archetypes[i].entity_remove_component[e]);
       list_push(new_archetype->entity_destroy, false);
+      list_push(new_archetype->entity_insert_component_data, world.archetypes[i].entity_insert_component_data[e]);
+      list_push(new_archetype->entity_insert_component, world.archetypes[i].entity_insert_component[e]);
       list_push(new_archetype->entity_remove_component, world.archetypes[i].entity_remove_component[e]);
       list_remove(world.archetypes[i].entity_destroy, e);
+      list_remove(world.archetypes[i].entity_insert_component_data, e);
+      list_remove(world.archetypes[i].entity_insert_component, e);
       list_remove(world.archetypes[i].entity_remove_component, e);
       world.archetypes[i].entities_amount--;
       new_archetype->entities_amount++;
     }
-    world.archetypes[i].entity_remove_component_amount = 0;
+    world.archetypes[i].entity_requested_remove_component = false;
+  }
+  /* insert component in to entities */
+  for (ArchetypeID i = 0; i < list_size(world.archetypes); i++) {
+    if (!world.archetypes[i].entity_requested_insert_component) continue;
+    for (SignedEntity e = world.archetypes->entities_amount - 1; e >= 0; e--) {
+      if (list_size(world.archetypes[i].entity_insert_component[e]) == 0 || world.archetypes[i].entity_destroy[e]) continue;
+      list_clear(world.temp_comps_names);
+      for (usize j = 0; j < list_size(world.archetypes[i].component_names); j++) {
+        list_push(world.temp_comps_names, world.archetypes[i].component_names[j]);
+      }
+      for (usize j = 0; j < list_size(world.archetypes[i].entity_insert_component[e]); j++) {
+        list_push(world.temp_comps_names, world.archetypes[i].entity_insert_component[e][j]);
+      }
+      Archetype *new_archetype = ecs_find_archetype(list_size(world.temp_comps_names), world.temp_comps_names, __FILE__, __LINE__);
+      for (usize j = 0; j < list_size(world.archetypes[i].component_names); j++) {
+        ComponentID old = hashtable_get(world.archetypes[i].component_id, new_archetype->component_names[j]);
+        ComponentID new = hashtable_get(new_archetype->component_id, new_archetype->component_names[j]);
+        usize size = new_archetype->component_sizes[new];
+        list_grow(new_archetype->component_buffs[new]);
+        memcpy(new_archetype->component_buffs[new] + size * (list_size(new_archetype->component_buffs[new]) - 1), world.archetypes[i].component_buffs[old] + size * e, size);
+        list_remove(world.archetypes[i].component_buffs[old], e);
+      }
+      for (usize j = 0; j < list_size(world.archetypes[i].entity_insert_component[e]); j++) {
+        void *data = world.archetypes[i].entity_insert_component_data[e][j];
+        ComponentID new = hashtable_get(new_archetype->component_id, world.archetypes[i].entity_insert_component[e][j]);
+        usize size = new_archetype->component_sizes[new];
+        list_grow(new_archetype->component_buffs[new]);
+        memcpy(new_archetype->component_buffs[new] + size * (list_size(new_archetype->component_buffs[new]) - 1), data, size);
+        free(data);
+      }
+      list_clear(world.archetypes[i].entity_insert_component_data[e]);
+      list_clear(world.archetypes[i].entity_insert_component[e]);
+      list_push(new_archetype->entity_destroy, false);
+      list_push(new_archetype->entity_insert_component_data, world.archetypes[i].entity_insert_component_data[e]);
+      list_push(new_archetype->entity_insert_component, world.archetypes[i].entity_insert_component[e]);
+      list_push(new_archetype->entity_remove_component, world.archetypes[i].entity_remove_component[e]);
+      list_remove(world.archetypes[i].entity_destroy, e);
+      list_remove(world.archetypes[i].entity_insert_component_data, e);
+      list_remove(world.archetypes[i].entity_insert_component, e);
+      list_remove(world.archetypes[i].entity_remove_component, e);
+      world.archetypes[i].entities_amount--;
+      new_archetype->entities_amount++;
+    }
+    world.archetypes[i].entity_requested_insert_component = false;
   }
   /* destroy entities */
   for (ArchetypeID i = 0; i < list_size(world.archetypes); i++) {
-    if (world.archetypes[i].entity_destroy_amount == 0) continue;
+    if (!world.archetypes[i].entity_requested_destroy) continue;
     for (SignedEntity e = world.archetypes->entities_amount - 1; e >= 0; e--) {
       if (!world.archetypes[i].entity_destroy[e]) continue;
       for (ComponentID c = 0; c < world.archetypes[i].component_amount; c++) {
         list_remove(world.archetypes[i].component_buffs[c], e);
       }
-      if (world.archetypes[i].entity_remove_component[e]) world.archetypes[i].entity_remove_component_amount--;
+      for (usize j = 0; j < list_size(world.archetypes[i].entity_insert_component_data[e]); j++) {
+        free(world.archetypes[i].entity_insert_component_data[e][j]);
+      }
+      list_destroy(world.archetypes[i].entity_insert_component_data[e]);
+      list_destroy(world.archetypes[i].entity_insert_component[e]);
       list_destroy(world.archetypes[i].entity_remove_component[e]);
       list_remove(world.archetypes[i].entity_destroy, e);
       list_remove(world.archetypes[i].entity_remove_component, e);
     }
-    world.archetypes[i].entity_destroy_amount = 0;
+    world.archetypes[i].entity_requested_destroy = false;
     world.archetypes[i].entities_amount--;
     world.entities_amount--;
   }
@@ -374,6 +447,8 @@ ecs_update(void) {
       }
       list_push(world.archetypes[i].entity_destroy, false);
       list_push(world.archetypes[i].entity_remove_component, list_create(sizeof (const char *)));
+      list_push(world.archetypes[i].entity_insert_component, list_create(sizeof (const char *)));
+      list_push(world.archetypes[i].entity_insert_component_data, list_create(sizeof (void *)));
       world.archetypes[i].entities_amount++;
       world.entities_amount++;
     }
