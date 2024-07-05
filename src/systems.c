@@ -11,9 +11,8 @@ static void
 system_move_by_input(void) {
   V2f *position = ecs_get_component_list("position");
   MovePosition *move_position = ecs_get_component_list("move-position");
-  bool *input = ecs_get_component_list("input");
   for (Entity e = 0; e < ecs_entities_amount(); e++) {
-    if (!input[e] || move_position[e].timer < 1.0f) continue;
+    if (move_position[e].timer < 1.0f) continue;
     V2f dir = {
       input_key_pressed(KEY_RIGHT) - input_key_pressed(KEY_LEFT),
       input_key_pressed(KEY_UP)    - input_key_pressed(KEY_DOWN)

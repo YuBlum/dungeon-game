@@ -1,4 +1,5 @@
 #include "include/components.h"
+#include "include/core.h"
 #include "include/systems.h"
 #include "include/scenes.h"
 #include "include/ecs.h"

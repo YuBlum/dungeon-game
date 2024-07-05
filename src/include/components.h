@@ -2,6 +2,9 @@
 #define __COMPONENTS_H__
 
 #include "include/math.h"
+#include "include/types.h"
+
+typedef u8 Tag;
 
 typedef struct {
   V2f prv;

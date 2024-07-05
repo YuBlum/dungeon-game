@@ -7,6 +7,8 @@
 
 typedef u32 ComponentID, ArchetypeID;
 
+#define COMP_NOID ((ComponentID)-1)
+
 typedef struct {
   u32 index;
   SystemEvent event;
@@ -18,6 +20,7 @@ typedef struct {
   void  **component_buffs;
   usize *component_sizes;
   usize component_amount;
+  usize not_empty_component_amount;
   usize entities_amount;
   bool *entity_destroy;
   void ***entity_insert_component_data;
@@ -134,17 +137,22 @@ ecs_find_archetype(usize comps_amount, const char *comps_names[comps_amount], co
     archetype->component_buffs = list_create(sizeof (void *));
     archetype->component_id = hashtable_create(sizeof (ComponentID));
     archetype->component_amount = 0;
+    archetype->not_empty_component_amount = 0;
     archetype->entities_amount = 0;
     archetype->entity_size = 0;
     for (usize i = 0; i < comps_amount; i++) {
       Component *comp = hashtable_get_address(world.components, comps_names[i]);
       list_push(comp->archetypes, archetype->id);
-      hashtable_insert(archetype->component_id, comps_names[i], i);
+      ComponentID id = COMP_NOID;
+      if (comp->size != 0) {
+        id = archetype->not_empty_component_amount++;
+        list_push(archetype->component_sizes, comp->size);
+        list_push(archetype->component_buffs, list_create(comp->size));
+        archetype->entity_size += comp->size;
+      }
+      hashtable_insert(archetype->component_id, comps_names[i], id);
       list_push(archetype->component_names, comps_names[i]);
-      list_push(archetype->component_sizes, comp->size);
-      list_push(archetype->component_buffs, list_create(comp->size));
       archetype->component_amount++;
-      archetype->entity_size += comp->size;
     }
     archetype->entity_creation_queue = list_create(archetype->entity_size);
     archetype->entity_destroy = list_create(sizeof (bool));
@@ -179,6 +187,9 @@ __ecs_entity_creation_setup_component(const char *comp_name, const char *file, u
   if (!hashtable_has(archetype->component_id, comp_name)) ERROR("%s:%u: Entity doesn't have '%s' component", file, line, comp_name);
 #endif
   ComponentID cid = hashtable_get(archetype->component_id, comp_name);
+#if DEVMODE
+  if (cid == COMP_NOID) ERROR("%s:%u: Can't setup component '%s', it's an empty component", file, line, comp_name);
+#endif
   usize offset = 0;
   for (usize i = 0; i < cid; i++) {
     offset += archetype->component_sizes[i];
@@ -216,10 +227,27 @@ __ecs_entity_insert_component(Entity e, const char *comp_name, const char *file,
   if (hashtable_has(world.archetype_cur->component_id, comp_name)) ERROR("%s:%u: Trying to insert component '%s', but the entity already have it.", file, line, comp_name);
 #endif
   world.archetype_cur->entity_requested_insert_component_amount++;
-  void *data = malloc(hashtable_get(world.components, comp_name).size);
+  usize comp_size = hashtable_get(world.components, comp_name).size;
+  if (comp_size == 0) ERROR("%s:%u: '%s' is an empty component. Use 'ecs_entity_insert_empty_component' instead", file, line, comp_name);
+  void *data = malloc(comp_size);
   list_push(world.archetype_cur->entity_insert_component[e], comp_name);
   list_push(world.archetype_cur->entity_insert_component_data[e], data);
   return data;
+}
+
+void
+__ecs_entity_insert_empty_component(Entity e, const char *comp_name, const char *file, u32 line) {
+#if DEVMODE
+  if (!world.on_system) ERROR("%s:%u: Function 'ecs_entity_insert_empty_component' must be called inside of a system.", file, line);
+  if (!hashtable_has(world.components, comp_name)) ERROR("%s:%u: '%s' component doesn't exists", file, line, comp_name);
+  if (e >= world.archetype_cur->entities_amount) ERROR("%s:%u: Trying to insert component '%s' to an unexisting entity.", file, line, comp_name);
+  if (hashtable_has(world.archetype_cur->component_id, comp_name)) ERROR("%s:%u: Trying to insert component '%s', but the entity already have it.", file, line, comp_name);
+#endif
+  world.archetype_cur->entity_requested_insert_component_amount++;
+  usize comp_size = hashtable_get(world.components, comp_name).size;
+  if (comp_size != 0) ERROR("%s:%u: '%s' is not an empty component. Use 'ecs_entity_insert_component' instead", file, line, comp_name);
+  list_push(world.archetype_cur->entity_insert_component[e], comp_name);
+  list_push(world.archetype_cur->entity_insert_component_data[e], 0);
 }
 
 bool
@@ -253,7 +281,8 @@ ecs_entities_terminate(void) {
     for (Entity e = 0; e < world.archetypes[a].entities_amount; e++) {
       usize size = list_size(world.archetypes[a].entity_insert_component_data[e]);
       for (u32 i = 0; i < size; i++) {
-        free(world.archetypes[a].entity_insert_component_data[e][i]);
+        void *data = world.archetypes[a].entity_insert_component_data[e][i];
+        if (data) free(data);
       }
       list_destroy(world.archetypes[a].entity_insert_component_data[e]);
       list_destroy(world.archetypes[a].entity_insert_component[e]);
@@ -283,6 +312,9 @@ __ecs_get_component_list(const char *comp_name, const char *file, u32 line) {
   if (!hashtable_has(world.archetype_cur->component_id, comp_name)) ERROR("%s:%u: Component '%s' is not required by system. Next batch of entities does not have it.", file, line, comp_name);
 #endif
   ComponentID cid = hashtable_get(world.archetype_cur->component_id, comp_name);
+#if DEVMODE
+  if (cid == COMP_NOID) ERROR("%s:%u: Trying to get the component list of an empty component", file, line);
+#endif
   return world.archetype_cur->component_buffs[cid];
 }
 
@@ -462,6 +494,7 @@ ecs_update(void) {
       Archetype *new_archetype = ecs_find_archetype(list_size(world.temp_comps_names), world.temp_comps_names, __FILE__, __LINE__);
       for (usize j = 0; j < list_size(new_archetype->component_names); j++) {
         ComponentID old = hashtable_get(world.archetypes[i].component_id, new_archetype->component_names[j]);
+        if (old == COMP_NOID) continue;
         ComponentID new = hashtable_get(new_archetype->component_id, new_archetype->component_names[j]);
         usize size = new_archetype->component_sizes[new];
         list_grow(new_archetype->component_buffs[new]);
@@ -470,6 +503,7 @@ ecs_update(void) {
       }
       for (usize j = 0; j < list_size(world.archetypes[i].entity_remove_component[e]); j++) {
         ComponentID removed_component = hashtable_get(world.archetypes[i].component_id, world.archetypes[i].entity_remove_component[e][j]);
+        if (removed_component == COMP_NOID) continue;
         list_remove(world.archetypes[i].component_buffs[removed_component], e);
       }
       if (list_size(world.archetypes[i].entity_insert_component[e]) > 0) {
@@ -505,6 +539,7 @@ ecs_update(void) {
       Archetype *new_archetype = ecs_find_archetype(list_size(world.temp_comps_names), world.temp_comps_names, __FILE__, __LINE__);
       for (usize j = 0; j < list_size(world.archetypes[i].component_names); j++) {
         ComponentID old = hashtable_get(world.archetypes[i].component_id, world.archetypes[i].component_names[j]);
+        if (old == COMP_NOID) continue;
         ComponentID new = hashtable_get(new_archetype->component_id, world.archetypes[i].component_names[j]);
         usize size = new_archetype->component_sizes[new];
         list_grow(new_archetype->component_buffs[new]);
@@ -513,6 +548,7 @@ ecs_update(void) {
       }
       for (usize j = 0; j < list_size(world.archetypes[i].entity_insert_component[e]); j++) {
         void *data = world.archetypes[i].entity_insert_component_data[e][j];
+        if (!data) continue;
         ComponentID new = hashtable_get(new_archetype->component_id, world.archetypes[i].entity_insert_component[e][j]);
         usize size = new_archetype->component_sizes[new];
         list_grow(new_archetype->component_buffs[new]);
@@ -539,11 +575,12 @@ ecs_update(void) {
     if (!world.archetypes[i].entity_requested_destroy) continue;
     for (SignedEntity e = world.archetypes->entities_amount - 1; e >= 0; e--) {
       if (!world.archetypes[i].entity_destroy[e]) continue;
-      for (ComponentID c = 0; c < world.archetypes[i].component_amount; c++) {
+      for (ComponentID c = 0; c < world.archetypes[i].not_empty_component_amount; c++) {
         list_remove(world.archetypes[i].component_buffs[c], e);
       }
       for (usize j = 0; j < list_size(world.archetypes[i].entity_insert_component_data[e]); j++) {
-        free(world.archetypes[i].entity_insert_component_data[e][j]);
+        void *data = world.archetypes[i].entity_insert_component_data[e][j];
+        if (data) free(data);
       }
       list_destroy(world.archetypes[i].entity_insert_component_data[e]);
       list_destroy(world.archetypes[i].entity_insert_component[e]);
@@ -559,7 +596,7 @@ ecs_update(void) {
   for (ArchetypeID i = 0; i < list_size(world.archetypes); i++) {
     for (usize j = 0; j < list_size(world.archetypes[i].entity_creation_queue); j++) {
       void *base_entity = world.archetypes[i].entity_creation_queue + (j * world.archetypes[i].entity_size);
-      for (ComponentID c = 0; c < world.archetypes[i].component_amount; c++) {
+      for (ComponentID c = 0; c < world.archetypes[i].not_empty_component_amount; c++) {
         usize size = world.archetypes[i].component_sizes[c];
         void **component_buffs = world.archetypes[i].component_buffs;
         list_grow(component_buffs[c]);
