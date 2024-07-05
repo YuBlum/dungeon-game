@@ -1,6 +1,4 @@
 #include "include/ecs.h"
-#include "include/components.h"
-#include "include/systems.h"
 #include "include/core.h"
 #include "include/hashtable.h"
 #include "include/types.h"
@@ -85,8 +83,6 @@ ecs_create(void) {
   world.archetype_cur = 0;
   world.on_entity_creation = false;
   world.on_system = false;
-  ecs_create_components();
-  ecs_create_systems();
 }
 
 void
@@ -237,13 +233,15 @@ ecs_entities_terminate(void) {
         free(world.archetypes[a].entity_insert_component_data[e][i]);
       }
       list_destroy(world.archetypes[a].entity_insert_component_data[e]);
-      list_destroy(world.archetypes[a].entity_insert_component_data[e]);
       list_destroy(world.archetypes[a].entity_insert_component[e]);
       list_destroy(world.archetypes[a].entity_remove_component[e]);
     }
     for (ComponentID c = 0; c < list_size(world.archetypes[a].component_buffs); c++) {
       list_clear(world.archetypes[a].component_buffs[c]);
     }
+    list_clear(world.archetypes[a].entity_insert_component_data);
+    list_clear(world.archetypes[a].entity_insert_component);
+    list_clear(world.archetypes[a].entity_remove_component);
     list_clear(world.archetypes[a].entity_creation_queue);
     list_clear(world.archetypes[a].entity_destroy);
     world.archetypes[a].entity_requested_insert_component_amount = 0;

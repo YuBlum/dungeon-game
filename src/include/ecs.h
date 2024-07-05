@@ -31,6 +31,7 @@ bool __ecs_entity_has_component(Entity e, const char *comp_name, const char *fil
 void __ecs_entity_destroy(Entity e, const char *file, u32 line);
 void *__ecs_get_component_list(const char *comp_name, const char *file, u32 line);
 usize ecs_entities_amount(void);
+void  ecs_entities_terminate(void);
 void __ecs_system_create(const char *name, SystemFn fn, SystemEvent event, const char *file, u32 line);
 void __ecs_system_must_have(const char *name, usize comps_amount, const char *comps_names[comps_amount], const char *file, u32 line);
 void __ecs_system_must_not_have(const char *name, usize comps_amount, const char *comps_names[comps_amount], const char *file, u32 line);
