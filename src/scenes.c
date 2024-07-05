@@ -7,7 +7,8 @@
 static void
 scene_test0(void) {
   ecs_system_activate(system_draw_rect);
-  ecs_system_activate(system_move);
+  ecs_system_activate(system_apply_movement);
+  ecs_system_activate(system_move_by_input);
 
   prefab_player(V2F(-0.5f, 0.5f));
 }
