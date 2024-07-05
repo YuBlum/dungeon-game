@@ -4,6 +4,6 @@
 #include "include/math.h"
 #include "include/renderer.h"
 
-void prefab_rect(V2f position, V2f size, Color color);
+void prefab_player(V2f position);
 
 #endif/*__PREFABS__*/

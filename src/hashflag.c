@@ -38,7 +38,9 @@ __hashflag_set(HashFlag *hf, const char *flag, const char *file, u32 line) {
       if (!hf->flags[i].occupied) continue;
       usize index = hash_string(hf->flags[i].str) % new_capa;
       while (new_flags[index].occupied) {
+#if DEVMODE
         if (strcmp(new_flags[index].str, hf->flags[i].str) == 0) ERROR("%s:%u: unreachable", file, line);
+#endif
         index = (index + 1) % new_capa;
       }
       new_flags[index].str = hf->flags[i].str;
@@ -51,7 +53,9 @@ __hashflag_set(HashFlag *hf, const char *flag, const char *file, u32 line) {
   /* add new value */
   usize index = hash_string(flag) % hf->capa;
   while (hf->flags[index].occupied) {
+#if DEVMODE
     if (strcmp(hf->flags[index].str, flag) == 0) ERROR("%s:%u: Setting '%s' two times to a hashflag", file, line, flag);
+#endif
     index = (index + 1) % hf->capa;
   }
   hf->flags[index].str = flag;
@@ -67,7 +71,9 @@ __hashflag_clear(HashFlag *hf, const char *flag, const char *file, u32 line) {
     if (strcmp(hf->flags[index].str, flag) == 0) { finded = true; break; }
     index = (index + 1) % hf->capa;
   }
+#if DEVMODE
   if (!finded) ERROR("%s:%u: Trying to clear an unexisting flag '%s' of a hashflag", file, line, flag);
+#endif
   hf->flags[index].occupied = false;
   hf->size--;
 }

@@ -5,18 +5,24 @@
 #include "include/types.h"
 #include "include/core.h"
 
+#if DEVMODE
 #define ERROR_GLFW(MSG) do {\
   const char *desc;\
   glfwGetError(&desc);\
   ERROR("GLFW: " MSG ": %s", desc);\
 } while (0)
+#endif
 
 static GLFWwindow *window;
 static f32 frame_start_time;
 
 void
 window_create(void) {
+#if DEVMODE
   if (!glfwInit()) ERROR_GLFW("Couldn't initiate");
+#else
+  glfwInit();
+#endif
   glfwWindowHint(GLFW_RESIZABLE, false);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);

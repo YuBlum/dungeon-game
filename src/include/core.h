@@ -4,9 +4,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define INFO(MSG, ...) printf("INFO: " MSG "\n", ## __VA_ARGS__)
-#define WARN(MSG, ...) printf("WARN: " MSG "\n", ## __VA_ARGS__)
-#define ERROR(MSG, ...) do { printf("ERROR: " MSG "\n", ## __VA_ARGS__); exit(1); } while(0)
+#if DEVMODE
+#  define INFO(MSG, ...) printf("INFO: " MSG "\n", ## __VA_ARGS__)
+#  define WARN(MSG, ...) printf("WARN: " MSG "\n", ## __VA_ARGS__)
+#  define ERROR(MSG, ...) do { printf("ERROR: " MSG "\n", ## __VA_ARGS__); exit(1); } while(0)
+#else
+#  define INFO(MSG, ...)
+#  define WARN(MSG, ...)
+#  define ERROR(MSG, ...)
+#endif
 
 #define GAME_TITLE    "Game"
 #define UNIT_PX       8

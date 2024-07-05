@@ -59,7 +59,9 @@ renderer_shader_load_specific(const char *name, GLenum type) {
   char *shader_path = malloc(shader_path_size);
   snprintf(shader_path, shader_path_size, "res/shaders/%s/%s.glsl", name, type_str);
   FILE *f = fopen(shader_path, "r");
+#if DEVMODE
   if (!f) ERROR("Couldn't open '%s': %s", shader_path, strerror(errno));
+#endif
   free(shader_path);
   fseek(f, 0, SEEK_END);
   usize src_size = ftell(f);
@@ -71,8 +73,9 @@ renderer_shader_load_specific(const char *name, GLenum type) {
   glShaderSource(shader, 1, (const char **)&src, 0);
   free(src);
   /* compile */
-  i32 status;
   glCompileShader(shader);
+#if DEVMODE
+  i32 status;
   glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
   if (!status) {
     i32 log_size;
@@ -81,6 +84,7 @@ renderer_shader_load_specific(const char *name, GLenum type) {
     glGetShaderInfoLog(shader, log_size, 0, log);
     ERROR("Shader '%s': %s: %.*s", name, type_str, log_size, log);
   }
+#endif
   return shader;
 }
 
@@ -91,12 +95,13 @@ renderer_shader_load(const char *name) {
   ShaderID vertex = renderer_shader_load_specific(name, GL_VERTEX_SHADER);
   ShaderID fragment = renderer_shader_load_specific(name, GL_FRAGMENT_SHADER);
   /* link shaders */
-  i32 status;
   glAttachShader(shader.id, vertex);
   glAttachShader(shader.id, fragment);
   glLinkProgram(shader.id);
   glDeleteShader(vertex);
   glDeleteShader(fragment);
+#if DEVMODE
+  i32 status;
   glGetProgramiv(shader.id, GL_LINK_STATUS, &status);
   if (!status) {
      i32 log_size;
@@ -105,11 +110,14 @@ renderer_shader_load(const char *name) {
      glGetProgramInfoLog(shader.id, log_size, 0, log);
      ERROR("Shader '%s': linking: %.*s", name, log_size, log);
   }
+#endif
   /* camera uniform */
   shader.camera = glGetUniformLocation(shader.id, "u_camera");
+#if DEVMODE
   if (shader.camera == -1) {
     ERROR("Missing 'u_camera' on shader '%s'", name);
   }
+#endif
   return shader;
 }
 
@@ -156,12 +164,14 @@ renderer_create(void) {
 void
 __renderer_request_quad(V2f position, V2f size, Color color, Layer layer, const char *file, u32 line) {
   quads_amount++;
+#if DEVMODE
   if (quads_amount >= QUADS_CAP) {
     ERROR("%s:%u: Quads capacity exceeded", file, line);
   }
   if (layer < LAYER_MIN || layer > LAYER_MAX) {
     ERROR("%s:%u: Layer out of bounds (%d to %d)", file, line, LAYER_MIN, LAYER_MAX);
   }
+#endif
   layer += LAYER_MAX;
   Quad *quad = &render_requests[layer][render_requests_amount[layer]++];
   Blend blend = {

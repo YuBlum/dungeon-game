@@ -6,7 +6,6 @@
 
 typedef u32 Entity;
 typedef i64 SignedEntity;
-typedef struct System System;
 
 typedef void(*SystemFn)(void);
 typedef enum {

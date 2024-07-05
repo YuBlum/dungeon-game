@@ -6,7 +6,6 @@
 void
 components_create(void) {
   ecs_component_create(V2f, "position");
-  ecs_component_create(V2f, "size");
+  ecs_component_create(MovePosition, "move-position");
   ecs_component_create(Color, "color");
-  ecs_component_create(bool, "control");
 }
