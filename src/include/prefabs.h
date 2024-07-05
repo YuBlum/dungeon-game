@@ -5,5 +5,6 @@
 #include "include/renderer.h"
 
 void prefab_player(V2f position);
+void prefab_solid(V2f position);
 
 #endif/*__PREFABS__*/

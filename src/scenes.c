@@ -1,8 +1,8 @@
+#include "include/core.h"
 #include "include/ecs.h"
 #include "include/math.h"
-#include "include/renderer.h"
 #include "include/scene_manager.h"
-#include "include/prefabs.h"
+#include "include/tilemap.h"
 
 static void
 scene_test0(void) {
@@ -10,7 +10,12 @@ scene_test0(void) {
   ecs_system_activate(system_apply_movement);
   ecs_system_activate(system_move_by_input);
 
-  prefab_player(V2F(-0.5f, 0.5f));
+  tilemap_setup(GAME_W, GAME_H);
+  tilemap_set(V2F(2, 2), TILE_SOLID, true);
+  tilemap_set(V2F(1, 1), TILE_SOLID, true);
+  tilemap_set(V2F(2, 1), TILE_SOLID, true);
+  tilemap_set(V2F(1, 2), TILE_SOLID, true);
+  tilemap_set(V2FS(0), TILE_PLAYER, true);
 }
 
 void

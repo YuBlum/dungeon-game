@@ -54,6 +54,7 @@ typedef struct {
   SystemID *system_ids;
   Archetype **archetype_queue;
   Archetype *archetype_cur;
+  Archetype *archetype_creation;
   usize entities_amount;
   bool on_entity_creation;
   bool on_system;
@@ -62,6 +63,7 @@ typedef struct {
 
 static World world;
 
+#if DEVMODE
 static const char *system_event_str[] = {
   "SYS_PRE_UPDATE",
   "SYS_UPDATE",
@@ -71,6 +73,7 @@ static const char *system_event_str[] = {
   "SYS_POS_DRAW",
 };
 _Static_assert(sizeof (system_event_str) / sizeof (char *) == SYSTEM_EVENTS_AMOUNT, "system_event_str doesn't handle all system events");
+#endif
 
 void
 ecs_create(void) {
@@ -163,13 +166,13 @@ __ecs_entity_creation_begin(usize comps_amount, const char *comps_names[comps_am
 #endif
   world.on_entity_creation = true;
   Archetype *archetype = ecs_find_archetype(comps_amount, comps_names, file, line);
-  world.archetype_cur = archetype;
+  world.archetype_creation = archetype;
   list_grow(archetype->entity_creation_queue);
 }
 
 void *
 __ecs_entity_creation_setup_component(const char *comp_name, const char *file, u32 line) {
-  Archetype *archetype = world.archetype_cur;
+  Archetype *archetype = world.archetype_creation;
 #if DEVMODE
   if (!world.on_entity_creation) ERROR("%s:%u: Trying to setup a component outside of an entity creation.", file, line);
   if (!hashtable_has(world.components, comp_name)) ERROR("%s:%u: '%s' component doesn't exists", file, line, comp_name);
@@ -189,7 +192,7 @@ __ecs_entity_creation_end(const char *file, u32 line) {
   if (!world.on_entity_creation) ERROR("%s:%u: Trying to end an entity creation without one existing.", file, line);
 #endif
   world.on_entity_creation = false;
-  world.archetype_cur = 0;
+  world.archetype_creation = 0;
 }
 
 void

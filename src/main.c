@@ -4,6 +4,7 @@
 #include "include/ecs.h"
 #include "include/input.h"
 #include "include/scene_manager.h"
+#include "include/tilemap.h"
 #include "include/types.h"
 #include "include/window.h"
 #include "include/renderer.h"
@@ -23,6 +24,7 @@ main(void) {
     ecs_update();
     input_update();
     renderer_batch_start();
+    tilemap_draw();
     ecs_draw();
     renderer_batch_end();
     window_frame_end();

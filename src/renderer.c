@@ -159,6 +159,9 @@ renderer_create(void) {
   glVertexAttribPointer(0, 2, GL_FLOAT, false, sizeof (Vertex), (void *)offsetof (Vertex, position));
   glEnableVertexAttribArray(1);
   glVertexAttribPointer(1, 4, GL_FLOAT, false, sizeof (Vertex), (void *)offsetof (Vertex, blend));
+  /* blending */
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void
@@ -175,10 +178,10 @@ __renderer_request_quad(V2f position, V2f size, Color color, Layer layer, const 
   layer += LAYER_MAX;
   Quad *quad = &render_requests[layer][render_requests_amount[layer]++];
   Blend blend = {
-    (color >> 24) & 0xFF,
-    (color >> 16) & 0xFF,
-    (color >>  8) & 0xFF,
-    (color >>  0) & 0xFF
+    (f32)((color >> 24) & 0xFF) / 255,
+    (f32)((color >> 16) & 0xFF) / 255,
+    (f32)((color >>  8) & 0xFF) / 255,
+    (f32)((color >>  0) & 0xFF) / 255
   };
 
   quad->v[0].blend = blend;
@@ -197,7 +200,7 @@ renderer_batch_start(void) {
   quads_amount = 0;
   glUseProgram(current_shader.id);
   glUniformMatrix3fv(current_shader.camera, true, 1, camera_matrix());
-  glClearColor(0.8f, 0.2f, 0.2f, 1.0f);
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
 }
 
