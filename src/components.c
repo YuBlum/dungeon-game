@@ -9,7 +9,6 @@ components_create(void) {
   ecs_component_create(PositionInterpolation, "position-interpolation");
   ecs_component_create(f32, "speed");
   ecs_component_create(Color, "color");
-  ecs_component_create(EntityReference, "entity-reference");
   ecs_component_create(bool, "bump");
 
   ecs_empty_component_create("input");

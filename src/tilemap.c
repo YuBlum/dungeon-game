@@ -4,7 +4,6 @@
 #include "include/math.h"
 #include "include/renderer.h"
 #include "include/types.h"
-#include "include/prefabs.h"
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -74,6 +73,7 @@ __tilemap_clear(V2f position, const char *file, u32 line) {
 
 void
 tilemap_draw(void) {
+  return;
 #if DEVMODE
   V2f position;
   position.y = tilemap.height * -0.5f + 0.5f;

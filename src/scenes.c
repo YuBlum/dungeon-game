@@ -18,8 +18,8 @@ scene_test0(void) {
 void
 scenes_create(void) {
   scene_manager_create_scene(scene_test0);
-  scene_manager_activate_system(scene_test0, system_set_map);
-  scene_manager_activate_system(scene_test0, system_draw_rect);
-  scene_manager_activate_system(scene_test0, system_apply_movement);
-  scene_manager_activate_system(scene_test0, system_move_by_input);
+  scene_manager_activate_system(scene_test0, set_tile_system);
+  scene_manager_activate_system(scene_test0, draw_rect_system);
+  scene_manager_activate_system(scene_test0, movement_system);
+  scene_manager_activate_system(scene_test0, move_by_input_system);
 }
