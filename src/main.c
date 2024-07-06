@@ -1,7 +1,5 @@
 #include "include/components.h"
-#include "include/core.h"
 #include "include/systems.h"
-#include "include/scenes.h"
 #include "include/ecs.h"
 #include "include/input.h"
 #include "include/scene_manager.h"
@@ -15,10 +13,9 @@ main(void) {
   window_create();
   renderer_create();
   ecs_create();
-  scene_manager_create();
   components_create();
   systems_create();
-  scenes_create();
+  scene_manager_create();
   while (window_is_running()) {
     window_frame_start();
     scene_manager_update();
