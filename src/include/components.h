@@ -10,8 +10,7 @@ typedef struct {
   V2f prv;
   V2f nxt;
   f32 timer;
-  f32 speed;
-} MovePosition;
+} PositionInterpolation;
 
 void components_create(void);
 

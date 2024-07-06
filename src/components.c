@@ -7,10 +7,12 @@
 void
 components_create(void) {
   ecs_component_create(V2f, "position");
-  ecs_component_create(MovePosition, "move-position");
+  ecs_component_create(PositionInterpolation, "position-interpolation");
+  ecs_component_create(f32, "speed");
   ecs_component_create(Color, "color");
   ecs_component_create(TileType, "tile-type");
   ecs_component_create(EntityReference, "entity-reference");
+  ecs_component_create(bool, "bump");
 
   ecs_empty_component_create("input");
 }

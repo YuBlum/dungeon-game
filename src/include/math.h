@@ -10,6 +10,7 @@
 
 static inline f32 lerp(f32 a, f32 b, f32 t) { return (1 - t) * a + t * b; }
 static inline f32 smoothstep(f32 a, float b, float t) { t = CLAMP(0.0f, 1.0f, (t - a) / (b - a)); return t * t * (3.0f - 2.0f * t); }
+static inline f32 parabola(f32 t, f32 k) { return pow( 4.0*t*(1.0-t), k ); }
 
 typedef struct { f32 x, y; } V2f;
 typedef struct { i32 x, y; } V2i;

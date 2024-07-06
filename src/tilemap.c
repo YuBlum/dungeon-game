@@ -76,6 +76,8 @@ __tilemap_set(V2f position, TileType type, bool create_entity, const char *file,
 
 void
 tilemap_draw(void) {
+  return;
+#if DEVMODE
   V2f position;
   position.y = tilemap.height * -0.5f + 0.5f;
   for (usize y = 0; y < tilemap.height; y++) {
@@ -98,4 +100,5 @@ tilemap_draw(void) {
     }
     position.y++;
   }
+#endif
 }
