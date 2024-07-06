@@ -1,5 +1,4 @@
 #include "include/components.h"
-#include "include/core.h"
 #include "include/ecs.h"
 #include "include/global.h"
 #include "include/input.h"
@@ -16,11 +15,10 @@ system_move_by_input(void) {
     V2f dir = {
       input_key_pressed(KEY_RIGHT) - input_key_pressed(KEY_LEFT),
       input_key_pressed(KEY_UP)    - input_key_pressed(KEY_DOWN)
-
     };
     if ((dir.x != 0 || dir.y != 0) && (dir.x == 0 || dir.y == 0)) {
       move_position[e].nxt = v2f_add(position[e], dir);
-      if (tilemap_get(move_position[e].nxt) != TILE_SOLID) {
+      if (tilemap_get(move_position[e].nxt) == TILE_NONE) {
         move_position[e].prv = position[e];
         move_position[e].timer = 0.0f;
       }

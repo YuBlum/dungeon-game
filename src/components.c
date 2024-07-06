@@ -10,6 +10,7 @@ components_create(void) {
   ecs_component_create(MovePosition, "move-position");
   ecs_component_create(Color, "color");
   ecs_component_create(TileType, "tile-type");
+  ecs_component_create(EntityReference, "entity-reference");
 
   ecs_empty_component_create("input");
 }

@@ -9,6 +9,14 @@ typedef u32 ComponentID, ArchetypeID;
 
 #define COMP_NOID ((ComponentID)-1)
 
+typedef union {
+  struct {
+    ArchetypeID archetype;
+    Entity entity;
+  };
+  EntityReference reference;
+} EntityReferenceInternal;
+
 typedef struct {
   u32 index;
   SystemEvent event;
@@ -255,9 +263,53 @@ __ecs_entity_has_component(Entity e, const char *comp_name, const char *file, u3
 #if DEVMODE
   if (!world.on_system) ERROR("%s:%u: Function '__ecs_entity_has_component' must be called inside of a system.", file, line);
   if (!hashtable_has(world.components, comp_name)) ERROR("%s:%u: '%s' component doesn't exists", file, line, comp_name);
-  if (e >= world.archetype_cur->entities_amount) ERROR("%s:%u: Trying to insert component '%s' to an unexisting entity.", file, line, comp_name);
+  if (e >= world.archetype_cur->entities_amount) ERROR("%s:%u: Trying to check component '%s' of an unexisting entity.", file, line, comp_name);
 #endif
   return hashtable_has(world.archetype_cur->component_id, comp_name);
+}
+
+EntityReference
+__ecs_entity_get_reference(Entity e, const char *file, u32 line) {
+#if DEVMODE
+  if (!world.on_system) ERROR("%s:%u: Function 'ecs_entity_get_reference' must be called inside of a system.", file, line);
+  if (e >= world.archetype_cur->entities_amount) ERROR("%s:%u: Trying to get reference to an unexisting entity.", file, line);
+#endif
+  EntityReferenceInternal ref = {
+    .archetype = world.archetype_cur->id + 1,
+    .entity = e + 1
+  };
+  return ref.reference;
+}
+
+bool
+__ecs_entity_reference_has_component(EntityReference reference, const char *comp_name, const char *file, u32 line) {
+  EntityReferenceInternal ref = { .reference = reference };
+  ref.archetype -= 1;
+  ref.entity -= 1;
+#if DEVMODE
+  if (!world.on_system) ERROR("%s:%u: Function '__ecs_entity_reference_has_component' must be called inside of a system.", file, line);
+  if (!hashtable_has(world.components, comp_name)) ERROR("%s:%u: '%s' component doesn't exists", file, line, comp_name);
+  if (ref.archetype >= list_size(world.archetypes) || ref.entity >= world.archetypes[ref.archetype].entities_amount) ERROR("%s:%u: Trying to check component '%s' of an invalid entity reference.", file, line, comp_name);
+#endif
+  return hashtable_has(world.archetypes[ref.archetype].component_id, comp_name);
+}
+
+void *
+__ecs_entity_reference_get_component(EntityReference reference, const char *comp_name, const char *file, u32 line) {
+  EntityReferenceInternal ref = { .reference = reference };
+  ref.archetype -= 1;
+  ref.entity -= 1;
+#if DEVMODE
+  if (!world.on_system) ERROR("%s:%u: Function 'ecs_entity_reference_get_component' must be called inside of a system.", file, line);
+  if (!hashtable_has(world.components, comp_name)) ERROR("%s:%u: '%s' component doesn't exists", file, line, comp_name);
+  if (ref.archetype >= list_size(world.archetypes) || ref.entity >= world.archetypes[ref.archetype].entities_amount) ERROR("%s:%u: Trying to get component '%s' of an invalid entity reference.", file, line, comp_name);
+  if (!hashtable_has(world.archetypes[ref.archetype].component_id, comp_name)) ERROR("%s:%u: Entity reference doesn't have the component '%s'", file, line, comp_name);
+#endif
+  ComponentID cid = hashtable_get(world.archetypes[ref.archetype].component_id, comp_name);
+#if DEVMODE
+  if (cid == COMP_NOID) ERROR("%s:%u: Trying to get an empty component", file, line);
+#endif
+  return &world.archetypes[ref.archetype].component_buffs[cid] + world.archetypes[ref.archetype].component_sizes[cid] * ref.entity;
 }
 
 void
