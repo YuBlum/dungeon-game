@@ -23,7 +23,7 @@ move_by_input_system(void) {
         position_interpolation[e].timer = 0.0f;
       } else {
         bump[e] = true;
-        position_interpolation[e].nxt = v2f_add(position[e], v2f_muls(dir, 0.3f));
+        position_interpolation[e].nxt = v2f_add(position[e], v2f_muls(dir, 0.2f));
         position_interpolation[e].prv = position[e];
         position_interpolation[e].timer = 0.0f;
       }

@@ -16,11 +16,11 @@
 
 #define GAME_TITLE    "Game"
 #define UNIT_PX       8
-#define GAME_W_PX     160
-#define GAME_H_PX     90
+#define GAME_W_PX     240
+#define GAME_H_PX     135
 #define GAME_W        (GAME_W_PX / (f32)UNIT_PX)
 #define GAME_H        (GAME_H_PX / (f32)UNIT_PX)
-#define WINDOW_SCALE  10
+#define WINDOW_SCALE  7
 #define WINDOW_W      (GAME_W_PX * WINDOW_SCALE)
 #define WINDOW_H      (GAME_H_PX * WINDOW_SCALE)
 

@@ -1,8 +1,8 @@
 #include "include/components.h"
 #include "include/ecs.h"
-#include "include/global.h"
 #include "include/math.h"
 #include "include/tilemap.h"
+#include "include/global.h"
 
 void
 movement_system(void) {

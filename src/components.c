@@ -10,6 +10,7 @@ components_create(void) {
   ecs_component_create(f32, "speed");
   ecs_component_create(Color, "color");
   ecs_component_create(bool, "bump");
+  ecs_component_create(Attributes, "attributes");
 
   ecs_empty_component_create("input");
 }

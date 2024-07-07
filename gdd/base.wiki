@@ -1,15 +1,91 @@
 = Ideas =
 
-5 attributes: agility, intelect, wisdom, strength, vigor
+== Attributes ==
+There are five attributes, they are used in tests and define your stats.
 
-HP: Hit Points
-EP: Essence Points
+All attributes starts at -2.
 
-EP is used for habilities and magic
+Depending of your class some attributes may start at 0.
 
-3 classes: fighter, wizard and cleric
+on the first level you receive 10 points that you can distribute among them.
 
-3d6 for tests
+=== Agility ===
+Your precision, speed and dexterity.
+
+Used for aim, stealth and lock-pick tests.
+
+=== Charisma ===
+Your ability of interaction with others.
+
+Used for lie, intimidate and persuade.
+
+=== Intelect ===
+Your memory, life long wisdom and education.
+
+Used for perception and investigation tests.
+
+Defines how much EP you have.
+
+=== Strength ===
+Your muscularity and physical power.
+
+Used for fight tests.
+
+=== Vigor ===
+Your health and physical resistence.
+
+Defines how much HP and Hunger you have.
+
+== Stats ==
+
+=== HP ===
+HP stands for Hit Points. It is your endurance of pain and how healthy you are.
+
+If HP goes to 0 you die.
+
+The HP value is equal to 16 + Vigor * 2.
+
+=== EP ===
+EP stands for Essence Points. It is your state of spirit and determination.
+
+If EP goes to 0 you can't use habilities nor magic.
+
+The EP value is equal to 10 + Intelect * 2.
+
+=== FP ===
+FP stands for Food Points. It is how satieted you are.
+
+If FP goes to less then the half of the maximum FP you become Hungry, you move slower than usual and suffers disadventages in all tests.
+
+If FP goes to 0 you are dying of hunger, each round you lose -2 HP.
+
+The FP value is equal to 100 + Vigor * 25.
+
+== Classes ==
+
+=== Fighter ===
+Fighters have more health and do more physical damage than the other classes.
+
+Strength starts at 0.
+
+=== Thief ===
+Thiefs are good in exploration, finding secret doors, opening locks and distance attacks.
+
+Agility starts at 0.
+
+=== Wizard ===
+Wizards have more EP than the other classes, this is the only class that can use magic.
+
+Intelect starts at 0.
+
+== Attribute Tests ==
+When something have a chance for failure an attribute test is gonna be performed.
+
+=== How is calculated ===
+Three random numbers that goes from 1 to 6 are gonna be picked, the sum of them plus the attribute have to be equal or greater to a certain number, if it is you passed.
+
+=== Statistics ===
+
 | Value | Percentage |
 |-------|------------|
 | 03    | 00.46%     |
@@ -28,4 +104,27 @@ EP is used for habilities and magic
 | 16    | 02.78%     |
 | 17    | 01.39%     |
 | 18    | 00.46%     |
+
+=== DT ===
+DT stands for Difficulty of the Test. It is the value that the test has to surpass.
+
+| DT | Difficulty | Percentage |
+|----|------------|------------|
+| 03 | Auto Pass  | 100.0%     |
+| 04 | Very Easy  | 099.0%     |
+| 05 | Very Easy  | 098.0%     |
+| 06 | Easy       | 095.0%     |
+| 07 | Easy       | 090.0%     |
+| 08 | Easy       | 083.0%     |
+| 09 | Avarage    | 074.0%     |
+| 10 | Avarage    | 062.0%     |
+| 11 | Avarage    | 050.0%     |
+| 12 | Avarage    | 037.0%     |
+| 13 | Hard       | 025.0%     |
+| 14 | Hard       | 016.0%     |
+| 15 | Hard       | 009.0%     |
+| 16 | Very Hard  | 004.0%     |
+| 17 | Very Hard  | 001.0%     |
+| 18 | Critic     | 000.5%     |
+
 
