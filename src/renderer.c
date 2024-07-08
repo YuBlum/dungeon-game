@@ -47,15 +47,7 @@ typedef struct {
   f32 width_unit;
 } Glyph;
 
-typedef struct {
-  Framebuffer fbo;
-  Renderbuffer rbo;
-  usize width;
-  usize height;
-} RenderTarget;
-
-static Shader sh_quad;
-static Shader current_shader = { -1, -1 };
+static Shader default_shader;
 
 static Object vertex_array;
 static Object vertex_buffer;
@@ -72,8 +64,15 @@ static Vertex vertices[VERTICES_CAP];
 static Texture atlas;
 static Glyph font[FONT_GLYPHS_AMOUNT];
 
-static RenderTarget ui;
-static RenderTarget game;
+static Framebuffer framebuffers[RENDER_TARGET_AMOUNT];
+static Renderbuffer renderbuffers[RENDER_TARGET_AMOUNT];
+#if DEVMODE
+    _Static_assert(RENDER_TARGET_AMOUNT == 2, "not all render targets are handled here");
+#endif
+static const u32 renderbuffers_width[RENDER_TARGET_AMOUNT] = { WINDOW_ORIGINAL_W, GAME_W_PX, };
+static const u32 renderbuffers_height[RENDER_TARGET_AMOUNT] = { WINDOW_ORIGINAL_H, GAME_H_PX, };
+static const u32 renderbuffers_x[RENDER_TARGET_AMOUNT] = { 0, GAME_X_PX };
+static const u32 renderbuffers_y[RENDER_TARGET_AMOUNT] = { 0, GAME_Y_PX };
 
 #if DEVMODE
 static void
@@ -181,55 +180,6 @@ renderer_shader_load(const char *name) {
   return shader;
 }
 
-static void
-renderer_shader_set(Shader shader) {
-  current_shader = shader;
-}
-
-static void
-renderer_clear(f32 r, f32 g, f32 b) {
-  glClearColor(r, g, b, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT);
-}
-
-static void
-renderer_render_target_setup(RenderTarget *rt, usize width, usize height) {
-  rt->width = width;
-  rt->height = height;
-  glGenFramebuffers(1, &rt->fbo);
-  glGenRenderbuffers(1, &rt->rbo);
-  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, rt->fbo);
-  glBindRenderbuffer(GL_RENDERBUFFER, rt->rbo);
-  glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA, rt->width, rt->height);
-  glBindRenderbuffer(GL_RENDERBUFFER, 0);
-  glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, rt->rbo);
-  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-}
-
-static void
-renderer_render_target_set(RenderTarget *rt) {
-  glViewport(0, 0, rt->width, rt->height);
-  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, rt->fbo);
-}
-
-static void
-renderer_render_target_reset(void) {
-  glViewport(0, 0, WINDOW_W, WINDOW_H);
-  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-}
-
-static void
-renderer_render_target_to_screen(RenderTarget *rt, u32 offset_x, u32 offset_y) {
-  glBindFramebuffer(GL_READ_FRAMEBUFFER, rt->fbo);
-  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-  glBlitFramebuffer(
-    0, 0, rt->width, rt->height,
-    offset_x, offset_y, offset_x + rt->width * WINDOW_SCALE, offset_y + rt->height * WINDOW_SCALE,
-    GL_COLOR_BUFFER_BIT, GL_NEAREST
-  );
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
 void
 renderer_create(void) {
 #if DEVMODE
@@ -289,12 +239,20 @@ renderer_create(void) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlas_w, atlas_h, 0, GL_BGRA, GL_UNSIGNED_BYTE, atlas_buff);
   free(atlas_buff);
-  /* framebuffers */
-  renderer_render_target_setup(&ui, WINDOW_ORIGINAL_W, WINDOW_ORIGINAL_H);
-  renderer_render_target_setup(&game, GAME_W_PX, GAME_H_PX);
+  /* render targets */
+  glGenFramebuffers(RENDER_TARGET_AMOUNT, framebuffers);
+  glGenRenderbuffers(RENDER_TARGET_AMOUNT, renderbuffers);
+  for (RenderTarget target = 0; target < RENDER_TARGET_AMOUNT; target++) {
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffers[target]);
+    glBindRenderbuffer(GL_RENDERBUFFER, renderbuffers[target]);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA, renderbuffers_width[target], renderbuffers_height[target]);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderbuffers[target]);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+  }
   /* shaders */
-  sh_quad = renderer_shader_load("quad");
-  renderer_shader_set(sh_quad);
+  default_shader = renderer_shader_load("default");
+  glUseProgram(default_shader.id);
   /* indices setup */
   u32 indices[INDICES_CAP];
   {
@@ -415,16 +373,17 @@ __renderer_text(V2f position, f32 scale, f32 r, f32 g, f32 b, f32 a, Layer layer
 }
 
 void
-renderer_batch_start(void) {
+__renderer_batch_start(RenderTarget target, f32 r, f32 g, f32 b) {
   quads_amount = 0;
-  renderer_render_target_set(&game);
-  glUseProgram(current_shader.id);
-  glUniformMatrix3fv(current_shader.camera, true, 1, camera_matrix());
-  renderer_clear(0.0f, 0.0f, 0.0f);
+  glViewport(0, 0, renderbuffers_width[target], renderbuffers_height[target]);
+  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffers[target]);
+  glUniformMatrix3fv(default_shader.camera, true, 1, target == RENDER_GAME ? camera_matrix() : camera_projection());
+  glClearColor(r, g, b, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void
-renderer_batch_end(void) {
+renderer_batch_end(RenderTarget target) {
   Vertex *vertex = vertices;
   for (usize layer = 0; layer < LAYERS_CAP; layer++) {
     for (usize quad = 0; quad < render_requests_amount[layer]; quad++) {
@@ -437,9 +396,15 @@ renderer_batch_end(void) {
   }
   glBufferSubData(GL_ARRAY_BUFFER, 0, quads_amount * sizeof (Quad), vertices);
   glDrawElements(GL_TRIANGLES, quads_amount * 6, GL_UNSIGNED_INT, 0);
-  renderer_render_target_reset();
+  glViewport(0, 0, WINDOW_W, WINDOW_H);
+  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
-  renderer_clear(0.2f, 0.2f, 0.2f);
-
-  renderer_render_target_to_screen(&game, GAME_X_PX, GAME_Y_PX);
+  glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffers[target]);
+  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+  glBlitFramebuffer(
+    0, 0, renderbuffers_width[target], renderbuffers_height[target],
+    renderbuffers_x[target], renderbuffers_y[target], renderbuffers_x[target] + renderbuffers_width[target] * WINDOW_SCALE, renderbuffers_y[target] + renderbuffers_height[target] * WINDOW_SCALE,
+    GL_COLOR_BUFFER_BIT, GL_NEAREST
+  );
+  glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 }

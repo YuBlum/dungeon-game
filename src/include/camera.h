@@ -5,5 +5,6 @@
 typedef f32 *Camera;
 
 Camera camera_matrix(void);
+Camera camera_projection(void);
 
 #endif/*__CAMERA_H__*/

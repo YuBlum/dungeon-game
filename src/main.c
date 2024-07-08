@@ -21,10 +21,12 @@ main(void) {
     scene_manager_update();
     ecs_update();
     input_update();
-    renderer_batch_start();
+    renderer_batch_start(RENDER_UI, 0x101010ff);
+    renderer_batch_end(RENDER_UI);
+    renderer_batch_start(RENDER_GAME, C_BLACK);
     tilemap_draw();
     ecs_draw();
-    renderer_batch_end();
+    renderer_batch_end(RENDER_GAME);
     window_frame_end();
   }
   return 0;

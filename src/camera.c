@@ -25,3 +25,8 @@ Camera
 camera_matrix(void) {
   return (Camera)projection;
 }
+
+Camera
+camera_projection(void) {
+  return (Camera)projection;
+}

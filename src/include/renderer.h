@@ -25,16 +25,24 @@ typedef u32 Color;
 #define COLOR_NB(COLOR) (((COLOR >>  8) & 0xFF) / 255.0f)
 #define COLOR_NA(COLOR) (((COLOR >>  0) & 0xFF) / 255.0f)
 
+typedef enum {
+  RENDER_UI = 0,
+  RENDER_GAME,
+
+  RENDER_TARGET_AMOUNT
+} RenderTarget;
+
 void renderer_create(void);
 
+
+void __renderer_clear();
 void __renderer_rect(V2f position, V2f size, f32 r, f32 g, f32 b, f32 a, Layer layer, const char *file, u32 line);
-#define renderer_rect(POSITION, SIZE, COLOR, LAYER) __renderer_rect(POSITION, SIZE, COLOR_NR(COLOR), COLOR_NG(COLOR), COLOR_NB(COLOR), COLOR_NA(COLOR), LAYER, __FILE__, __LINE__)
-
 void __renderer_text(V2f position, f32 scale, f32 r, f32 g, f32 b, f32 a, Layer layer, const char *file, u32 line, const char *fmt, ...);
+void __renderer_batch_start(RenderTarget target, f32 r, f32 g, f32 b);
+void renderer_batch_end(RenderTarget target);
+
+#define renderer_rect(POSITION, SIZE, COLOR, LAYER) __renderer_rect(POSITION, SIZE, COLOR_NR(COLOR), COLOR_NG(COLOR), COLOR_NB(COLOR), COLOR_NA(COLOR), LAYER, __FILE__, __LINE__)
 #define renderer_text(POSITION, SCALE, COLOR, LAYER, FMT, ...) __renderer_text(POSITION, SCALE, COLOR_NR(COLOR), COLOR_NG(COLOR), COLOR_NB(COLOR), COLOR_NA(COLOR), LAYER, __FILE__, __LINE__, FMT, ## __VA_ARGS__)
-
-void renderer_batch_start(void);
-void renderer_batch_end(void);
-
+#define renderer_batch_start(TARGET, COLOR) __renderer_batch_start(TARGET, COLOR_NR(COLOR), COLOR_NG(COLOR), COLOR_NB(COLOR))
 
 #endif/*__RENDERER_H__*/
