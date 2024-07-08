@@ -17,8 +17,8 @@ typedef u32 Color;
 
 void renderer_create(void);
 
-void __renderer_request_quad(V2f position, V2f size, Color color, Layer layer, const char *file, u32 line);
-#define renderer_request_quad(POSITION, SIZE, COLOR, LAYER) __renderer_request_quad(POSITION, SIZE, COLOR, LAYER, __FILE__, __LINE__)
+void __renderer_rect(V2f position, V2f size, Color color, Layer layer, const char *file, u32 line);
+#define renderer_rect(POSITION, SIZE, COLOR, LAYER) __renderer_rect(POSITION, SIZE, COLOR, LAYER, __FILE__, __LINE__)
 
 void renderer_batch_start(void);
 void renderer_batch_end(void);

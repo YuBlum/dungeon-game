@@ -8,6 +8,7 @@
 #include "include/core.h"
 #include "include/math.h"
 #include "include/types.h"
+#include "stb_image.h"
 
 #define QUADS_CAP    10000
 #define VERTICES_CAP (QUADS_CAP * 4)
@@ -17,13 +18,14 @@
 #define LAYER_MIN -(LAYERS_CAP>>1)
 #define LAYER_MAX +(LAYERS_CAP>>1)
 
-typedef u32 ShaderID, Object;
+typedef u32 ShaderID, Object, Texture;
 typedef i32 Uniform;
 
 typedef struct { f32 r, g, b, a; } Blend;
 
 typedef struct {
   V2f position;
+  V2f texcoord;
   Blend blend;
 } Vertex;
 
@@ -49,6 +51,43 @@ static Quad  render_requests[LAYERS_CAP][QUADS_CAP];
 static usize quads_amount;
 
 static Vertex vertices[VERTICES_CAP];
+
+static Texture atlas;
+
+#if DEVMODE
+static void
+gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *user_param) {
+  (void)length; (void)user_param;
+  char *source_str, *type_str, *severity_str;
+  switch (source) {
+    case GL_DEBUG_SOURCE_API: source_str = "API"; break;
+    case GL_DEBUG_SOURCE_WINDOW_SYSTEM: source_str = "Window System"; break;
+    case GL_DEBUG_SOURCE_THIRD_PARTY: source_str = "Third Party"; break;
+    case GL_DEBUG_SOURCE_APPLICATION: source_str = "Application"; break;
+    case GL_DEBUG_SOURCE_OTHER: source_str = "Other"; break;
+    default: ERROR("%s:%u: Unrechable", __FILE__, __LINE__); break;
+  }
+  switch (type) {
+    case GL_DEBUG_TYPE_ERROR: type_str = "Error"; break;
+    case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: type_str = "Deprecated Behavior"; break;
+    case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: type_str = "Undefined Behavior"; break;
+    case GL_DEBUG_TYPE_PORTABILITY: type_str = "Portability"; break;
+    case GL_DEBUG_TYPE_PERFORMANCE: type_str = "Performance"; break;
+    case GL_DEBUG_TYPE_MARKER: type_str = "Marker"; break;
+    case GL_DEBUG_TYPE_PUSH_GROUP: type_str = "Push Group"; break;
+    case GL_DEBUG_TYPE_POP_GROUP: type_str = "Pop Group"; break;
+    case GL_DEBUG_TYPE_OTHER: type_str = "Other"; break;
+    default: ERROR("%s:%u: Unrechable", __FILE__, __LINE__); break;
+  }
+  switch (severity) {
+    case GL_DEBUG_SEVERITY_LOW: severity_str = "Low"; break;
+    case GL_DEBUG_SEVERITY_MEDIUM: severity_str = "Medium"; break;
+    case GL_DEBUG_SEVERITY_HIGH: severity_str = "High"; break;
+    default: ERROR("%s:%u: Unrechable", __FILE__, __LINE__); break;
+  }
+  ERROR("OpenGL Debug Callback: %s: %s: %s: id %u: %s", source_str, type_str, severity_str, id, message);
+}
+#endif
 
 static ShaderID
 renderer_shader_load_specific(const char *name, GLenum type) {
@@ -128,6 +167,40 @@ renderer_shader_set(Shader shader) {
 
 void
 renderer_create(void) {
+#if DEVMODE
+  /* debug */
+  i32 context_flags = 0;
+  glGetIntegerv(GL_CONTEXT_FLAGS, &context_flags);
+  if (context_flags & GL_CONTEXT_FLAG_DEBUG_BIT) {
+    INFO("OpenGL debug context created");
+    glEnable(GL_DEBUG_OUTPUT);
+    //glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+    glDebugMessageCallback(gl_debug_callback, 0);
+    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, 0, GL_TRUE);
+    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, GL_FALSE);
+    glDebugMessageControl(GL_DEBUG_SOURCE_SHADER_COMPILER, GL_DONT_CARE, GL_DONT_CARE, 0, 0, GL_FALSE);
+  } else {
+    WARN("OpenGL debug context not created");
+  }
+#endif
+  /* load atlas */
+  u16 atlas_w, atlas_h;
+  FILE *atlas_f = fopen("res/images/atlas.tga", "rb");
+#if DEVMODE
+  if (!atlas_f) ERROR("Couldn't open atlas: %s", strerror(errno));
+#endif
+  fseek(atlas_f, 12, SEEK_SET);
+  fread(&atlas_w, sizeof (u16), 1, atlas_f);
+  fread(&atlas_h, sizeof (u16), 1, atlas_f);
+  fseek(atlas_f, 2, SEEK_CUR);
+  u8 *atlas_buff = malloc(4 * atlas_w * atlas_h);
+  fread(atlas_buff, 4, atlas_w * atlas_h, atlas_f);
+  glGenTextures(1, &atlas);
+  glBindTexture(GL_TEXTURE_2D, atlas);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlas_w, atlas_h, 0, GL_BGRA, GL_UNSIGNED_BYTE, atlas_buff);
+  free(atlas_buff);
   /* shaders */
   sh_quad = renderer_shader_load("quad");
   renderer_shader_set(sh_quad);
@@ -139,8 +212,8 @@ renderer_create(void) {
       indices[i++] = j + 0;
       indices[i++] = j + 1;
       indices[i++] = j + 2;
-      indices[i++] = j + 3;
       indices[i++] = j + 2;
+      indices[i++] = j + 3;
       indices[i++] = j + 0;
       j += 4;
     }
@@ -151,21 +224,23 @@ renderer_create(void) {
   glGenBuffers(1, &index_buffer);
   glBindVertexArray(vertex_array);
   glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-  glBufferData(GL_ARRAY_BUFFER, sizeof (vertices), vertices, GL_DYNAMIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof (vertices), 0, GL_DYNAMIC_DRAW);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof (indices), indices, GL_STATIC_DRAW);
   /* attributes */
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 2, GL_FLOAT, false, sizeof (Vertex), (void *)offsetof (Vertex, position));
   glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 4, GL_FLOAT, false, sizeof (Vertex), (void *)offsetof (Vertex, blend));
+  glEnableVertexAttribArray(2);
+  glVertexAttribPointer(0, 2, GL_FLOAT, false, sizeof (Vertex), (void *)offsetof (Vertex, position));
+  glVertexAttribPointer(1, 2, GL_FLOAT, false, sizeof (Vertex), (void *)offsetof (Vertex, texcoord));
+  glVertexAttribPointer(2, 4, GL_FLOAT, false, sizeof (Vertex), (void *)offsetof (Vertex, blend));
   /* blending */
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void
-__renderer_request_quad(V2f position, V2f size, Color color, Layer layer, const char *file, u32 line) {
+static void
+renderer_request_quad(V2f position, V2f size, Color color, V2i texcoord_start, V2i texcoord_end, Layer layer, const char *file, u32 line) {
   quads_amount++;
 #if DEVMODE
   if (quads_amount >= QUADS_CAP) {
@@ -193,6 +268,16 @@ __renderer_request_quad(V2f position, V2f size, Color color, Layer layer, const 
   quad->v[1].position = V2F(position.x + size.x * 0.5f, position.y - size.y * 0.5f);
   quad->v[2].position = V2F(position.x + size.x * 0.5f, position.y + size.y * 0.5f);
   quad->v[3].position = V2F(position.x - size.x * 0.5f, position.y + size.y * 0.5f);
+
+  quad->v[0].texcoord = V2F(texcoord_start.x, texcoord_end.y  );
+  quad->v[1].texcoord = V2F(texcoord_end.x,   texcoord_end.y  );
+  quad->v[2].texcoord = V2F(texcoord_end.x,   texcoord_start.y);
+  quad->v[3].texcoord = V2F(texcoord_start.x, texcoord_start.y);
+}
+
+void
+__renderer_rect(V2f position, V2f size, Color color, Layer layer, const char *file, u32 line) {
+  renderer_request_quad(position, size, color, V2I(559, 559), V2I(560, 560), layer, file, line);
 }
 
 void
@@ -216,6 +301,6 @@ renderer_batch_end(void) {
     }
     render_requests_amount[layer] = 0;
   }
-  glBufferSubData(GL_ARRAY_BUFFER, 0, quads_amount * 4 * sizeof (Vertex), vertices);
+  glBufferSubData(GL_ARRAY_BUFFER, 0, quads_amount * sizeof (Quad), vertices);
   glDrawElements(GL_TRIANGLES, quads_amount * 6, GL_UNSIGNED_INT, 0);
 }

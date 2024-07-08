@@ -7,17 +7,19 @@ All attributes starts at -2.
 
 Depending of your class some attributes may start at 0.
 
-on the first level you receive 10 points that you can distribute among them.
+on the first level you receive 5 points that you can distribute among them, you can set attributes to -3, doing that you receive more points to spend. On the first level the attributes have a cap of 1.
+
+On other levels you can upgrade your attributes, but it can never pass of 5.
 
 === Agility ===
 Your precision, speed and dexterity.
 
 Used for aim, stealth and lock-pick tests.
 
-=== Charisma ===
-Your ability of interaction with others.
+=== Presence ===
+Your presence within the world and the world presence towards you.
 
-Used for lie, intimidate and persuade.
+Used for persuade, luck, lie and intimidate.
 
 === Intelect ===
 Your memory, life long wisdom and education.
@@ -43,14 +45,46 @@ HP stands for Hit Points. It is your endurance of pain and how healthy you are.
 
 If HP goes to 0 you die.
 
-The HP value is equal to 16 + Vigor * 2.
+The HP value is equal to 20 + (Strength + Vigor) * 3.
+
+-4 * 3 = -12 + 20 = 8
+-3 * 3 = -09 + 20 = 11
+-2 * 3 = -06 + 20 = 14
+-1 * 3 = -03 + 20 = 17
+ 0 * 3 =  00 + 20 = 20
+ 1 * 3 =  03 + 20 = 23
+ 2 * 3 =  06 + 20 = 26
+ 3 * 3 =  09 + 20 = 29
+ 4 * 3 =  12 + 20 = 32
+ 5 * 3 =  15 + 20 = 35
+ 6 * 3 =  18 + 20 = 38
+ 7 * 3 =  21 + 20 = 41
+ 8 * 3 =  24 + 20 = 44
+ 9 * 3 =  27 + 20 = 47
+10 * 3 =  30 + 20 = 50
 
 === EP ===
 EP stands for Essence Points. It is your state of spirit and determination.
 
 If EP goes to 0 you can't use habilities nor magic.
 
-The EP value is equal to 10 + Intelect * 2.
+The EP value is equal to 10 + (Intelect + Presence) * 2.
+
+-4 * 2 = -08 + 10 = 2
+-3 * 2 = -06 + 10 = 4
+-2 * 2 = -04 + 10 = 6
+-1 * 2 = -02 + 10 = 8
+ 0 * 2 =  00 + 10 = 10
+ 1 * 2 =  02 + 10 = 12
+ 2 * 2 =  04 + 10 = 14
+ 3 * 2 =  06 + 10 = 16
+ 4 * 2 =  08 + 10 = 18
+ 5 * 2 =  10 + 10 = 20
+ 6 * 2 =  12 + 10 = 22
+ 7 * 2 =  14 + 10 = 24
+ 8 * 2 =  16 + 10 = 26
+ 9 * 2 =  18 + 10 = 28
+10 * 2 =  20 + 10 = 30
 
 === FP ===
 FP stands for Food Points. It is how satieted you are.
@@ -59,24 +93,164 @@ If FP goes to less then the half of the maximum FP you become Hungry, you move s
 
 If FP goes to 0 you are dying of hunger, each round you lose -2 HP.
 
-The FP value is equal to 100 + Vigor * 25.
+The FP value is equal to 200 + Vigor * 50.
+
+-2 * 50 = -100 + 200 = 100
+-1 * 50 = -050 + 200 = 150
+ 0 * 50 =  000 + 200 = 200
+ 1 * 50 =  050 + 200 = 250
+ 2 * 50 =  100 + 200 = 300
+ 3 * 50 =  150 + 200 = 350
+ 4 * 50 =  200 + 200 = 400
+ 5 * 50 =  250 + 200 = 450
+
+=== AP ===
+AP stands for Armour Points. It represents how resistant and fast to avoid attacks you are.
+
+AP doesn't goes down, your oponent has to roll greater than this value to succeed on the attack.
+
+Your AP starts at 6, but can go up depending on your class, level and armour.
+
+=== LVL ===
+LVL stands for Level. It is how much you have progressed.
+
+Your class defines what are the benefits per level.
+
+You progress your level with a certain amount of EXP.
+
+=== EXP ===
+EXP stands for Experience. It is how much experience you have gained.
+
+You gain EXP by clearing dungeons, finding secret treasures and completing quests.
+
+With EXP you can level up.
+
+| LVL | EXP   |
+|-----|-------|
+| 01  | 00000 |
+| 02  | 00300 |
+| 03  | 00600 |
+| 04  | 01200 |
+| 05  | 02400 |
+| 06  | 04800 |
+| 07  | 09600 |
+| 08  | 19200 |
+| 09  | 38400 |
+| 10  | 76800 |
 
 == Classes ==
 
 === Fighter ===
-Fighters have more health and do more physical damage than the other classes.
+Fighters have more HP and do more physical damage than the other classes.
 
-Strength starts at 0.
+==== Fighter Progression ====
+| LVL | Hability              |
+|-----|-----------------------|
+| 01  | 0 Strength            |
+| 02  | +2 AP                 |
+| 03  | +2 Attribute Points   |
+| 04  | +2 Fighter Habilities |
+| 05  | +2 AP                 |
+| 06  | +3 Attribute Points   |
+| 07  | +2 Fighter Habilities |
+| 08  | +2 AP                 |
+| 09  | +2 Fighter Habilities |
+| 10  | +4 Attribute Points   |
+
+==== Fighter Habilities ====
+| Name          | Description                                                | EP Cost | Requires            |
+|---------------|------------------------------------------------------------|---------|---------------------|
+| Rage I        | Your next melee attack have +5 damage                      | 4       | Strength 1          |
+| Rage II       | Your next melee attack have +10 damage                     | 8       | Strength 3, Rage I  |
+| Rage III      | Your next melee attack have +15 damage                     | 12      | Strength 5, Rage II |
+| Tank I        | All your armour have +1 AP for the next 5 rounds           | 4       | Vigor 1             |
+| Tank II       | All your armour have +2 AP for the next 5 rounds           | 8       | Vigor 3, Tank I     |
+| Tank III      | All your armour have +3 AP for the next 5 rounds           | 12      | Vigor 5, Tank II    |
+| Quick Attack  | If you pass on your next melee attack you can attack again | 6       | Agility 1           |
+| Strong Attack | All your melee weapons have +1 die of damage               | -       | Strength 2          |
+| Resistance    | When you level up you gain +2 HP                           | -       | Vigor 2             |
+| Iron Body     | You gain +1 AP                                             | -       | Vigor 2             |
 
 === Thief ===
 Thiefs are good in exploration, finding secret doors, opening locks and distance attacks.
 
-Agility starts at 0.
+==== Thief Progression ====
+| LVL | Hability            |
+|-----|---------------------|
+| 01  | 0 Agility           |
+| 02  | +1 AP               |
+| 03  | +2 Attribute Points |
+| 04  | +2 Thief Habilities |
+| 05  | +1 AP               |
+| 06  | +3 Attribute Points |
+| 07  | +2 Thief Habilities |
+| 08  | +1 AP               |
+| 09  | +2 Thief Habilities |
+| 10  | +4 Attribute Points |
+
+==== Thief Habilities ====
+| Name         | Description                                          | EP Cost | Requires              |
+|--------------|------------------------------------------------------|---------|-----------------------|
+| Shooter I    | Your next distance attack have +5 damage             | 8       | Agility 1             |
+| Shooter II   | Your next distance attack have +10 damage            | 10      | Agility 3, Shooter I  |
+| Shooter III  | Your next distance attack have +15 damage            | 12      | Agility 5, Shooter II |
+| Dodge I      | You have +1 AP for the next 5 rounds                 | 8       | Agility 1             |
+| Dodge II     | You have +1 AP for the next 10 rounds                | 10      | Agility 3, Dodge I    |
+| Dodge II     | You have +1 AP for the next 15 rounds                | 12      | Agility 5, Dodge II   |
+| Theft        | Learn an hability of another class                   | -       | Presence 3            |
+| Lucky Person | You have more chances of finding good loot           | -       | Presence 1            |
+| Deft         | You can do two actions per turn                      | -       | Agility 4             |
+| Stealth      | The enemies can't see you as often for 10 rounds     | 4       | Nothing               |
+| Lucky Aim    | You have advantage on your next distance attack test | 8       | Presence 1            |
+| Perfect Aim  | You have +2 on your next distance attack test        | 12      | Agility 2             |
+| Burgler      | You have +2 when using a lockpick                    | 12      | Agility 2             |
 
 === Wizard ===
 Wizards have more EP than the other classes, this is the only class that can use magic.
 
-Intelect starts at 0.
+You start with two spells of intelect 0.
+
+==== Wizard Progression ====
+| LVL | Hability             |
+|-----|----------------------|
+| 01  | 0 Intelect           |
+| 02  | New Spell            |
+| 03  | +2 Attribute Points  |
+| 04  | +2 Wizard Habilities |
+| 05  | New Spell            |
+| 06  | +3 Attribute Points  |
+| 07  | +2 Wizard Habilities |
+| 08  | New Spell            |
+| 09  | +2 Wizard Habilities |
+| 10  | +4 Attribute Points  |
+
+==== Wizard Habilities ====
+| Name           | Description                                               | EP Cost | Requires                |
+|----------------|-----------------------------------------------------------|---------|-------------------------|
+| Powerful I     | Your next spell attack have +5 damage                     | 10      | Intelect 1              |
+| Powerful II    | Your next spell attack have +10 damage                    | 12      | Intelect 3, Powerful I  |
+| Powerful III   | Your next spell attack have +15 damage                    | 14      | Intelect 5, Powerful II |
+| Sorcerer I     | The DT of the spell lower in 1                            | 8       | Intelect 1              |
+| Sorcerer II    | The DT of the spell lower in 2                            | 10      | Intelect 3, Sorcerer I  |
+| Sorcerer III   | The DT of the spell lower in 3                            | 12      | Intelect 5, Sorcerer II |
+| Lucky Wizard   | You have advantage on spell tests                         | 12      | Presence 1              |
+| Enhence        | Your next spell will have double of the effect            | 20      | Intelect 3              |
+| Proficient     | You gain +2 EP when you level up                          | -       | Intelect 2              |
+| Favorite Spell | You choose one spell to always have advantage on the test | -       | Intelect 3              |
+
+==== Spells ====
+
+===== Spell Test =====
+The Spell Test is an Intelect test.
+
+Spells always costs 5 EP, but if you fail the test you lose 10 EP. The spell still works even if you fail. 
+
+===== List of Spells =====
+| Name           | Description                                               | Intelect | dt |
+|----------------|-----------------------------------------------------------|----------|----|
+|                |                                                           |          |    |
+
+
 
 == Attribute Tests ==
 When something have a chance for failure an attribute test is gonna be performed.
@@ -105,7 +279,7 @@ Three random numbers that goes from 1 to 6 are gonna be picked, the sum of them 
 | 17    | 01.39%     |
 | 18    | 00.46%     |
 
-=== DT ===
+==== DT ====
 DT stands for Difficulty of the Test. It is the value that the test has to surpass.
 
 | DT | Difficulty | Percentage |
@@ -116,15 +290,20 @@ DT stands for Difficulty of the Test. It is the value that the test has to surpa
 | 06 | Easy       | 095.0%     |
 | 07 | Easy       | 090.0%     |
 | 08 | Easy       | 083.0%     |
-| 09 | Avarage    | 074.0%     |
+| 09 | A Bit Easy | 074.0%     |
 | 10 | Avarage    | 062.0%     |
 | 11 | Avarage    | 050.0%     |
-| 12 | Avarage    | 037.0%     |
+| 12 | A Bit Hard | 037.0%     |
 | 13 | Hard       | 025.0%     |
 | 14 | Hard       | 016.0%     |
 | 15 | Hard       | 009.0%     |
 | 16 | Very Hard  | 004.0%     |
 | 17 | Very Hard  | 001.0%     |
 | 18 | Critic     | 000.5%     |
+| 19 | Impossible | 000.0%     |
+| 20 | Impossible | 000.0%     |
+| 21 | Impossible | 000.0%     |
+| 22 | Impossible | 000.0%     |
+| 23 | Impossible | 000.0%     |
 
-
+This table is considering that you have 0 points on the attribute used on the test, the percentages and difficulties may change depending of how many points you have.

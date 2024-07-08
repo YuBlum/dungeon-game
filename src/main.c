@@ -1,4 +1,5 @@
 #include "include/components.h"
+#include "include/math.h"
 #include "include/systems.h"
 #include "include/ecs.h"
 #include "include/input.h"

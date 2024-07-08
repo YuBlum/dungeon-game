@@ -24,9 +24,12 @@ window_create(void) {
   glfwInit();
 #endif
   glfwWindowHint(GLFW_RESIZABLE, false);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#if DEVMODE
+  glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+#endif
   window = glfwCreateWindow(WINDOW_W, WINDOW_H, GAME_TITLE, 0, 0);
   const GLFWvidmode *vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
   glfwSetWindowPos(window, (vidmode->width * 0.5f) - (WINDOW_W * 0.5f), (vidmode->height * 0.5f) - (WINDOW_H * 0.5f));

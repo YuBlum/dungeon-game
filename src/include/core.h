@@ -20,7 +20,7 @@
 #define GAME_H_PX     135
 #define GAME_W        (GAME_W_PX / (f32)UNIT_PX)
 #define GAME_H        (GAME_H_PX / (f32)UNIT_PX)
-#define WINDOW_SCALE  7
+#define WINDOW_SCALE  8
 #define WINDOW_W      (GAME_W_PX * WINDOW_SCALE)
 #define WINDOW_H      (GAME_H_PX * WINDOW_SCALE)
 

@@ -89,7 +89,8 @@ tilemap_draw(void) {
           color = 0xFF0000CC;
           break;
       }
-      renderer_request_quad(position, V2FS(0.9f), color, 1);
+      (void)color;
+      //renderer_rect(position, V2FS(0.9f), color, 1);
       position.x++;
     }
     position.y++;
