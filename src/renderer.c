@@ -1,4 +1,5 @@
 #include "include/renderer.h"
+#include <stdarg.h>
 #include <errno.h>
 #include <glad/glad.h>
 #include <stdio.h>
@@ -8,7 +9,6 @@
 #include "include/core.h"
 #include "include/math.h"
 #include "include/types.h"
-#include "stb_image.h"
 
 #define QUADS_CAP    10000
 #define VERTICES_CAP (QUADS_CAP * 4)
@@ -17,6 +17,9 @@
 #define LAYERS_CAP 7
 #define LAYER_MIN -(LAYERS_CAP>>1)
 #define LAYER_MAX +(LAYERS_CAP>>1)
+
+#define ATLAS_WIDTH 1024
+#define ATLAS_HEIGHT 1024
 
 typedef u32 ShaderID, Object, Texture;
 typedef i32 Uniform;
@@ -38,6 +41,12 @@ typedef struct {
   Vertex v[4];
 } Quad;
 
+typedef struct {
+  u32 start_x;
+  u32 end_x;
+  f32 width_unit;
+} Glyph;
+
 static Shader sh_quad;
 static Shader current_shader = { -1, -1 };
 
@@ -52,7 +61,9 @@ static usize quads_amount;
 
 static Vertex vertices[VERTICES_CAP];
 
+#define FONT_GLYPHS_AMOUNT 95
 static Texture atlas;
+static Glyph font[FONT_GLYPHS_AMOUNT];
 
 #if DEVMODE
 static void
@@ -193,8 +204,31 @@ renderer_create(void) {
   fread(&atlas_w, sizeof (u16), 1, atlas_f);
   fread(&atlas_h, sizeof (u16), 1, atlas_f);
   fseek(atlas_f, 2, SEEK_CUR);
-  u8 *atlas_buff = malloc(4 * atlas_w * atlas_h);
+  u32 *atlas_buff = malloc(4 * atlas_w * atlas_h);
   fread(atlas_buff, 4, atlas_w * atlas_h, atlas_f);
+  /* create font */
+  u32 pixel_x = 0;
+  for (u32 i = 0; i < FONT_GLYPHS_AMOUNT; i++) {
+    u8 pixel_alpha;
+    for (; pixel_x < ATLAS_WIDTH; pixel_x++) {
+      pixel_alpha = atlas_buff[pixel_x] & 0xFF;
+      if (pixel_alpha) break;
+    }
+    font[i].start_x = pixel_x;
+    for (; pixel_x < ATLAS_WIDTH; pixel_x++) {
+      pixel_alpha = atlas_buff[pixel_x] & 0xFF;
+      if (!pixel_alpha) break;
+    }
+    font[i].end_x = pixel_x;
+    font[i].width_unit = (font[i].end_x - font[i].start_x) * PX_TO_UNIT;
+    for (u32 y = 0; y < 8; y++) {
+      for (u32 x = font[i].start_x; x < font[i].end_x; x++) {
+        u32 pixel = y * ATLAS_WIDTH + x;
+        if (atlas_buff[pixel] == 0xFFFF00FF) atlas_buff[pixel] = 0;
+      }
+    }
+  }
+  /* atlas texture */
   glGenTextures(1, &atlas);
   glBindTexture(GL_TEXTURE_2D, atlas);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -240,7 +274,7 @@ renderer_create(void) {
 }
 
 static void
-renderer_request_quad(V2f position, V2f size, Color color, V2i texcoord_start, V2i texcoord_end, Layer layer, const char *file, u32 line) {
+renderer_request_quad(V2f position[4], Color color, V2i texcoord_start, V2i texcoord_end, Layer layer, const char *file, u32 line) {
   quads_amount++;
 #if DEVMODE
   if (quads_amount >= QUADS_CAP) {
@@ -264,10 +298,10 @@ renderer_request_quad(V2f position, V2f size, Color color, V2i texcoord_start, V
   quad->v[2].blend = blend;
   quad->v[3].blend = blend;
 
-  quad->v[0].position = V2F(position.x - size.x * 0.5f, position.y - size.y * 0.5f);
-  quad->v[1].position = V2F(position.x + size.x * 0.5f, position.y - size.y * 0.5f);
-  quad->v[2].position = V2F(position.x + size.x * 0.5f, position.y + size.y * 0.5f);
-  quad->v[3].position = V2F(position.x - size.x * 0.5f, position.y + size.y * 0.5f);
+  quad->v[0].position = position[0];
+  quad->v[1].position = position[1];
+  quad->v[2].position = position[2];
+  quad->v[3].position = position[3];
 
   quad->v[0].texcoord = V2F(texcoord_start.x, texcoord_end.y  );
   quad->v[1].texcoord = V2F(texcoord_end.x,   texcoord_end.y  );
@@ -275,9 +309,58 @@ renderer_request_quad(V2f position, V2f size, Color color, V2i texcoord_start, V
   quad->v[3].texcoord = V2F(texcoord_start.x, texcoord_start.y);
 }
 
+static void
+renderer_request_quad_center(V2f center, V2f size, Color color, V2i texcoord_start, V2i texcoord_end, Layer layer, const char *file, u32 line) {
+  V2f position[4] = {
+    V2F(center.x - size.x * 0.5f, center.y - size.y * 0.5f),
+    V2F(center.x + size.x * 0.5f, center.y - size.y * 0.5f),
+    V2F(center.x + size.x * 0.5f, center.y + size.y * 0.5f),
+    V2F(center.x - size.x * 0.5f, center.y + size.y * 0.5f)
+  };
+  renderer_request_quad(position, color, texcoord_start, texcoord_end, layer, file, line);
+}
+
+static void
+renderer_request_quad_top_left(V2f top_left, V2f size, Color color, V2i texcoord_start, V2i texcoord_end, Layer layer, const char *file, u32 line) {
+  V2f position[4] = {
+    V2F(top_left.x         , top_left.y - size.y),
+    V2F(top_left.x + size.x, top_left.y - size.y),
+    V2F(top_left.x + size.x, top_left.y         ),
+    V2F(top_left.x         , top_left.y         )
+  };
+  renderer_request_quad(position, color, texcoord_start, texcoord_end, layer, file, line);
+}
+
 void
 __renderer_rect(V2f position, V2f size, Color color, Layer layer, const char *file, u32 line) {
-  renderer_request_quad(position, size, color, V2I(559, 559), V2I(560, 560), layer, file, line);
+  renderer_request_quad_center(position, size, color, V2I(ATLAS_WIDTH-1, ATLAS_HEIGHT-1), V2I(ATLAS_WIDTH, ATLAS_HEIGHT), layer, file, line);
+}
+
+void
+__renderer_text(V2f position, Color color, Layer layer, const char *file, u32 line, const char *fmt, ...) {
+  va_list args;
+  char str[1024];
+  va_start(args, fmt);
+  vsnprintf(str, 1024, fmt, args);
+  va_end(args);
+  V2f glyph_pos = position;
+  for (u32 i = 0; i < 1024; i++) {
+    u32 glyph_index = 94;
+    if (str[i] == '\0') {
+      break;
+    } else if (str[i] == '\n') {
+      glyph_pos.x = position.x;
+      glyph_pos.y--;
+      continue;
+    } else if (str[i] == ' ') {
+      glyph_pos.x += 5*PX_TO_UNIT;
+      continue;
+    } else if (str[i] >= '!' && str[i] <= '~') {
+      glyph_index = str[i] - '!';
+    }
+    renderer_request_quad_top_left(glyph_pos, V2F(font[glyph_index].width_unit, 1), color, V2I(font[glyph_index].start_x, 0), V2I(font[glyph_index].end_x, 8), layer, file, line);
+    glyph_pos.x += font[glyph_index].width_unit + PX_TO_UNIT;
+  }
 }
 
 void

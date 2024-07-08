@@ -1,4 +1,5 @@
 #include "include/components.h"
+#include "include/global.h"
 #include "include/math.h"
 #include "include/systems.h"
 #include "include/ecs.h"
@@ -25,6 +26,7 @@ main(void) {
     renderer_batch_start();
     tilemap_draw();
     ecs_draw();
+    renderer_text(V2FS(0), C_WHITE, 0, "Hello, World!\nFPS: %.f", 1.0f / global.dt);
     renderer_batch_end();
     window_frame_end();
   }

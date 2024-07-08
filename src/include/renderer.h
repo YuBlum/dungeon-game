@@ -20,6 +20,9 @@ void renderer_create(void);
 void __renderer_rect(V2f position, V2f size, Color color, Layer layer, const char *file, u32 line);
 #define renderer_rect(POSITION, SIZE, COLOR, LAYER) __renderer_rect(POSITION, SIZE, COLOR, LAYER, __FILE__, __LINE__)
 
+void __renderer_text(V2f position, Color color, Layer layer, const char *file, u32 line, const char *fmt, ...);
+#define renderer_text(POSITION, COLOR, LAYER, FMT, ...) __renderer_text(POSITION, COLOR, LAYER, __FILE__, __LINE__, FMT, ## __VA_ARGS__)
+
 void renderer_batch_start(void);
 void renderer_batch_end(void);
 
