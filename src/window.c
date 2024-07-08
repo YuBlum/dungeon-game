@@ -32,7 +32,7 @@ window_create(void) {
 #endif
   window = glfwCreateWindow(WINDOW_W, WINDOW_H, GAME_TITLE, 0, 0);
   const GLFWvidmode *vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-  glfwSetWindowPos(window, (vidmode->width * 0.5f) - (WINDOW_W * 0.5f), (vidmode->height * 0.5f) - (WINDOW_H * 0.5f));
+  glfwSetWindowPos(window, (vidmode->width - WINDOW_W) >> 1, (vidmode->height - WINDOW_H) >> 1);
   glfwMakeContextCurrent(window);
   gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
   glfwSetKeyCallback(window, (GLFWkeyfun)input_key_callback);

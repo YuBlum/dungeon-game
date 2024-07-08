@@ -21,7 +21,7 @@
 #define ATLAS_WIDTH 1024
 #define ATLAS_HEIGHT 1024
 
-typedef u32 ShaderID, Object, Texture;
+typedef u32 ShaderID, Object, Texture, Framebuffer, Renderbuffer;
 typedef i32 Uniform;
 
 typedef struct { f32 r, g, b, a; } Blend;
@@ -47,6 +47,13 @@ typedef struct {
   f32 width_unit;
 } Glyph;
 
+typedef struct {
+  Framebuffer fbo;
+  Renderbuffer rbo;
+  usize width;
+  usize height;
+} RenderTarget;
+
 static Shader sh_quad;
 static Shader current_shader = { -1, -1 };
 
@@ -64,6 +71,9 @@ static Vertex vertices[VERTICES_CAP];
 #define FONT_GLYPHS_AMOUNT 95
 static Texture atlas;
 static Glyph font[FONT_GLYPHS_AMOUNT];
+
+static RenderTarget ui;
+static RenderTarget game;
 
 #if DEVMODE
 static void
@@ -176,6 +186,50 @@ renderer_shader_set(Shader shader) {
   current_shader = shader;
 }
 
+static void
+renderer_clear(f32 r, f32 g, f32 b) {
+  glClearColor(r, g, b, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT);
+}
+
+static void
+renderer_render_target_setup(RenderTarget *rt, usize width, usize height) {
+  rt->width = width;
+  rt->height = height;
+  glGenFramebuffers(1, &rt->fbo);
+  glGenRenderbuffers(1, &rt->rbo);
+  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, rt->fbo);
+  glBindRenderbuffer(GL_RENDERBUFFER, rt->rbo);
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA, rt->width, rt->height);
+  glBindRenderbuffer(GL_RENDERBUFFER, 0);
+  glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, rt->rbo);
+  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+}
+
+static void
+renderer_render_target_set(RenderTarget *rt) {
+  glViewport(0, 0, rt->width, rt->height);
+  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, rt->fbo);
+}
+
+static void
+renderer_render_target_reset(void) {
+  glViewport(0, 0, WINDOW_W, WINDOW_H);
+  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+}
+
+static void
+renderer_render_target_to_screen(RenderTarget *rt, u32 offset_x, u32 offset_y) {
+  glBindFramebuffer(GL_READ_FRAMEBUFFER, rt->fbo);
+  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+  glBlitFramebuffer(
+    0, 0, rt->width, rt->height,
+    offset_x, offset_y, offset_x + rt->width * WINDOW_SCALE, offset_y + rt->height * WINDOW_SCALE,
+    GL_COLOR_BUFFER_BIT, GL_NEAREST
+  );
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 void
 renderer_create(void) {
 #if DEVMODE
@@ -235,6 +289,9 @@ renderer_create(void) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlas_w, atlas_h, 0, GL_BGRA, GL_UNSIGNED_BYTE, atlas_buff);
   free(atlas_buff);
+  /* framebuffers */
+  renderer_render_target_setup(&ui, WINDOW_ORIGINAL_W, WINDOW_ORIGINAL_H);
+  renderer_render_target_setup(&game, GAME_W_PX, GAME_H_PX);
   /* shaders */
   sh_quad = renderer_shader_load("quad");
   renderer_shader_set(sh_quad);
@@ -274,7 +331,7 @@ renderer_create(void) {
 }
 
 static void
-renderer_request_quad(V2f position[4], Color color, V2i texcoord_start, V2i texcoord_end, Layer layer, const char *file, u32 line) {
+renderer_request_quad(V2f position[4], Blend blend, V2i texcoord_start, V2i texcoord_end, Layer layer, const char *file, u32 line) {
   quads_amount++;
 #if DEVMODE
   if (quads_amount >= QUADS_CAP) {
@@ -286,12 +343,6 @@ renderer_request_quad(V2f position[4], Color color, V2i texcoord_start, V2i texc
 #endif
   layer += LAYER_MAX;
   Quad *quad = &render_requests[layer][render_requests_amount[layer]++];
-  Blend blend = {
-    (f32)((color >> 24) & 0xFF) / 255,
-    (f32)((color >> 16) & 0xFF) / 255,
-    (f32)((color >>  8) & 0xFF) / 255,
-    (f32)((color >>  0) & 0xFF) / 255
-  };
 
   quad->v[0].blend = blend;
   quad->v[1].blend = blend;
@@ -310,34 +361,34 @@ renderer_request_quad(V2f position[4], Color color, V2i texcoord_start, V2i texc
 }
 
 static void
-renderer_request_quad_center(V2f center, V2f size, Color color, V2i texcoord_start, V2i texcoord_end, Layer layer, const char *file, u32 line) {
+renderer_request_quad_center(V2f center, V2f size, Blend blend, V2i texcoord_start, V2i texcoord_end, Layer layer, const char *file, u32 line) {
   V2f position[4] = {
     V2F(center.x - size.x * 0.5f, center.y - size.y * 0.5f),
     V2F(center.x + size.x * 0.5f, center.y - size.y * 0.5f),
     V2F(center.x + size.x * 0.5f, center.y + size.y * 0.5f),
     V2F(center.x - size.x * 0.5f, center.y + size.y * 0.5f)
   };
-  renderer_request_quad(position, color, texcoord_start, texcoord_end, layer, file, line);
+  renderer_request_quad(position, blend, texcoord_start, texcoord_end, layer, file, line);
 }
 
 static void
-renderer_request_quad_top_left(V2f top_left, V2f size, Color color, V2i texcoord_start, V2i texcoord_end, Layer layer, const char *file, u32 line) {
+renderer_request_quad_top_left(V2f top_left, V2f size, Blend blend, V2i texcoord_start, V2i texcoord_end, Layer layer, const char *file, u32 line) {
   V2f position[4] = {
     V2F(top_left.x         , top_left.y - size.y),
     V2F(top_left.x + size.x, top_left.y - size.y),
     V2F(top_left.x + size.x, top_left.y         ),
     V2F(top_left.x         , top_left.y         )
   };
-  renderer_request_quad(position, color, texcoord_start, texcoord_end, layer, file, line);
+  renderer_request_quad(position, blend, texcoord_start, texcoord_end, layer, file, line);
 }
 
 void
-__renderer_rect(V2f position, V2f size, Color color, Layer layer, const char *file, u32 line) {
-  renderer_request_quad_center(position, size, color, V2I(ATLAS_WIDTH-1, ATLAS_HEIGHT-1), V2I(ATLAS_WIDTH, ATLAS_HEIGHT), layer, file, line);
+__renderer_rect(V2f position, V2f size, f32 r, f32 g, f32 b, f32 a, Layer layer, const char *file, u32 line) {
+  renderer_request_quad_center(position, size, (Blend){r,g,b,a}, V2I(ATLAS_WIDTH-1, ATLAS_HEIGHT-1), V2I(ATLAS_WIDTH, ATLAS_HEIGHT), layer, file, line);
 }
 
 void
-__renderer_text(V2f position, Color color, Layer layer, const char *file, u32 line, const char *fmt, ...) {
+__renderer_text(V2f position, f32 scale, f32 r, f32 g, f32 b, f32 a, Layer layer, const char *file, u32 line, const char *fmt, ...) {
   va_list args;
   char str[1024];
   va_start(args, fmt);
@@ -350,26 +401,26 @@ __renderer_text(V2f position, Color color, Layer layer, const char *file, u32 li
       break;
     } else if (str[i] == '\n') {
       glyph_pos.x = position.x;
-      glyph_pos.y--;
+      glyph_pos.y -= scale;
       continue;
     } else if (str[i] == ' ') {
-      glyph_pos.x += 5*PX_TO_UNIT;
+      glyph_pos.x += 5*PX_TO_UNIT * scale;
       continue;
     } else if (str[i] >= '!' && str[i] <= '~') {
       glyph_index = str[i] - '!';
     }
-    renderer_request_quad_top_left(glyph_pos, V2F(font[glyph_index].width_unit, 1), color, V2I(font[glyph_index].start_x, 0), V2I(font[glyph_index].end_x, 8), layer, file, line);
-    glyph_pos.x += font[glyph_index].width_unit + PX_TO_UNIT;
+    renderer_request_quad_top_left(glyph_pos, V2F(font[glyph_index].width_unit * scale, scale), (Blend){r,g,b,a}, V2I(font[glyph_index].start_x, 0), V2I(font[glyph_index].end_x, 8), layer, file, line);
+    glyph_pos.x += (font[glyph_index].width_unit + PX_TO_UNIT) * scale;
   }
 }
 
 void
 renderer_batch_start(void) {
   quads_amount = 0;
+  renderer_render_target_set(&game);
   glUseProgram(current_shader.id);
   glUniformMatrix3fv(current_shader.camera, true, 1, camera_matrix());
-  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT);
+  renderer_clear(0.0f, 0.0f, 0.0f);
 }
 
 void
@@ -386,4 +437,9 @@ renderer_batch_end(void) {
   }
   glBufferSubData(GL_ARRAY_BUFFER, 0, quads_amount * sizeof (Quad), vertices);
   glDrawElements(GL_TRIANGLES, quads_amount * 6, GL_UNSIGNED_INT, 0);
+  renderer_render_target_reset();
+
+  renderer_clear(0.2f, 0.2f, 0.2f);
+
+  renderer_render_target_to_screen(&game, GAME_X_PX, GAME_Y_PX);
 }
