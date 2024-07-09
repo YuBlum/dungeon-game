@@ -13,13 +13,16 @@ typedef struct {
 } Attributes;
 
 typedef struct {
-  u32 hit_points;
-  u32 armour_points;
+  u32 hit_points_max;
+  u32 hit_points_cur;
+  u32 armour;
 } DefensiveStats;
 
 typedef struct {
-  u32 essence_points;
-  u32 food_points;
+  u32 essence_points_max;
+  u32 essence_points_cur;
+  u32 food_points_max;
+  u32 food_points_cur;
   u32 experience;
   u32 level;
 } GeneralStats;

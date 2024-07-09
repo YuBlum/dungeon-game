@@ -14,9 +14,9 @@ prefab_player(V2f position) {
     ecs_entity_creation_setup_component(f32, "speed", 6.0f);
     ecs_entity_creation_setup_component(Color, "color", 0xffaa00ff);
     ecs_entity_creation_setup_component(bool, "bump", false);
-    ecs_entity_creation_setup_component(Attributes, "attributes", ((Attributes){ -1, -2, -3, -4, -5 }));
-    ecs_entity_creation_setup_component(DefensiveStats, "defensive-stats", ((DefensiveStats){ 0, 0 }));
-    ecs_entity_creation_setup_component(GeneralStats, "general-stats", ((GeneralStats){ 0, 0, 0, 0 }));
+    ecs_entity_creation_setup_component(Attributes, "attributes", ((Attributes){ -1, +0, +1, -2, -1 }));
+    ecs_entity_creation_setup_component(DefensiveStats, "defensive-stats", ((DefensiveStats){ 0, 0, 0 }));
+    ecs_entity_creation_setup_component(GeneralStats, "general-stats", ((GeneralStats){ 0, 0, 0, 0, 0, 0 }));
   ecs_entity_creation_end();
 }
 
