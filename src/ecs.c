@@ -77,14 +77,17 @@ static World world;
 
 #if DEVMODE
 static const char *system_event_str[] = {
-  "SYS_SCENE_START",
-  "SYS_SCENE_END",
-  "SYS_PRE_UPDATE",
-  "SYS_UPDATE",
-  "SYS_POS_UPDATE",
-  "SYS_PRE_DRAW",
-  "SYS_DRAW",
-  "SYS_POS_DRAW",
+  "ON_SCENE_START",
+  "ON_SCENE_END",
+  "ON_PRE_UPDATE",
+  "ON_UPDATE",
+  "ON_POS_UPDATE",
+  "ON_PRE_DRAW",
+  "ON_DRAW",
+  "ON_POS_DRAW",
+  "ON_PRE_DRAW_UI",
+  "ON_DRAW_UI",
+  "ON_POS_DRAW_UI",
 };
 _Static_assert(sizeof (system_event_str) / sizeof (char *) == SYSTEM_EVENTS_AMOUNT, "system_event_str doesn't handle all system events");
 #endif
@@ -808,12 +811,12 @@ ecs_create_entities(void) {
 void
 ecs_scene_start(void) {
   ecs_create_entities();
-  ecs_run_event_systems(SYS_SCENE_START);
+  ecs_run_event_systems(ON_SCENE_START);
 }
 
 void
 ecs_scene_end(void) {
-  ecs_run_event_systems(SYS_SCENE_END);
+  ecs_run_event_systems(ON_SCENE_END);
 }
 
 void
@@ -823,14 +826,21 @@ ecs_update(void) {
   ecs_destroy_entities();
   ecs_create_entities();
   /* run on update event systems */
-  for (SystemEvent event = SYS_PRE_UPDATE; event <= SYS_POS_UPDATE; event++) {
+  for (SystemEvent event = ON_PRE_UPDATE; event <= ON_POS_UPDATE; event++) {
     ecs_run_event_systems(event);
   }
 }
 
 void
 ecs_draw(void) {
-  for (SystemEvent event = SYS_PRE_DRAW; event <= SYS_POS_DRAW; event++) {
+  for (SystemEvent event = ON_PRE_DRAW; event <= ON_POS_DRAW; event++) {
+    ecs_run_event_systems(event);
+  }
+}
+
+void
+ecs_draw_ui(void) {
+  for (SystemEvent event = ON_PRE_DRAW_UI; event <= ON_POS_DRAW_UI; event++) {
     ecs_run_event_systems(event);
   }
 }

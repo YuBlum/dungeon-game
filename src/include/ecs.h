@@ -10,14 +10,17 @@ typedef u64 EntityReference;
 
 typedef void(*SystemFn)(void);
 typedef enum {
-  SYS_SCENE_START,
-  SYS_SCENE_END,
-  SYS_PRE_UPDATE,
-  SYS_UPDATE,
-  SYS_POS_UPDATE,
-  SYS_PRE_DRAW,
-  SYS_DRAW,
-  SYS_POS_DRAW,
+  ON_SCENE_START,
+  ON_SCENE_END,
+  ON_PRE_UPDATE,
+  ON_UPDATE,
+  ON_POS_UPDATE,
+  ON_PRE_DRAW,
+  ON_DRAW,
+  ON_POS_DRAW,
+  ON_PRE_DRAW_UI,
+  ON_DRAW_UI,
+  ON_POS_DRAW_UI,
 
   SYSTEM_EVENTS_AMOUNT
 } SystemEvent;
@@ -56,6 +59,7 @@ void ecs_scene_start(void);
 void ecs_scene_end(void);
 void ecs_update(void);
 void ecs_draw(void);
+void ecs_draw_ui(void);
 
 #define ecs_component_create(TYPE, NAME) __ecs_component_create(sizeof (TYPE), NAME, __FILE__, __LINE__)
 #define ecs_empty_component_create(NAME) __ecs_component_create(0, NAME, __FILE__, __LINE__)

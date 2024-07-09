@@ -4,26 +4,31 @@
 #include "include/math.h"
 #include "include/types.h"
 
-typedef u8 Tag;
-
 typedef struct {
   i32 agility;
   i32 intelect;
+  i32 presence;
   i32 strength;
   i32 vigor;
 } Attributes;
 
 typedef struct {
-  u32 hp;
-  u32 ep;
-  u32 fp;
-} Stats;
+  u32 hit_points;
+  u32 armour_points;
+} DefensiveStats;
+
+typedef struct {
+  u32 essence_points;
+  u32 food_points;
+  u32 experience;
+  u32 level;
+} GeneralStats;
 
 typedef struct {
   V2f prv;
   V2f nxt;
   f32 timer;
-} PositionInterpolation;
+} PositionLerp;
 
 void components_create(void);
 

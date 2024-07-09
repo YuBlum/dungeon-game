@@ -20,6 +20,8 @@ scenes_create(void) {
   scene_manager_create_scene(scene_test0);
   scene_manager_activate_system(scene_test0, set_tile_system);
   scene_manager_activate_system(scene_test0, draw_rect_system);
+  scene_manager_activate_system(scene_test0, input_direction_system);
+  scene_manager_activate_system(scene_test0, collision_system);
   scene_manager_activate_system(scene_test0, movement_system);
-  scene_manager_activate_system(scene_test0, move_by_input_system);
+  scene_manager_activate_system(scene_test0, draw_char_sheet_system);
 }

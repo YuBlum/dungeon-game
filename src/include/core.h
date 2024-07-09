@@ -1,6 +1,7 @@
 #ifndef __CORE_H__
 #define __CORE_H__
 
+#include "include/renderer.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -24,11 +25,31 @@
 #define UNIT_TO_PX 8
 #define PX_TO_UNIT (1.0f/UNIT_TO_PX)
 
-#define GAME_W_PX 176
-#define GAME_H_PX 176
-#define GAME_Y_PX (((WINDOW_ORIGINAL_H - GAME_H_PX) >> 1) * WINDOW_SCALE)
-#define GAME_X_PX GAME_Y_PX
-#define GAME_W    (GAME_W_PX / (f32)UNIT_TO_PX)
-#define GAME_H    (GAME_H_PX / (f32)UNIT_TO_PX)
+#define GAME_W_PX       176
+#define GAME_H_PX       178
+#define GAME_BORDER_PX  1
+#define GAME_Y_PX      (GAME_BORDER_PX * WINDOW_SCALE) 
+#define GAME_X_PX      (GAME_BORDER_PX * WINDOW_SCALE)
+#define UI_W_PX        (WINDOW_ORIGINAL_W - GAME_W_PX - GAME_BORDER_PX * 3)
+#define UI_H_PX        GAME_H_PX
+#define UI_X_PX        ((GAME_BORDER_PX * 2 + GAME_W_PX) * WINDOW_SCALE)
+#define UI_Y_PX        (GAME_BORDER_PX * WINDOW_SCALE)
+
+#define GAME_RIGHT  +(GAME_W / 2.0f)
+#define GAME_LEFT   -(GAME_W / 2.0f)
+#define GAME_TOP    +(GAME_H / 2.0f)
+#define GAME_BOTTOM -(GAME_H / 2.0f)
+
+#define UI_RIGHT  +(UI_W / 2.0f)
+#define UI_LEFT   -(UI_W / 2.0f)
+#define UI_TOP    +(UI_H / 2.0f)
+#define UI_BOTTOM -(UI_H / 2.0f)
+
+#define GAME_W (GAME_W_PX / (f32)UNIT_TO_PX)
+#define GAME_H (GAME_H_PX / (f32)UNIT_TO_PX)
+#define UI_W   (UI_W_PX / (f32)UNIT_TO_PX)
+#define UI_H   (UI_H_PX / (f32)UNIT_TO_PX)
+
+#define BORDER_COLOR ((Color)0xffffffff)
 
 #endif/*__CORE_H__*/

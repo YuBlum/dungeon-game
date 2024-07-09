@@ -4,7 +4,9 @@
 #include "include/types.h"
 typedef f32 *Camera;
 
-Camera camera_matrix(void);
-Camera camera_projection(void);
+typedef Camera (*CameraProjFn)(void);
+
+Camera camera_game_matrix(void);
+Camera camera_ui_matrix(void);
 
 #endif/*__CAMERA_H__*/

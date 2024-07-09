@@ -36,6 +36,16 @@ __tilemap_snap_to_grid(V2f position, const char *file, u32 line) {
   );
 }
 
+bool
+__tilemap_is_in_bounds(V2f position, const char *file, u32 line) {
+  i32 tile_x = position.x + tilemap.width * 0.5f - 0.5f;
+  i32 tile_y = position.y + tilemap.height * 0.5f - 0.5f;
+#if DEVMODE
+  if (!tilemap.map) ERROR("%s:%u: Trying to check if out of bounds, but tilemap doesn't exists", file, line);
+#endif
+  return tile_x >= 0 && (usize)tile_x < tilemap.width && tile_y >= 0 && (usize)tile_y < tilemap.height;
+}
+
 EntityReference
 __tilemap_get(V2f position, const char *file, u32 line) {
   i32 tile_x = position.x + tilemap.width * 0.5f - 0.5f;

@@ -1,10 +1,10 @@
-#include "include/renderer.h"
-#include <stdarg.h>
 #include <errno.h>
+#include <stdarg.h>
 #include <glad/glad.h>
 #include <stdio.h>
 #include <string.h>
 #include <stddef.h>
+#include "include/renderer.h"
 #include "include/camera.h"
 #include "include/core.h"
 #include "include/math.h"
@@ -69,10 +69,11 @@ static Renderbuffer renderbuffers[RENDER_TARGET_AMOUNT];
 #if DEVMODE
     _Static_assert(RENDER_TARGET_AMOUNT == 2, "not all render targets are handled here");
 #endif
-static const u32 renderbuffers_width[RENDER_TARGET_AMOUNT] = { WINDOW_ORIGINAL_W, GAME_W_PX, };
-static const u32 renderbuffers_height[RENDER_TARGET_AMOUNT] = { WINDOW_ORIGINAL_H, GAME_H_PX, };
-static const u32 renderbuffers_x[RENDER_TARGET_AMOUNT] = { 0, GAME_X_PX };
-static const u32 renderbuffers_y[RENDER_TARGET_AMOUNT] = { 0, GAME_Y_PX };
+static const u32 renderbuffers_width[RENDER_TARGET_AMOUNT]  = { UI_W_PX, GAME_W_PX, };
+static const u32 renderbuffers_height[RENDER_TARGET_AMOUNT] = { UI_H_PX, GAME_H_PX, };
+static const u32 renderbuffers_x[RENDER_TARGET_AMOUNT] = { UI_X_PX, GAME_X_PX };
+static const u32 renderbuffers_y[RENDER_TARGET_AMOUNT] = { UI_Y_PX, GAME_Y_PX };
+static const CameraProjFn projection_fn[RENDER_TARGET_AMOUNT] = { camera_ui_matrix, camera_game_matrix };
 
 #if DEVMODE
 static void
@@ -341,12 +342,46 @@ renderer_request_quad_top_left(V2f top_left, V2f size, Blend blend, V2i texcoord
 }
 
 void
-__renderer_rect(V2f position, V2f size, f32 r, f32 g, f32 b, f32 a, Layer layer, const char *file, u32 line) {
-  renderer_request_quad_center(position, size, (Blend){r,g,b,a}, V2I(ATLAS_WIDTH-1, ATLAS_HEIGHT-1), V2I(ATLAS_WIDTH, ATLAS_HEIGHT), layer, file, line);
+__renderer_rect(V2f position, V2f size, bool center, f32 r, f32 g, f32 b, f32 a, Layer layer, const char *file, u32 line) {
+  if (center) {
+    renderer_request_quad_center(position, size, (Blend){r,g,b,a}, V2I(ATLAS_WIDTH-1, ATLAS_HEIGHT-1), V2I(ATLAS_WIDTH, ATLAS_HEIGHT), layer, file, line);
+  } else {
+    renderer_request_quad_top_left(position, size, (Blend){r,g,b,a}, V2I(ATLAS_WIDTH-1, ATLAS_HEIGHT-1), V2I(ATLAS_WIDTH, ATLAS_HEIGHT), layer, file, line);
+  }
+}
+
+V2f
+renderer_text_dimensions(f32 scale, const char *fmt, ...) {
+  va_list args;
+  char str[1024];
+  va_start(args, fmt);
+  vsnprintf(str, 1024, fmt, args);
+  va_end(args);
+  V2f dim = { 0, 1 };
+  f32 cur_x = 0;
+  for (u32 i = 0; i < 1024; i++) {
+    u32 glyph_index = 94;
+    if (str[i] == '\0') {
+      break;
+    } else if (str[i] == '\n') {
+      if (cur_x > dim.x) dim.x = cur_x;
+      dim.x = 0;
+      dim.y += scale;
+      continue;
+    } else if (str[i] == ' ') {
+      dim.x += 5*PX_TO_UNIT * scale;
+      continue;
+    } else if (str[i] >= '!' && str[i] <= '~') {
+      glyph_index = str[i] - '!';
+    }
+    dim.x += (font[glyph_index].width_unit + PX_TO_UNIT) * scale;
+  }
+  if (cur_x > dim.x) dim.x = cur_x;
+  return dim;
 }
 
 void
-__renderer_text(V2f position, f32 scale, f32 r, f32 g, f32 b, f32 a, Layer layer, const char *file, u32 line, const char *fmt, ...) {
+__renderer_text(V2f position, f32 scale, bool center, f32 r, f32 g, f32 b, f32 a, Layer layer, const char *file, u32 line, const char *fmt, ...) {
   va_list args;
   char str[1024];
   va_start(args, fmt);
@@ -367,19 +402,28 @@ __renderer_text(V2f position, f32 scale, f32 r, f32 g, f32 b, f32 a, Layer layer
     } else if (str[i] >= '!' && str[i] <= '~') {
       glyph_index = str[i] - '!';
     }
-    renderer_request_quad_top_left(glyph_pos, V2F(font[glyph_index].width_unit * scale, scale), (Blend){r,g,b,a}, V2I(font[glyph_index].start_x, 0), V2I(font[glyph_index].end_x, 8), layer, file, line);
+    if (center) {
+      renderer_request_quad_center(glyph_pos, V2F(font[glyph_index].width_unit * scale, scale), (Blend){r,g,b,a}, V2I(font[glyph_index].start_x, 0), V2I(font[glyph_index].end_x, 8), layer, file, line);
+    } else {
+      renderer_request_quad_top_left(glyph_pos, V2F(font[glyph_index].width_unit * scale, scale), (Blend){r,g,b,a}, V2I(font[glyph_index].start_x, 0), V2I(font[glyph_index].end_x, 8), layer, file, line);
+    }
     glyph_pos.x += (font[glyph_index].width_unit + PX_TO_UNIT) * scale;
   }
 }
 
 void
-__renderer_batch_start(RenderTarget target, f32 r, f32 g, f32 b) {
+__renderer_clear(f32 r, f32 g, f32 b) {
+  glClearColor(r, g, b, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void
+renderer_batch_start(RenderTarget target) {
   quads_amount = 0;
   glViewport(0, 0, renderbuffers_width[target], renderbuffers_height[target]);
   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffers[target]);
-  glUniformMatrix3fv(default_shader.camera, true, 1, target == RENDER_GAME ? camera_matrix() : camera_projection());
-  glClearColor(r, g, b, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT);
+  glUniformMatrix3fv(default_shader.camera, true, 1, projection_fn[target]());
+  renderer_clear(0x00000000);
 }
 
 void
