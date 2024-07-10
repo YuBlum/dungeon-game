@@ -8,11 +8,11 @@ static const char *attrib_names[] = { "AGI", "INT", "PRE", "STR", "VIG", };
 void
 draw_char_sheet_system(void) {
   Attributes *attributes = ecs_get_component_list("attributes");
-  GeneralStats *general_stats = ecs_get_component_list("general-stats");
+  CharSheet *char_sheet = ecs_get_component_list("char-sheet");
   DefensiveStats *defensive_stats = ecs_get_component_list("defensive-stats");
   for (Entity e = 0; e < ecs_entities_amount(); e++) {
     (void)attributes;
-    (void)general_stats;
+    (void)char_sheet;
     (void)defensive_stats;
     V2f pos = { -renderer_text_dimensions(1, "Character Sheet").x * 0.5f, UI_TOP };
     renderer_text(pos, 1, false, BORDER_COLOR, 0, "Character Sheet");
@@ -25,42 +25,69 @@ draw_char_sheet_system(void) {
     for (u32 i = 0; i < 5; i++) {
       renderer_text(pos, 1, false, BORDER_COLOR, 0, "%s", attrib_names[i]);
       renderer_text(v2f_add(pos, V2F(3*PX_TO_UNIT, -1)), 1, false, 0xffff00ff, 0, "%+d", ((i32 *)&attributes[e])[i]);
-      pos.x += 3.78125;
+      pos.x += 3.78125f;
     }
 
-    pos.y -= 3;
-    pos.x = UI_LEFT + 0.75f;
-    V2f prv_pos = pos;
-    V2f siz = { 4, 2.5f };
-    renderer_rect(pos, siz, false, 0xffffffff, 0);
-    renderer_rect(v2f_add(pos, V2F(PX_TO_UNIT, -PX_TO_UNIT)) , v2f_subs(siz, 2*PX_TO_UNIT), false, 0x000000ff, 0);
-    pos.y -= PX_TO_UNIT;
-    pos.x += siz.x * 0.5f - renderer_text_dimensions(1, "# HP").x * 0.5f;
+    pos.y -= 2.5f;
+    pos.x = UI_LEFT;
+    renderer_rect(pos, V2F(UI_W, PX_TO_UNIT), false, BORDER_COLOR, 0);
+
+    pos.y -= 0.5f;
+    pos.x = UI_LEFT + 0.5f;
     renderer_text(pos, 1, false, BORDER_COLOR, 0, "# HP");
-    pos.y -= 1;
-    pos.x = prv_pos.x + siz.x * 0.5f - renderer_text_dimensions(1, "%.2u/%.2u", defensive_stats[e].hit_points_cur, defensive_stats[e].hit_points_max).x * 0.5f + PX_TO_UNIT;
-    renderer_text(pos, 1, false, 0xffff00ff, 0, "%.2u/%.2u", defensive_stats[e].hit_points_cur, defensive_stats[e].hit_points_max);
+    renderer_text(v2f_add(pos, V2F(3.75f, 0)), 1, false, 0xffff00ff, 0, "%.2d/%.2d", defensive_stats[e].hit_points_cur, defensive_stats[e].hit_points_max);
 
-    prv_pos.x +=  siz.x + 2;
-    pos = prv_pos;
-    renderer_rect(pos, siz, false, 0xffffffff, 0);
-    renderer_rect(v2f_add(pos, V2F(PX_TO_UNIT, -PX_TO_UNIT)) , v2f_subs(siz, 2*PX_TO_UNIT), false, 0x000000ff, 0);
-    pos.y -= PX_TO_UNIT;
-    pos.x += siz.x * 0.5f - renderer_text_dimensions(1, "& FP").x * 0.5f;
-    renderer_text(pos, 1, false, BORDER_COLOR, 0, "& FP");
-    pos.y -= 1;
-    pos.x = prv_pos.x + siz.x * 0.5f - renderer_text_dimensions(1, "%.2u/%.2u", general_stats[e].food_points_cur, general_stats[e].food_points_max).x * 0.5f + PX_TO_UNIT;
-    renderer_text(pos, 1, false, 0xffff00ff, 0, "%.2u/%.2u", general_stats[e].food_points_cur, general_stats[e].food_points_max);
-
-    prv_pos.x +=  siz.x + 2;
-    pos = prv_pos;
-    renderer_rect(pos, siz, false, 0xffffffff, 0);
-    renderer_rect(v2f_add(pos, V2F(PX_TO_UNIT, -PX_TO_UNIT)) , v2f_subs(siz, 2*PX_TO_UNIT), false, 0x000000ff, 0);
-    pos.y -= PX_TO_UNIT;
-    pos.x += siz.x * 0.5f - renderer_text_dimensions(1, "` EP").x * 0.5f;
+    pos.y -= 1.5f;
     renderer_text(pos, 1, false, BORDER_COLOR, 0, "` EP");
-    pos.y -= 1;
-    pos.x = prv_pos.x + siz.x * 0.5f - renderer_text_dimensions(1, "%.2u/%.2u", general_stats[e].essence_points_cur, general_stats[e].essence_points_max).x * 0.5f + PX_TO_UNIT;
-    renderer_text(pos, 1, false, 0xffff00ff, 0, "%.2u/%.2u", general_stats[e].essence_points_cur, general_stats[e].essence_points_max);
+    renderer_text(v2f_add(pos, V2F(3.75f, 0)), 1, false, 0xffff00ff, 0, "%.2d/%.2d", char_sheet[e].essence_points_cur, char_sheet[e].essence_points_max);
+
+    pos.x = UI_RIGHT - 7.5f - PX_TO_UNIT;
+    pos.y += 1.5f;
+    renderer_text(pos, 1, false, BORDER_COLOR, 0, "\\ AP");
+    renderer_text(v2f_add(pos, V2F(4.75f, 0)), 1, false, 0xffff00ff, 0, "%.2d", defensive_stats[e].armour_points);
+
+    pos.y -= 1.5f;
+    renderer_text(pos, 1, false, BORDER_COLOR, 0, "& FP");
+    renderer_text(v2f_add(pos, V2F(3.75f, 0)), 1, false, 0xffff00ff, 0, "%.2d/%.2d", char_sheet[e].food_points_cur, char_sheet[e].food_points_max);
+
+
+    pos.y -= 1.5f;
+    pos.x = UI_LEFT;
+    renderer_rect(pos, V2F(UI_W, PX_TO_UNIT), false, BORDER_COLOR, 0);
+
+    pos.x += UI_W * 0.5f;
+    pos.y += 3.5f;
+    renderer_rect(pos, V2F(PX_TO_UNIT, 3.5f), false, BORDER_COLOR, 0);
+
+    pos.y -= 4.0f + PX_TO_UNIT;
+    pos.x = UI_LEFT + 0.5f;
+    V2f siz = { 3.5f, 2.0f+2*PX_TO_UNIT };
+    renderer_rect(pos, siz, 0, BORDER_COLOR, 0);
+    pos.x += PX_TO_UNIT;
+    pos.y -= PX_TO_UNIT;
+    siz = v2f_subs(siz, 2*PX_TO_UNIT);
+    renderer_rect(pos, siz, 0, 0x000000ff, 0);
+    renderer_text(v2f_add(pos, V2F(siz.x * 0.5f - 1, 0)), 1, false, BORDER_COLOR, 0, "LVL");
+    pos.y--;
+    renderer_text(v2f_add(pos, V2F(siz.x * 0.5f - 0.75f, 0)), 1, false, 0xffff00ff, 0, "%.2u", char_sheet[e].level);
+
+
+    pos.y += PX_TO_UNIT + 1;
+    renderer_text(V2F(-renderer_text_dimensions(1, "%s", char_sheet[e].name).x *0.5f, pos.y - 0.5f), 1, false, 0xffff00ff, 0, "%s", char_sheet[e].name);
+
+    siz = v2f_adds(siz, 2*PX_TO_UNIT);
+    pos.x = UI_RIGHT - siz.y - 2.0f;
+    renderer_rect(pos, siz, 0, BORDER_COLOR, 0);
+    pos.x += PX_TO_UNIT;
+    pos.y -= PX_TO_UNIT;
+    siz = v2f_subs(siz, 2*PX_TO_UNIT);
+    renderer_rect(pos, siz, 0, 0x000000ff, 0);
+    renderer_text(v2f_add(pos, V2F(siz.x * 0.5f - 1, 0)), 1, false, BORDER_COLOR, 0, "EXP");
+    pos.y--;
+    renderer_text(v2f_add(pos, V2F(siz.x * 0.5f - 1, 0)), 1, false, 0xffff00ff, 0, "%.3u", char_sheet[e].experience);
+
+    pos.y -= siz.y - 0.25f;
+    pos.x = UI_LEFT;
+    renderer_rect(pos, V2F(UI_W, PX_TO_UNIT), false, BORDER_COLOR, 0);
   }
 }

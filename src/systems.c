@@ -19,5 +19,5 @@ systems_create(void) {
   ecs_system_must_have(draw_rect_system, "color");
 
   ecs_system_create(draw_char_sheet_system, ON_DRAW_UI);
-  ecs_system_must_have(draw_char_sheet_system, "attributes", "defensive-stats", "general-stats");
+  ecs_system_must_have(draw_char_sheet_system, "attributes", "defensive-stats", "char-sheet");
 }

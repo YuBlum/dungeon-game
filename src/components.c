@@ -13,7 +13,7 @@ components_create(void) {
   ecs_component_create(bool, "bump");
   ecs_component_create(Attributes, "attributes");
   ecs_component_create(DefensiveStats, "defensive-stats");
-  ecs_component_create(GeneralStats, "general-stats");
+  ecs_component_create(CharSheet, "char-sheet");
 
   ecs_empty_component_create("input");
 }

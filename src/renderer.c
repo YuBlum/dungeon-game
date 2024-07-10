@@ -350,6 +350,16 @@ __renderer_rect(V2f position, V2f size, bool center, f32 r, f32 g, f32 b, f32 a,
   }
 }
 
+void
+__renderer_sprite(V2f position, V2i sprite_start, V2i sprite_end, V2f scale, bool center, f32 r, f32 g, f32 b, f32 a, Layer layer, const char *file, u32 line) {
+  Blend blend = { r,g,b,a };
+  if (center) {
+    renderer_request_quad_center(position, scale, blend, sprite_start, sprite_end, layer, file, line);
+  } else {
+    renderer_request_quad_top_left(position, scale, blend, sprite_start, sprite_end, layer, file, line);
+  }
+}
+
 V2f
 renderer_text_dimensions(f32 scale, const char *fmt, ...) {
   va_list args;
