@@ -4,6 +4,7 @@
 #include "include/renderer.h"
 
 static const char *attrib_names[] = { "AGI", "INT", "PRE", "STR", "VIG", };
+static const char *class_names[] = { "Fighter", "Thief", "Wizard" };
 
 void
 draw_char_sheet_system(void) {
@@ -14,8 +15,8 @@ draw_char_sheet_system(void) {
     (void)attributes;
     (void)char_sheet;
     (void)defensive_stats;
-    V2f pos = { -renderer_text_dimensions(1, "Character Sheet").x * 0.5f, UI_TOP };
-    renderer_text(pos, 1, false, BORDER_COLOR, 0, "Character Sheet");
+    V2f pos = { -renderer_text_dimensions(1, "%s", char_sheet[e].name).x * 0.5f, UI_TOP };
+    renderer_text(pos, 1, false, 0xffff00ff, 0, "%s", char_sheet[e].name);
     pos.y -= 1 + PX_TO_UNIT;
     pos.x = UI_LEFT;
     renderer_rect(pos, V2F(UI_W, PX_TO_UNIT), false, BORDER_COLOR, 0);
@@ -73,7 +74,9 @@ draw_char_sheet_system(void) {
 
 
     pos.y += PX_TO_UNIT + 1;
-    renderer_text(V2F(-renderer_text_dimensions(1, "%s", char_sheet[e].name).x *0.5f, pos.y - 0.5f), 1, false, 0xffff00ff, 0, "%s", char_sheet[e].name);
+    renderer_text(
+      V2F(-renderer_text_dimensions(1, "~ %s ~", class_names[char_sheet[e].class]).x *0.5f, pos.y - 0.5f),
+      1, false, BORDER_COLOR, 0, "~ %s ~", class_names[char_sheet[e].class]);
 
     siz = v2f_adds(siz, 2*PX_TO_UNIT);
     pos.x = UI_RIGHT - siz.y - 2.0f;

@@ -13,19 +13,26 @@ typedef struct {
 } Attributes;
 
 typedef struct {
-  u32 hit_points_max;
   u32 hit_points_cur;
+  u32 hit_points_max;
   u32 armour_points;
 } DefensiveStats;
 
+typedef enum {
+  CLASS_FIGHTER = 0,
+  CLASS_THIEF,
+  CLASS_WIZARD
+} Class;
+
 typedef struct {
   const char *name;
-  u32 essence_points_max;
   u32 essence_points_cur;
-  u32 food_points_max;
+  u32 essence_points_max;
   u32 food_points_cur;
+  u32 food_points_max;
   u32 experience;
   u32 level;
+  Class class;
 } CharSheet;
 
 typedef struct {

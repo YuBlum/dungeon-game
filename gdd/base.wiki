@@ -7,7 +7,7 @@ All attributes starts at -2.
 
 Depending of your class some attributes may start at 0.
 
-on the first level you receive 5 points that you can distribute among them, you can set attributes to -3, doing that you receive more points to spend. On the first level the attributes have a cap of 1.
+on the first level you receive 5 points that you can distribute among them. On the first level the attributes have a cap of 1.
 
 On other levels you can upgrade your attributes, but it can never pass of 5.
 
@@ -93,16 +93,16 @@ If FP goes to less then the half of the maximum FP you become Hungry, you move s
 
 If FP goes to 0 you are dying of hunger, each round you lose -2 HP.
 
-The FP value is equal to 200 + Vigor * 50.
+The FP value is equal to 49 + Vigor * 10.
 
--2 * 50 = -100 + 200 = 100
--1 * 50 = -050 + 200 = 150
- 0 * 50 =  000 + 200 = 200
- 1 * 50 =  050 + 200 = 250
- 2 * 50 =  100 + 200 = 300
- 3 * 50 =  150 + 200 = 350
- 4 * 50 =  200 + 200 = 400
- 5 * 50 =  250 + 200 = 450
+-2 * 10 = -20 + 49 = 29
+-1 * 10 = -10 + 49 = 39
+ 0 * 10 =  00 + 49 = 49
+ 1 * 10 =  10 + 49 = 59
+ 2 * 10 =  20 + 49 = 69
+ 3 * 10 =  30 + 49 = 79
+ 4 * 10 =  40 + 49 = 89
+ 5 * 10 =  50 + 49 = 99
 
 === AP ===
 AP stands for Armour Points. It represents how resistant and fast to avoid attacks you are.
@@ -125,18 +125,18 @@ You gain EXP by clearing dungeons, finding secret treasures and completing quest
 
 With EXP you can level up.
 
-| LVL | EXP   |
-|-----|-------|
-| 01  | 00000 |
-| 02  | 00300 |
-| 03  | 00600 |
-| 04  | 01200 |
-| 05  | 02400 |
-| 06  | 04800 |
-| 07  | 09600 |
-| 08  | 19200 |
-| 09  | 38400 |
-| 10  | 76800 |
+| LVL | EXP |
+|-----|-----|
+| 01  | 099 |
+| 02  | 199 |
+| 03  | 299 |
+| 04  | 399 |
+| 05  | 499 |
+| 06  | 599 |
+| 07  | 699 |
+| 08  | 799 |
+| 09  | 899 |
+| 10  | 999 |
 
 == Classes ==
 
@@ -144,20 +144,21 @@ With EXP you can level up.
 Fighters have more HP and do more physical damage than the other classes.
 
 ==== Fighter Progression ====
-| LVL | Hability              |
-|-----|-----------------------|
-| 01  | 0 Strength            |
-| 02  | +2 AP                 |
-| 03  | +2 Attribute Points   |
-| 04  | +2 Fighter Habilities |
-| 05  | +2 AP                 |
-| 06  | +3 Attribute Points   |
-| 07  | +2 Fighter Habilities |
-| 08  | +2 AP                 |
-| 09  | +2 Fighter Habilities |
-| 10  | +4 Attribute Points   |
+| LVL | Progression          |
+|-----|----------------------|
+| 00  | 0 Strength           |
+| 01  | +1 Attribute Points  |
+| 02  | +1 Fighter Abilities |
+| 03  | +1 Attribute Points  |
+| 04  | +2 AP                |
+| 05  | +2 Fighter Abilities |
+| 06  | +3 Attribute Points  |
+| 07  | +2 Fighter Abilities |
+| 08  | +2 AP                |
+| 09  | +4 Attribute Points  |
+| 10  | +2 Fighter Abilities |
 
-==== Fighter Habilities ====
+==== Fighter Abilities ====
 | Name          | Description                                                | EP Cost | Requires            |
 |---------------|------------------------------------------------------------|---------|---------------------|
 | Rage I        | Your next melee attack have +5 damage                      | 4       | Strength 1          |
@@ -167,28 +168,30 @@ Fighters have more HP and do more physical damage than the other classes.
 | Tank II       | All your armour have +2 AP for the next 5 rounds           | 8       | Vigor 3, Tank I     |
 | Tank III      | All your armour have +3 AP for the next 5 rounds           | 12      | Vigor 5, Tank II    |
 | Quick Attack  | If you pass on your next melee attack you can attack again | 6       | Agility 1           |
-| Strong Attack | All your melee weapons have +1 die of damage               | -       | Strength 2          |
-| Resistance    | When you level up you gain +2 HP                           | -       | Vigor 2             |
+| Strong Attack | Your next melee attack have +1 die of damage               | 6       | strength 3          |
+| Massive Power | All your melee weapons have +1 die of damage               | -       | Strength 4          |
+| Resistance    | When you level up you gain +2 HP                           | -       | Vigor 3             |
 | Iron Body     | You gain +1 AP                                             | -       | Vigor 2             |
 
 === Thief ===
 Thiefs are good in exploration, finding secret doors, opening locks and distance attacks.
 
 ==== Thief Progression ====
-| LVL | Hability            |
+| LVL | Progression         |
 |-----|---------------------|
-| 01  | 0 Agility           |
-| 02  | +1 AP               |
-| 03  | +2 Attribute Points |
-| 04  | +2 Thief Habilities |
-| 05  | +1 AP               |
+| 00  | 0 Agility           |
+| 01  | +1 Attribute Points |
+| 02  | +1 Thief Abilities  |
+| 03  | +1 Attribute Points |
+| 04  | +1 AP               |
+| 05  | +2 Thief Abilities  |
 | 06  | +3 Attribute Points |
-| 07  | +2 Thief Habilities |
+| 07  | +2 Thief Abilities  |
 | 08  | +1 AP               |
-| 09  | +2 Thief Habilities |
-| 10  | +4 Attribute Points |
+| 09  | +4 Attribute Points |
+| 10  | +2 Thief Abilities  |
 
-==== Thief Habilities ====
+==== Thief Abilities ====
 | Name         | Description                                          | EP Cost | Requires              |
 |--------------|------------------------------------------------------|---------|-----------------------|
 | Shooter I    | Your next distance attack have +5 damage             | 8       | Agility 1             |
@@ -200,7 +203,7 @@ Thiefs are good in exploration, finding secret doors, opening locks and distance
 | Theft        | Learn an hability of another class                   | -       | Presence 3            |
 | Lucky Person | You have more chances of finding good loot           | -       | Presence 1            |
 | Deft         | You can do two actions per turn                      | -       | Agility 4             |
-| Stealth      | The enemies can't see you as often for 10 rounds     | 4       | Nothing               |
+| Stealth      | The enemies can't see you as often for 10 rounds     | 4       | Agility 1             |
 | Lucky Aim    | You have advantage on your next distance attack test | 8       | Presence 1            |
 | Perfect Aim  | You have +2 on your next distance attack test        | 12      | Agility 2             |
 | Burgler      | You have +2 when using a lockpick                    | 12      | Agility 2             |
@@ -211,20 +214,21 @@ Wizards have more EP than the other classes, this is the only class that can use
 You start with two spells of intelect 0.
 
 ==== Wizard Progression ====
-| LVL | Hability             |
-|-----|----------------------|
-| 01  | 0 Intelect           |
-| 02  | New Spell            |
-| 03  | +2 Attribute Points  |
-| 04  | +2 Wizard Habilities |
-| 05  | New Spell            |
-| 06  | +3 Attribute Points  |
-| 07  | +2 Wizard Habilities |
-| 08  | New Spell            |
-| 09  | +2 Wizard Habilities |
-| 10  | +4 Attribute Points  |
+| LVL | Progression         |
+|-----|---------------------|
+| 00  | 0 Strength          |
+| 01  | +1 Attribute Points |
+| 02  | +2 Normal Spells    |
+| 03  | +1 Wizard Abilities |
+| 04  | +2 Attribute Points |
+| 05  | +3 Complex Spells   |
+| 06  | +2 Wizard Abilities |
+| 07  | +2 Attribute Points |
+| 08  | +2 Wizard Abilities |
+| 09  | +4 Attribute Points |
+| 05  | +4 Extreme Spells   |
 
-==== Wizard Habilities ====
+==== Wizard Abilities ====
 | Name           | Description                                               | EP Cost | Requires                |
 |----------------|-----------------------------------------------------------|---------|-------------------------|
 | Powerful I     | Your next spell attack have +5 damage                     | 10      | Intelect 1              |
@@ -246,9 +250,9 @@ The Spell Test is an Intelect test.
 Spells always costs 5 EP, but if you fail the test you lose 10 EP. The spell still works even if you fail. 
 
 ===== List of Spells =====
-| Name           | Description                                               | Intelect | dt |
-|----------------|-----------------------------------------------------------|----------|----|
-|                |                                                           |          |    |
+| Name | Description | Type | dt |
+|------|-------------|------|----|
+|      |             |      |    |
 
 
 

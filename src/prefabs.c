@@ -16,7 +16,7 @@ prefab_player(V2f position) {
     ecs_entity_creation_setup_component(bool, "bump", false);
     ecs_entity_creation_setup_component(Attributes, "attributes", ((Attributes){ -1, +0, +1, -2, -1 }));
     ecs_entity_creation_setup_component(DefensiveStats, "defensive-stats", ((DefensiveStats){ 17, 20, 9 }));
-    ecs_entity_creation_setup_component(CharSheet, "char-sheet", ((CharSheet){ "Name", 4, 6, 112, 150, 98, 2 }));
+    ecs_entity_creation_setup_component(CharSheet, "char-sheet", ((CharSheet){ "Name", 4, 6, 99, 99, 98, 2, CLASS_THIEF }));
   ecs_entity_creation_end();
 }
 
