@@ -1,16 +1,17 @@
 #include "include/core.h"
 #include "include/global.h"
 #include "include/prefabs.h"
+#include "include/scene_manager.h"
 #include "include/window.h"
 
 static void
 start_option(void) {
-  INFO("START");
+  scene_manager_goto_next();
 }
 
 static void
 help_option(void) {
-  INFO("HELP");
+  WARN("Not Implemented");
 }
 
 static void

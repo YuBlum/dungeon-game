@@ -8,8 +8,10 @@ void movement_system(void);
 void draw_rect_system(void);
 void draw_char_sheet_system(void);
 void draw_option_system(void);
-void hover_on_option_system(void);
+void hover_over_option_system(void);
 void select_option_system(void);
+void check_save_slot_system(void);
+void draw_save_slot_system(void);
 
 void systems_create(void);
 

@@ -25,15 +25,19 @@ typedef enum {
 } Class;
 
 typedef struct {
-  const char *name;
   u32 essence_points_cur;
   u32 essence_points_max;
   u32 food_points_cur;
   u32 food_points_max;
   u32 experience;
   u32 level;
-  Class class;
 } CharSheet;
+
+#define CHAR_NAME_CAP 10
+typedef struct {
+  char buff[CHAR_NAME_CAP];
+  u32 size;
+} CharName;
 
 typedef struct {
   V2f prv;

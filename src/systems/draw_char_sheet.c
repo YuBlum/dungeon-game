@@ -9,14 +9,16 @@ static const char *class_names[] = { "Fighter", "Thief", "Wizard" };
 void
 draw_char_sheet_system(void) {
   Attributes *attributes = ecs_get_component_list("attributes");
+  CharName *char_name = ecs_get_component_list("char-name");
   CharSheet *char_sheet = ecs_get_component_list("char-sheet");
+  Class *class = ecs_get_component_list("class");
   DefensiveStats *defensive_stats = ecs_get_component_list("defensive-stats");
   for (Entity e = 0; e < ecs_entities_amount(); e++) {
     (void)attributes;
     (void)char_sheet;
     (void)defensive_stats;
-    V2f pos = { -renderer_text_dimensions(1, "%s", char_sheet[e].name).x * 0.5f, UI_TOP };
-    renderer_text(pos, 1, false, false, 0xffff00ff, 0, "%s", char_sheet[e].name);
+    V2f pos = { -renderer_text_dimensions(1, "%.*s", char_name[e].buff, char_name[e].size).x * 0.5f, UI_TOP };
+    renderer_text(pos, 1, false, false, 0xffff00ff, 0, "%s", char_name[e]);
     pos.y -= 1 + PX_TO_UNIT;
     pos.x = UI_LEFT;
     renderer_rect(pos, V2F(UI_W, PX_TO_UNIT), false, BORDER_COLOR, 0);
@@ -75,8 +77,8 @@ draw_char_sheet_system(void) {
 
     pos.y += PX_TO_UNIT + 1;
     renderer_text(
-      V2F(-renderer_text_dimensions(1, "~ %s ~", class_names[char_sheet[e].class]).x *0.5f, pos.y - 0.5f),
-      1, false, false, BORDER_COLOR, 0, "~ %s ~", class_names[char_sheet[e].class]);
+      V2F(-renderer_text_dimensions(1, "~ %s ~", class_names[class[e]]).x *0.5f, pos.y - 0.5f),
+      1, false, false, BORDER_COLOR, 0, "~ %s ~", class_names[class[e]]);
 
     siz = v2f_adds(siz, 2*PX_TO_UNIT);
     pos.x = UI_RIGHT - siz.y - 2.0f;

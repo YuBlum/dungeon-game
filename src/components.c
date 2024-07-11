@@ -14,8 +14,10 @@ components_create(void) {
   ecs_component_create(Attributes, "attributes");
   ecs_component_create(DefensiveStats, "defensive-stats");
   ecs_component_create(CharSheet, "char-sheet");
+  ecs_component_create(Class, "class");
   ecs_component_create(OptionCallback, "option-callback");
-  ecs_component_create(const char *, "name");
+  ecs_component_create(const char *, "tag");
+  ecs_component_create(CharName, "char-name");
   ecs_component_create(i32, "option-id");
   ecs_component_create(i32, "cursor");
 

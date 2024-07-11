@@ -19,14 +19,20 @@ systems_create(void) {
   ecs_system_must_have(draw_rect_system, "color");
 
   ecs_system_create(draw_char_sheet_system, ON_DRAW_UI);
-  ecs_system_must_have(draw_char_sheet_system, "attributes", "defensive-stats", "char-sheet");
+  ecs_system_must_have(draw_char_sheet_system, "attributes", "defensive-stats", "char-sheet", "char-name", "class");
 
   ecs_system_create(draw_option_system, ON_DRAW_SCREEN);
-  ecs_system_must_have(draw_option_system, "position", "name", "option-id");
+  ecs_system_must_have(draw_option_system, "position", "tag", "option-id");
 
-  ecs_system_create(hover_on_option_system, ON_UPDATE);
-  ecs_system_must_have(hover_on_option_system, "cursor");
+  ecs_system_create(hover_over_option_system, ON_UPDATE);
+  ecs_system_must_have(hover_over_option_system, "cursor");
 
   ecs_system_create(select_option_system, ON_UPDATE);
   ecs_system_must_have(select_option_system, "option-callback", "option-id");
+
+  ecs_system_create(check_save_slot_system, ON_SCENE_START);
+  ecs_system_must_have(check_save_slot_system, "char-name", "class", "option-id");
+
+  ecs_system_create(draw_save_slot_system, ON_DRAW_SCREEN);
+  ecs_system_must_have(draw_save_slot_system, "char-name", "class", "option-id", "position");
 }

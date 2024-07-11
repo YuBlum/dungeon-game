@@ -2,6 +2,7 @@
 #define __SCENES_H__
 
 void main_menu_scene(void);
+void save_slots_menu_scene(void);
 
 void scenes_create(void);
 
