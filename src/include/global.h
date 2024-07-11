@@ -5,6 +5,8 @@
 
 typedef struct {
   f32 dt;
+  bool split_screen;
+  i32 option_id;
 } Global;
 
 extern Global global;

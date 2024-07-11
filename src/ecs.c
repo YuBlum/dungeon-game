@@ -82,12 +82,15 @@ static const char *system_event_str[] = {
   "ON_PRE_UPDATE",
   "ON_UPDATE",
   "ON_POS_UPDATE",
-  "ON_PRE_DRAW",
-  "ON_DRAW",
-  "ON_POS_DRAW",
+  "ON_PRE_DRAW_GAME",
+  "ON_DRAW_GAME",
+  "ON_POS_DRAW_GAME",
   "ON_PRE_DRAW_UI",
   "ON_DRAW_UI",
   "ON_POS_DRAW_UI",
+  "ON_PRE_DRAW_SCREEN",
+  "ON_DRAW_SCREEN",
+  "ON_POS_DRAW_SCREEN",
 };
 _Static_assert(sizeof (system_event_str) / sizeof (char *) == SYSTEM_EVENTS_AMOUNT, "system_event_str doesn't handle all system events");
 #endif
@@ -832,8 +835,8 @@ ecs_update(void) {
 }
 
 void
-ecs_draw(void) {
-  for (SystemEvent event = ON_PRE_DRAW; event <= ON_POS_DRAW; event++) {
+ecs_draw_game(void) {
+  for (SystemEvent event = ON_PRE_DRAW_GAME; event <= ON_POS_DRAW_GAME; event++) {
     ecs_run_event_systems(event);
   }
 }
@@ -841,6 +844,13 @@ ecs_draw(void) {
 void
 ecs_draw_ui(void) {
   for (SystemEvent event = ON_PRE_DRAW_UI; event <= ON_POS_DRAW_UI; event++) {
+    ecs_run_event_systems(event);
+  }
+}
+
+void
+ecs_draw_screen(void) {
+  for (SystemEvent event = ON_PRE_DRAW_SCREEN; event <= ON_POS_DRAW_SCREEN; event++) {
     ecs_run_event_systems(event);
   }
 }

@@ -68,15 +68,15 @@ static Glyph font[FONT_GLYPHS_AMOUNT];
 //static Renderbuffer renderbuffers[RENDER_TARGET_AMOUNT];
 
 #if DEVMODE
-    _Static_assert(RENDER_TARGET_AMOUNT == 2, "not all render targets are handled here");
+    _Static_assert(RENDER_TARGET_AMOUNT == 3, "not all render targets are handled here");
 #endif
 static Framebuffer framebuffer;
 static Renderbuffer renderbuffer;
-static const u32 rendertarget_width[RENDER_TARGET_AMOUNT]  = { UI_W_PX, GAME_W_PX, };
-static const u32 rendertarget_height[RENDER_TARGET_AMOUNT] = { UI_H_PX, GAME_H_PX, };
-static const u32 rendertarget_x[RENDER_TARGET_AMOUNT] = { UI_X_PX, GAME_X_PX };
-static const u32 rendertarget_y[RENDER_TARGET_AMOUNT] = { UI_Y_PX, GAME_Y_PX };
-static const CameraProjFn rendertarget_projection_fn[RENDER_TARGET_AMOUNT] = { camera_ui_matrix, camera_game_matrix };
+static const u32 rendertarget_width[RENDER_TARGET_AMOUNT]                  = { UI_W_PX, GAME_W_PX, SCREEN_W_PX };
+static const u32 rendertarget_height[RENDER_TARGET_AMOUNT]                 = { UI_H_PX, GAME_H_PX, SCREEN_H_PX };
+static const u32 rendertarget_x[RENDER_TARGET_AMOUNT]                      = { UI_X_PX, GAME_X_PX, SCREEN_X_PX };
+static const u32 rendertarget_y[RENDER_TARGET_AMOUNT]                      = { UI_Y_PX, GAME_Y_PX, SCREEN_Y_PX };
+static const CameraProjFn rendertarget_projection_fn[RENDER_TARGET_AMOUNT] = { camera_ui_matrix, camera_game_matrix, camera_screen_matrix };
 
 
 #if DEVMODE
@@ -249,9 +249,9 @@ renderer_create(void) {
   glGenFramebuffers(1, &framebuffer);
   glGenRenderbuffers(1, &renderbuffer);
   glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-  glViewport(0, 0, WINDOW_ORIGINAL_W, WINDOW_ORIGINAL_H);
+  glViewport(0, 0, SCREEN_W_PX, SCREEN_H_PX);
   glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
-  glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA, WINDOW_ORIGINAL_W, WINDOW_ORIGINAL_H);
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA, SCREEN_W_PX, SCREEN_H_PX);
   glBindRenderbuffer(GL_RENDERBUFFER, 0);
   glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderbuffer);
   /* shaders */
@@ -363,13 +363,8 @@ __renderer_sprite(V2f position, V2i sprite_start, V2i sprite_end, V2f scale, boo
   }
 }
 
-V2f
-renderer_text_dimensions(f32 scale, const char *fmt, ...) {
-  va_list args;
-  char str[1024];
-  va_start(args, fmt);
-  vsnprintf(str, 1024, fmt, args);
-  va_end(args);
+static V2f
+renderer_text_dimensions_non_variadic(f32 scale, const char *str) {
   V2f dim = { 0, 1 };
   f32 cur_x = 0;
   for (u32 i = 0; i < 1024; i++) {
@@ -393,13 +388,28 @@ renderer_text_dimensions(f32 scale, const char *fmt, ...) {
   return dim;
 }
 
-void
-__renderer_text(V2f position, f32 scale, bool center, f32 r, f32 g, f32 b, f32 a, Layer layer, const char *file, u32 line, const char *fmt, ...) {
+V2f
+renderer_text_dimensions(f32 scale, const char *fmt, ...) {
   va_list args;
   char str[1024];
   va_start(args, fmt);
   vsnprintf(str, 1024, fmt, args);
   va_end(args);
+  return renderer_text_dimensions_non_variadic(scale, str);
+}
+
+void
+__renderer_text(V2f position, f32 scale, bool center_x, bool center_y, f32 r, f32 g, f32 b, f32 a, Layer layer, const char *file, u32 line, const char *fmt, ...) {
+  va_list args;
+  char str[1024];
+  va_start(args, fmt);
+  vsnprintf(str, 1024, fmt, args);
+  va_end(args);
+  if (center_x || center_y) {
+    V2f size = renderer_text_dimensions_non_variadic(scale, str);
+    position.x -= size.x * 0.5f * center_x;
+    position.y += size.y * 0.5f * center_y;
+  }
   V2f glyph_pos = position;
   for (u32 i = 0; i < 1024; i++) {
     u32 glyph_index = 94;
@@ -415,11 +425,7 @@ __renderer_text(V2f position, f32 scale, bool center, f32 r, f32 g, f32 b, f32 a
     } else if (str[i] >= '!' && str[i] <= '~') {
       glyph_index = str[i] - '!';
     }
-    if (center) {
-      renderer_request_quad_center(glyph_pos, V2F(font[glyph_index].width_unit * scale, scale), (Blend){r,g,b,a}, V2I(font[glyph_index].start_x, 0), V2I(font[glyph_index].end_x, 8), layer, file, line);
-    } else {
-      renderer_request_quad_top_left(glyph_pos, V2F(font[glyph_index].width_unit * scale, scale), (Blend){r,g,b,a}, V2I(font[glyph_index].start_x, 0), V2I(font[glyph_index].end_x, 8), layer, file, line);
-    }
+    renderer_request_quad_top_left(glyph_pos, V2F(font[glyph_index].width_unit * scale, scale), (Blend){r,g,b,a}, V2I(font[glyph_index].start_x, 0), V2I(font[glyph_index].end_x, 8), layer, file, line);
     glyph_pos.x += (font[glyph_index].width_unit + PX_TO_UNIT) * scale;
   }
 }
@@ -456,14 +462,14 @@ renderer_to_screen(void) {
   glScissor(0, 0, WINDOW_W, WINDOW_H);
   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
   glBlitFramebuffer(
-    0, 0, WINDOW_ORIGINAL_W, WINDOW_ORIGINAL_H,
+    0, 0, SCREEN_W_PX, SCREEN_H_PX,
     0, 0, WINDOW_W, WINDOW_H,
     GL_COLOR_BUFFER_BIT, GL_NEAREST
   );
 
   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
-  glViewport(0, 0, WINDOW_ORIGINAL_W, WINDOW_ORIGINAL_H);
-  glScissor(0, 0, WINDOW_ORIGINAL_W, WINDOW_ORIGINAL_H);
+  glViewport(0, 0, SCREEN_W_PX, SCREEN_H_PX);
+  glScissor(0, 0, SCREEN_W_PX, SCREEN_H_PX);
   glClearColor(COLOR_NR(BORDER_COLOR), COLOR_NG(BORDER_COLOR), COLOR_NB(BORDER_COLOR), 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
 }

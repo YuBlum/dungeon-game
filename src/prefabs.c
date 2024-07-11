@@ -3,6 +3,7 @@
 #include "include/math.h"
 #include "include/renderer.h"
 #include "include/tilemap.h"
+#include "include/prefabs.h"
 
 void
 prefab_player(V2f position) {
@@ -26,5 +27,22 @@ prefab_solid(V2f position) {
   ecs_entity_creation_begin("position", "color");
     ecs_entity_creation_setup_component(V2f, "position", position);
     ecs_entity_creation_setup_component(Color, "color", 0x00aa55ff);
+  ecs_entity_creation_end();
+}
+
+void
+prefab_menu_option(V2f position, const char *name, OptionCallback callback, i32 option_id) {
+  ecs_entity_creation_begin("position", "option-callback", "name", "option-id");
+    ecs_entity_creation_setup_component(V2f, "position", position);
+    ecs_entity_creation_setup_component(OptionCallback, "option-callback", callback);
+    ecs_entity_creation_setup_component(const char *, "name", name);
+    ecs_entity_creation_setup_component(i32, "option-id", option_id);
+  ecs_entity_creation_end();
+}
+
+void
+prefab_menu_cursor(i32 options_amount) {
+  ecs_entity_creation_begin("cursor");
+    ecs_entity_creation_setup_component(i32, "cursor", options_amount);
   ecs_entity_creation_end();
 }

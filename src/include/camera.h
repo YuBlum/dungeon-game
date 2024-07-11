@@ -6,6 +6,7 @@ typedef f32 *Camera;
 
 typedef Camera (*CameraProjFn)(void);
 
+Camera camera_screen_matrix(void);
 Camera camera_game_matrix(void);
 Camera camera_ui_matrix(void);
 

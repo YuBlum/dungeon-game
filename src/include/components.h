@@ -41,6 +41,8 @@ typedef struct {
   f32 timer;
 } PositionLerp;
 
+typedef void(*OptionCallback)(void);
+
 void components_create(void);
 
 #endif/*__COMPONENTS_H__*/

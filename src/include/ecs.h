@@ -15,12 +15,15 @@ typedef enum {
   ON_PRE_UPDATE,
   ON_UPDATE,
   ON_POS_UPDATE,
-  ON_PRE_DRAW,
-  ON_DRAW,
-  ON_POS_DRAW,
+  ON_PRE_DRAW_GAME,
+  ON_DRAW_GAME,
+  ON_POS_DRAW_GAME,
   ON_PRE_DRAW_UI,
   ON_DRAW_UI,
   ON_POS_DRAW_UI,
+  ON_PRE_DRAW_SCREEN,
+  ON_DRAW_SCREEN,
+  ON_POS_DRAW_SCREEN,
 
   SYSTEM_EVENTS_AMOUNT
 } SystemEvent;
@@ -58,8 +61,9 @@ void ecs_system_deactivate_all(void);
 void ecs_scene_start(void);
 void ecs_scene_end(void);
 void ecs_update(void);
-void ecs_draw(void);
+void ecs_draw_game(void);
 void ecs_draw_ui(void);
+void ecs_draw_screen(void);
 
 #define ecs_component_create(TYPE, NAME) __ecs_component_create(sizeof (TYPE), NAME, __FILE__, __LINE__)
 #define ecs_empty_component_create(NAME) __ecs_component_create(0, NAME, __FILE__, __LINE__)
