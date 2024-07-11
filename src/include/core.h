@@ -28,12 +28,12 @@
 #define GAME_W_PX       176
 #define GAME_H_PX       178
 #define GAME_BORDER_PX  1
-#define GAME_Y_PX      (GAME_BORDER_PX * WINDOW_SCALE) 
-#define GAME_X_PX      (GAME_BORDER_PX * WINDOW_SCALE)
+#define GAME_Y_PX      GAME_BORDER_PX 
+#define GAME_X_PX      GAME_BORDER_PX
 #define UI_W_PX        (WINDOW_ORIGINAL_W - GAME_W_PX - GAME_BORDER_PX * 3)
 #define UI_H_PX        GAME_H_PX
-#define UI_X_PX        ((GAME_BORDER_PX * 2 + GAME_W_PX) * WINDOW_SCALE)
-#define UI_Y_PX        (GAME_BORDER_PX * WINDOW_SCALE)
+#define UI_X_PX        (GAME_BORDER_PX * 2 + GAME_W_PX)
+#define UI_Y_PX        GAME_BORDER_PX
 
 #define GAME_RIGHT  +(GAME_W / 2.0f)
 #define GAME_LEFT   -(GAME_W / 2.0f)

@@ -218,15 +218,15 @@ You start with two spells of intelect 0.
 |-----|---------------------|
 | 00  | 0 Strength          |
 | 01  | +1 Attribute Points |
-| 02  | +2 Normal Spells    |
+| 02  | +2 Spells           |
 | 03  | +1 Wizard Abilities |
 | 04  | +2 Attribute Points |
-| 05  | +3 Complex Spells   |
+| 05  | +2 Spells           |
 | 06  | +2 Wizard Abilities |
 | 07  | +2 Attribute Points |
-| 08  | +2 Wizard Abilities |
+| 08  | +2 Spells           |
 | 09  | +4 Attribute Points |
-| 05  | +4 Extreme Spells   |
+| 05  | +4 Spells           |
 
 ==== Wizard Abilities ====
 | Name           | Description                                               | EP Cost | Requires                |
@@ -237,10 +237,11 @@ You start with two spells of intelect 0.
 | Sorcerer I     | The DT of the spell lower in 1                            | 8       | Intelect 1              |
 | Sorcerer II    | The DT of the spell lower in 2                            | 10      | Intelect 3, Sorcerer I  |
 | Sorcerer III   | The DT of the spell lower in 3                            | 12      | Intelect 5, Sorcerer II |
-| Lucky Wizard   | You have advantage on spell tests                         | 12      | Presence 1              |
+| Lucky Wizard   | You have advantage on spell tests for 2 rounds            | 12      | Presence 1              |
 | Enhence        | Your next spell will have double of the effect            | 20      | Intelect 3              |
 | Proficient     | You gain +2 EP when you level up                          | -       | Intelect 2              |
 | Favorite Spell | You choose one spell to always have advantage on the test | -       | Intelect 3              |
+| Expert Wizard  | You don't need components to cast spells anymore          | -       | Intelect 5              |
 
 ==== Spells ====
 
@@ -249,12 +250,20 @@ The Spell Test is an Intelect test.
 
 Spells always costs 5 EP, but if you fail the test you lose 10 EP. The spell still works even if you fail. 
 
+The DT of the test is based on the spell type
+
+| Type    | DT |
+|---------|----|
+| Normal  | 12 |
+| Complex | 16 |
+| Extreme | 20 |
+
 ===== List of Spells =====
-| Name | Description | Type | dt |
-|------|-------------|------|----|
-|      |             |      |    |
-
-
+| Name           | Description                              | Type   | Intelect |
+|----------------|------------------------------------------|--------|----------|
+| Gambling       | Your next test have advantage            | Normal | 0        |
+| Speed of Light | You can make 3 actions on the next round | Normal |          |
+| Speed of Light | You can make 3 actions on the next round | Normal |          |
 
 == Attribute Tests ==
 When something have a chance for failure an attribute test is gonna be performed.

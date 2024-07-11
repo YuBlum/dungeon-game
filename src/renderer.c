@@ -64,16 +64,20 @@ static Vertex vertices[VERTICES_CAP];
 static Texture atlas;
 static Glyph font[FONT_GLYPHS_AMOUNT];
 
-static Framebuffer framebuffers[RENDER_TARGET_AMOUNT];
-static Renderbuffer renderbuffers[RENDER_TARGET_AMOUNT];
+//static Framebuffer framebuffers[RENDER_TARGET_AMOUNT];
+//static Renderbuffer renderbuffers[RENDER_TARGET_AMOUNT];
+
 #if DEVMODE
     _Static_assert(RENDER_TARGET_AMOUNT == 2, "not all render targets are handled here");
 #endif
-static const u32 renderbuffers_width[RENDER_TARGET_AMOUNT]  = { UI_W_PX, GAME_W_PX, };
-static const u32 renderbuffers_height[RENDER_TARGET_AMOUNT] = { UI_H_PX, GAME_H_PX, };
-static const u32 renderbuffers_x[RENDER_TARGET_AMOUNT] = { UI_X_PX, GAME_X_PX };
-static const u32 renderbuffers_y[RENDER_TARGET_AMOUNT] = { UI_Y_PX, GAME_Y_PX };
-static const CameraProjFn projection_fn[RENDER_TARGET_AMOUNT] = { camera_ui_matrix, camera_game_matrix };
+static Framebuffer framebuffer;
+static Renderbuffer renderbuffer;
+static const u32 rendertarget_width[RENDER_TARGET_AMOUNT]  = { UI_W_PX, GAME_W_PX, };
+static const u32 rendertarget_height[RENDER_TARGET_AMOUNT] = { UI_H_PX, GAME_H_PX, };
+static const u32 rendertarget_x[RENDER_TARGET_AMOUNT] = { UI_X_PX, GAME_X_PX };
+static const u32 rendertarget_y[RENDER_TARGET_AMOUNT] = { UI_Y_PX, GAME_Y_PX };
+static const CameraProjFn rendertarget_projection_fn[RENDER_TARGET_AMOUNT] = { camera_ui_matrix, camera_game_matrix };
+
 
 #if DEVMODE
 static void
@@ -241,16 +245,15 @@ renderer_create(void) {
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlas_w, atlas_h, 0, GL_BGRA, GL_UNSIGNED_BYTE, atlas_buff);
   free(atlas_buff);
   /* render targets */
-  glGenFramebuffers(RENDER_TARGET_AMOUNT, framebuffers);
-  glGenRenderbuffers(RENDER_TARGET_AMOUNT, renderbuffers);
-  for (RenderTarget target = 0; target < RENDER_TARGET_AMOUNT; target++) {
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffers[target]);
-    glBindRenderbuffer(GL_RENDERBUFFER, renderbuffers[target]);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA, renderbuffers_width[target], renderbuffers_height[target]);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderbuffers[target]);
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-  }
+  glEnable(GL_SCISSOR_TEST);
+  glGenFramebuffers(1, &framebuffer);
+  glGenRenderbuffers(1, &renderbuffer);
+  glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+  glViewport(0, 0, WINDOW_ORIGINAL_W, WINDOW_ORIGINAL_H);
+  glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA, WINDOW_ORIGINAL_W, WINDOW_ORIGINAL_H);
+  glBindRenderbuffer(GL_RENDERBUFFER, 0);
+  glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderbuffer);
   /* shaders */
   default_shader = renderer_shader_load("default");
   glUseProgram(default_shader.id);
@@ -422,22 +425,17 @@ __renderer_text(V2f position, f32 scale, bool center, f32 r, f32 g, f32 b, f32 a
 }
 
 void
-__renderer_clear(f32 r, f32 g, f32 b) {
-  glClearColor(r, g, b, 1.0f);
+renderer_batch_start(RenderTarget target) {
+  quads_amount = 0;
+  glViewport(rendertarget_x[target], rendertarget_y[target], rendertarget_width[target], rendertarget_height[target]);
+  glScissor(rendertarget_x[target], rendertarget_y[target], rendertarget_width[target], rendertarget_height[target]);
+  glUniformMatrix3fv(default_shader.camera, true, 1, rendertarget_projection_fn[target]());
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void
-renderer_batch_start(RenderTarget target) {
-  quads_amount = 0;
-  glViewport(0, 0, renderbuffers_width[target], renderbuffers_height[target]);
-  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffers[target]);
-  glUniformMatrix3fv(default_shader.camera, true, 1, projection_fn[target]());
-  renderer_clear(0x00000000);
-}
-
-void
-renderer_batch_end(RenderTarget target) {
+renderer_batch_end(void) {
   Vertex *vertex = vertices;
   for (usize layer = 0; layer < LAYERS_CAP; layer++) {
     for (usize quad = 0; quad < render_requests_amount[layer]; quad++) {
@@ -450,15 +448,22 @@ renderer_batch_end(RenderTarget target) {
   }
   glBufferSubData(GL_ARRAY_BUFFER, 0, quads_amount * sizeof (Quad), vertices);
   glDrawElements(GL_TRIANGLES, quads_amount * 6, GL_UNSIGNED_INT, 0);
-  glViewport(0, 0, WINDOW_W, WINDOW_H);
-  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+}
 
-  glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffers[target]);
+void
+renderer_to_screen(void) {
+  glViewport(0, 0, WINDOW_W, WINDOW_H);
+  glScissor(0, 0, WINDOW_W, WINDOW_H);
   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
   glBlitFramebuffer(
-    0, 0, renderbuffers_width[target], renderbuffers_height[target],
-    renderbuffers_x[target], renderbuffers_y[target], renderbuffers_x[target] + renderbuffers_width[target] * WINDOW_SCALE, renderbuffers_y[target] + renderbuffers_height[target] * WINDOW_SCALE,
+    0, 0, WINDOW_ORIGINAL_W, WINDOW_ORIGINAL_H,
+    0, 0, WINDOW_W, WINDOW_H,
     GL_COLOR_BUFFER_BIT, GL_NEAREST
   );
-  glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+
+  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
+  glViewport(0, 0, WINDOW_ORIGINAL_W, WINDOW_ORIGINAL_H);
+  glScissor(0, 0, WINDOW_ORIGINAL_W, WINDOW_ORIGINAL_H);
+  glClearColor(COLOR_NR(BORDER_COLOR), COLOR_NG(BORDER_COLOR), COLOR_NB(BORDER_COLOR), 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT);
 }
