@@ -4,6 +4,14 @@
 #include "include/math.h"
 #include "include/types.h"
 
+typedef void(*OptionCallback)(void);
+
+typedef enum {
+  CLASS_FIGHTER = 0,
+  CLASS_THIEF,
+  CLASS_WIZARD
+} Class;
+
 typedef struct {
   i32 agility;
   i32 intelect;
@@ -18,12 +26,6 @@ typedef struct {
   u32 armour_points;
 } DefensiveStats;
 
-typedef enum {
-  CLASS_FIGHTER = 0,
-  CLASS_THIEF,
-  CLASS_WIZARD
-} Class;
-
 typedef struct {
   u32 essence_points_cur;
   u32 essence_points_max;
@@ -31,13 +33,13 @@ typedef struct {
   u32 food_points_max;
   u32 experience;
   u32 level;
-} CharSheet;
+} CharacterSheet;
 
-#define CHAR_NAME_CAP 10
+#define CHARACTER_NAME_CAP 10
 typedef struct {
-  char buff[CHAR_NAME_CAP];
+  char buff[CHARACTER_NAME_CAP];
   u32 size;
-} CharName;
+} CharacterName;
 
 typedef struct {
   V2f prv;
@@ -45,7 +47,10 @@ typedef struct {
   f32 timer;
 } PositionLerp;
 
-typedef void(*OptionCallback)(void);
+typedef struct {
+  u32 options_amount;
+  bool horizontal;
+} Cursor;
 
 void components_create(void);
 

@@ -3,6 +3,7 @@
 
 void main_menu_scene(void);
 void save_slots_menu_scene(void);
+void character_creation_scene(void);
 
 void scenes_create(void);
 

@@ -36,6 +36,7 @@ window_create(void) {
   glfwMakeContextCurrent(window);
   gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
   glfwSetKeyCallback(window, (GLFWkeyfun)input_key_callback);
+  glfwSetCharCallback(window, (GLFWcharfun)input_char_callback);
   global.dt = 1.0f/60.0f;
 }
 
