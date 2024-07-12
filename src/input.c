@@ -39,7 +39,7 @@ input_key_callback(void *window, int glfw_key, int scancode, int action, int mod
 void
 input_char_callback(void *window, u32 codepoint) {
   (void)window;
-  if (codepoint == ' ' || (codepoint >= 'A' && codepoint <= 'Z') || (codepoint >= 'a' && codepoint <= 'z'))
+  if ((codepoint >= 'A' && codepoint <= 'Z') || (codepoint >= 'a' && codepoint <= 'z'))
     letter_pressed = codepoint;
 }
 

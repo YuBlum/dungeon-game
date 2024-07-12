@@ -16,6 +16,10 @@ void select_save_slot_system(void);
 void draw_character_name_input_system(void);
 void global_cursor_update_system(void);
 void select_character_name_input_system(void);
+void draw_option_with_u32_arg_system(void);
+void total_attribute_points_system(void);
+void draw_attribute_input_system(void);
+void select_attribute_input(void);
 
 void systems_create(void);
 

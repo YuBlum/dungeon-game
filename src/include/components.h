@@ -4,13 +4,26 @@
 #include "include/math.h"
 #include "include/types.h"
 
-typedef void(*OptionCallback)(void);
+typedef const char *Tag;
+
+typedef void *OptionCallbackArg;
+
+typedef void(*OptionCallback)(void *);
 
 typedef enum {
-  CLASS_FIGHTER = 0,
+  CLASS_UNKNOWN = -1,
+  CLASS_FIGHTER,
   CLASS_THIEF,
   CLASS_WIZARD
 } Class;
+
+typedef enum {
+  ATT_AGILITY = 0,
+  ATT_INTELECT,
+  ATT_PRESENCE,
+  ATT_STRENGTH,
+  ATT_VIGOR
+} AttributeType;
 
 typedef struct {
   i32 agility;

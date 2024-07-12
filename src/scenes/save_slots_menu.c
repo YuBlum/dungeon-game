@@ -13,6 +13,7 @@ save_slots_menu_scene(void) {
   global.split_screen = false;
   global.option_id[0] = 0;
   global.cursor_id = 0;
+  global.cursor_id_prv = 0;
   V2f position = { 0.0f, 3.0f };
   prefab_save_slot(position, 0, 0);
   position.y -= 2;
@@ -20,6 +21,6 @@ save_slots_menu_scene(void) {
   position.y -= 2;
   prefab_save_slot(position, 2, 0);
   position.y -= 2;
-  prefab_menu_option(position, "Go Back", go_back_option, 3, 0);
+  prefab_menu_option(position, "Go Back", (OptionCallback)go_back_option, 0, 3, 0);
   prefab_menu_cursor(4, 0, false);
 }

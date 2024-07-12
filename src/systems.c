@@ -23,6 +23,10 @@ systems_create(void) {
 
   ecs_system_create(draw_option_system, ON_DRAW_SCREEN);
   ecs_system_must_have(draw_option_system, "position", "tag", "option-id");
+  ecs_system_must_not_have(draw_option_system, "u32-arg");
+
+  ecs_system_create(draw_option_with_u32_arg_system, ON_DRAW_SCREEN);
+  ecs_system_must_have(draw_option_with_u32_arg_system, "position", "tag", "option-id", "u32-arg");
 
   ecs_system_create(cursor_navigation_system, ON_UPDATE);
   ecs_system_must_have(cursor_navigation_system, "cursor", "cursor-id");
@@ -47,4 +51,13 @@ systems_create(void) {
 
   ecs_system_create(select_character_name_input_system, ON_UPDATE);
   ecs_system_must_have(select_character_name_input_system, "character-name", "option-id", "cursor-id");
+
+  ecs_system_create(total_attribute_points_system, ON_UPDATE);
+  ecs_system_must_have(total_attribute_points_system, "u32-arg", "total-attribute-points");
+
+  ecs_system_create(draw_attribute_input_system, ON_DRAW_SCREEN);
+  ecs_system_must_have(draw_attribute_input_system, "position", "attribute-type", "attribute-points", "option-id", "cursor-id");
+
+  ecs_system_create(select_attribute_input, ON_UPDATE);
+  ecs_system_must_have(select_attribute_input, "attribute-type", "attribute-points", "option-id", "cursor-id");
 }

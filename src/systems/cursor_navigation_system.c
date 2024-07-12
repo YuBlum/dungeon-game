@@ -9,6 +9,7 @@ cursor_navigation_system(void) {
   Cursor *cursor = ecs_get_component_list("cursor");
   for (Entity e = 0; e < ecs_entities_amount(); e++) {
     if (global.cursor_id != id[e]) continue;
+    if (global.option_id[id[e]] >= cursor[e].options_amount) global.option_id[id[e]] = 0;
     i32 move = cursor[e].horizontal ? (input_key_pressed(KEY_RIGHT) - input_key_pressed(KEY_LEFT)) : (input_key_pressed(KEY_DOWN) - input_key_pressed(KEY_UP));
     if (move < 0 && global.option_id[id[e]] == 0) {
       global.option_id[id[e]] = cursor[e].options_amount - 1;
