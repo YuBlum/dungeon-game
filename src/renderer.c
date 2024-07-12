@@ -363,39 +363,35 @@ __renderer_sprite(V2f position, V2i sprite_start, V2i sprite_end, V2f scale, boo
   }
 }
 
-static V2f
-renderer_text_dimensions_non_variadic(f32 scale, const char *str) {
-  V2f dim = { 0, 1 };
-  f32 cur_x = 0;
+static f32
+renderer_text_width(f32 scale, const char *str) {
+  f32 width = 0;
   for (u32 i = 0; i < 1024; i++) {
     u32 glyph_index = 94;
-    if (str[i] == '\0') {
+    if (str[i] == '\0' || str[i] == '\n') {
       break;
-    } else if (str[i] == '\n') {
-      if (cur_x > dim.x) dim.x = cur_x;
-      dim.x = 0;
-      dim.y += scale;
-      continue;
     } else if (str[i] == ' ') {
-      dim.x += 5*PX_TO_UNIT * scale;
+      width += 5*PX_TO_UNIT * scale;
       continue;
     } else if (str[i] >= '!' && str[i] <= '~') {
       glyph_index = str[i] - '!';
     }
-    dim.x += (font[glyph_index].width_unit + PX_TO_UNIT) * scale;
+    width += (font[glyph_index].width_unit + PX_TO_UNIT) * scale;
   }
-  if (cur_x > dim.x) dim.x = cur_x;
-  return dim;
+  return width;
 }
 
-V2f
-renderer_text_dimensions(f32 scale, const char *fmt, ...) {
-  va_list args;
-  char str[1024];
-  va_start(args, fmt);
-  vsnprintf(str, 1024, fmt, args);
-  va_end(args);
-  return renderer_text_dimensions_non_variadic(scale, str);
+static f32
+renderer_text_height(f32 scale, const char *str) {
+  f32 height = 1;
+  for (u32 i = 0; i < 1024; i++) {
+    if (str[i] == '\0') {
+      break;
+    } else if (str[i] == '\n') {
+      height += scale;
+    }
+  }
+  return height;
 }
 
 void
@@ -405,18 +401,16 @@ __renderer_text(V2f position, f32 scale, bool center_x, bool center_y, f32 r, f3
   va_start(args, fmt);
   vsnprintf(str, 1024, fmt, args);
   va_end(args);
-  if (center_x || center_y) {
-    V2f size = renderer_text_dimensions_non_variadic(scale, str);
-    position.x -= size.x * 0.5f * center_x;
-    position.y += size.y * 0.5f * center_y;
-  }
   V2f glyph_pos = position;
+  if (center_x) glyph_pos.x -= renderer_text_width(scale, str) * 0.5f;
+  if (center_y) glyph_pos.y += renderer_text_height(scale, str) * 0.5f;
   for (u32 i = 0; i < 1024; i++) {
     u32 glyph_index = 94;
     if (str[i] == '\0') {
       break;
     } else if (str[i] == '\n') {
       glyph_pos.x = position.x;
+      if (center_x) glyph_pos.x -= renderer_text_width(scale, str + i + 1) * 0.5f;
       glyph_pos.y -= scale;
       continue;
     } else if (str[i] == ' ') {

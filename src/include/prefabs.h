@@ -12,5 +12,6 @@ void prefab_save_slot(V2f position, u32 id, u32 cursor_id);
 void prefab_character_name_input(V2f position, u32 id, u32 cursor_id);
 void prefab_menu_option_with_u32_arg(V2f position, Tag tag, OptionCallback callback, OptionCallbackArg callback_arg, u32 id, u32 cursor_id, u32 arg_starting_value, const char *extra_component);
 void prefab_attribute_input(V2f position, AttributeType attribute_type, u32 id, u32 cursor_id);
+void prefab_menu_hint(V2f position);
 
 #endif/*__PREFABS_H__*/

@@ -46,6 +46,8 @@ scenes_create(void) {
   scene_manager_activate_system(character_creation_scene, total_attribute_points_system);
   scene_manager_activate_system(character_creation_scene, draw_attribute_input_system);
   scene_manager_activate_system(character_creation_scene, select_attribute_input);
+  scene_manager_activate_system(character_creation_scene, draw_menu_hint_system);
+  scene_manager_activate_system(character_creation_scene, menu_hint_system);
 
   scene_manager_create_scene(scene_test0);
   scene_manager_activate_system(scene_test0, set_tile_system);

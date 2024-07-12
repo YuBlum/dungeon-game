@@ -95,3 +95,10 @@ prefab_attribute_input(V2f position, AttributeType attribute_type, u32 id, u32 c
     ecs_entity_creation_setup_component(i32, "attribute-points", -2);
   ecs_entity_creation_end();
 }
+
+void
+prefab_menu_hint(V2f position) {
+  ecs_entity_creation_begin("position", "menu-hint");
+    ecs_entity_creation_setup_component(V2f, "position", position);
+  ecs_entity_creation_end();
+}

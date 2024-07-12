@@ -20,6 +20,8 @@ void draw_option_with_u32_arg_system(void);
 void total_attribute_points_system(void);
 void draw_attribute_input_system(void);
 void select_attribute_input(void);
+void menu_hint_system(void);
+void draw_menu_hint_system(void);
 
 void systems_create(void);
 

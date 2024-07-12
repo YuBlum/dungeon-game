@@ -1,4 +1,5 @@
 #include "include/components.h"
+#include "include/core.h"
 #include "include/global.h"
 #include "include/math.h"
 #include "include/prefabs.h"
@@ -19,10 +20,15 @@ attributes_option(void) {
   global.cursor_id = 2;
 }
 
+static void
+begin_adventure_option(void) {
+}
+
 void
 character_creation_scene(void) {
   global.split_screen = false;
-  global.attribute_points = 5;
+  global.total_attribute_points = 5;
+  global.has_name = false;
   global.class = CLASS_UNKNOWN;
   global.class_prv = CLASS_UNKNOWN;
   global.option_id[0] = 0;
@@ -30,10 +36,11 @@ character_creation_scene(void) {
   global.option_id[2] = 0;
   global.cursor_id = 0;
   global.cursor_id_prv = 0;
+  global.hint = "";
   V2f position = { 0, 6 };
   prefab_character_name_input(position, 0, 0);
   position.y -= 2;
-  prefab_menu_option(position, "Choose a Class", (OptionCallback)class_option, 0, 1, 0);
+  prefab_menu_option(position, "Class", (OptionCallback)class_option, 0, 1, 0);
   position.y -= 1;
   prefab_menu_option(V2F(-05.0f, position.y), "Fighter", (OptionCallback)choose_class_option, (OptionCallbackArg)CLASS_FIGHTER, 0, 1);
   prefab_menu_option(V2F(+00.0f, position.y), "Thief", (OptionCallback)choose_class_option, (OptionCallbackArg)CLASS_THIEF, 1, 1);
@@ -46,7 +53,10 @@ character_creation_scene(void) {
   prefab_attribute_input(V2F(+00.0f, position.y), ATT_PRESENCE, 2, 2);
   prefab_attribute_input(V2F(+07.0f, position.y), ATT_STRENGTH, 3, 2);
   prefab_attribute_input(V2F(+14.0f, position.y), ATT_VIGOR,    4, 2);
-  prefab_menu_cursor(3, 0, false);
+  position.y -= 4.5f;
+  prefab_menu_option(position, "Begin Adventure", (OptionCallback)begin_adventure_option, 0, 3, 0);
+  prefab_menu_cursor(4, 0, false);
   prefab_menu_cursor(3, 1, true);
   prefab_menu_cursor(5, 2, true);
+  prefab_menu_hint(V2F(0, SCREEN_BOTTOM + 2));
 }

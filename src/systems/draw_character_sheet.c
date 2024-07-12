@@ -17,8 +17,8 @@ draw_character_sheet_system(void) {
     (void)attributes;
     (void)character_sheet;
     (void)defensive_stats;
-    V2f pos = { -renderer_text_dimensions(1, "%.*s", character_name[e].buff, character_name[e].size).x * 0.5f, UI_TOP };
-    renderer_text(pos, 1, false, false, 0xffff00ff, 0, "%s", character_name[e]);
+    V2f pos = { 0, UI_TOP };
+    renderer_text(pos, 1, true, false, 0xffff00ff, 0, "%s", character_name[e]);
     pos.y -= 1 + PX_TO_UNIT;
     pos.x = UI_LEFT;
     renderer_rect(pos, V2F(UI_W, PX_TO_UNIT), false, BORDER_COLOR, 0);
@@ -76,9 +76,7 @@ draw_character_sheet_system(void) {
 
 
     pos.y += PX_TO_UNIT + 1;
-    renderer_text(
-      V2F(-renderer_text_dimensions(1, "~ %s ~", class_names[class[e]]).x *0.5f, pos.y - 0.5f),
-      1, false, false, BORDER_COLOR, 0, "~ %s ~", class_names[class[e]]);
+    renderer_text(V2F(0, pos.y - 0.5f), 1, true, false, BORDER_COLOR, 0, "~ %s ~", class_names[class[e]]);
 
     siz = v2f_adds(siz, 2*PX_TO_UNIT);
     pos.x = UI_RIGHT - siz.y - 2.0f;

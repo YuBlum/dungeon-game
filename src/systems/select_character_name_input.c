@@ -17,5 +17,6 @@ select_character_name_input_system(void) {
     } else if (input_key_repeated(KEY_BACKSPACE) && character_name[e].size > 0) {
       character_name[e].size--;
     }
+    global.has_name = character_name[e].size > 0;
   }
 }

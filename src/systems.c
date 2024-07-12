@@ -60,4 +60,10 @@ systems_create(void) {
 
   ecs_system_create(select_attribute_input, ON_UPDATE);
   ecs_system_must_have(select_attribute_input, "attribute-type", "attribute-points", "option-id", "cursor-id");
+
+  ecs_system_create(menu_hint_system, ON_UPDATE);
+  ecs_system_must_have(menu_hint_system, "menu-hint");
+
+  ecs_system_create(draw_menu_hint_system, ON_DRAW_SCREEN);
+  ecs_system_must_have(draw_menu_hint_system, "position", "menu-hint");
 }

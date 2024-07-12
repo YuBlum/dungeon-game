@@ -15,7 +15,7 @@ void scene_manager_update(void);
 
 #define scene_manager_create_scene(SCENE) do { (void)SCENE; __scene_manager_create_scene(SCENE, #SCENE, __FILE__, __LINE__); } while(0)
 #define scene_manager_activate_system(SCENE, SYSTEM) do { (void)SCENE; (void)SYSTEM; __scene_manager_activate_system(#SCENE, #SYSTEM, __FILE__, __LINE__); } while(0)
-#define scene_manager_is_current_scene(SCENE) do { (void)SCENE; __scene_manager_is_current_scene(#SCENE, __FILE__, __LINE__); } while(0)
+#define scene_manager_is_current_scene(SCENE) __scene_manager_is_current_scene(#SCENE, __FILE__, __LINE__)
 #define scene_manager_goto_scene(SCENE) do { (void)SCENE; __scene_manager_goto_scene(#SCENE, __FILE__, __LINE__); } while(0)
 #define scene_manager_goto_next() __scene_manager_goto_next(__FILE__, __LINE__)
 #define scene_manager_goto_prev() __scene_manager_goto_prev(__FILE__, __LINE__)
