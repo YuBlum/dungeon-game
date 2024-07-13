@@ -1,5 +1,4 @@
 #include "include/components.h"
-#include "include/core.h"
 #include "include/ecs.h"
 #include "include/global.h"
 #include "include/input.h"
@@ -15,7 +14,7 @@ select_save_slot_system(void) {
     if (global.cursor_id != cursor_id[e] || global.option_id[cursor_id[e]] != id[e] || !input_key_pressed(KEY_A)) continue;
     global.save_slot = id[e];
     if (character_name[e].size) {
-      WARN("Not Implemented");
+      scene_manager_goto_scene(scene_test0);
     } else {
       scene_manager_goto_scene(character_creation_scene);
     }

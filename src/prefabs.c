@@ -1,13 +1,49 @@
 #include "include/components.h"
+#include "include/core.h"
 #include "include/ecs.h"
+#include "include/global.h"
 #include "include/math.h"
 #include "include/renderer.h"
 #include "include/tilemap.h"
+#include <stdio.h>
 #include "include/prefabs.h"
 
 void
 prefab_player(V2f position) {
   position = tilemap_snap_to_grid(position);
+  CharacterName name;
+  Class class;
+  Attributes attributes;
+  CharacterSheet character_sheet;
+  DefensiveStats defensive_stats;
+  char path[SAVE_PATH_SIZE];
+  snprintf(path, SAVE_PATH_SIZE, SAVE_PATH_FMT, global.save_slot);
+  FILE *f = fopen(path, "rb");
+  if (!f) {
+#if DEVMODE
+    ERROR("Couldn't open '%s'", path);
+#else
+    exit(1);
+#endif
+  }
+  fread(&name.size,                          sizeof (u32),   1,         f);
+  fread(name.buff,                           sizeof (char),  name.size, f);
+  fread(&class,                              sizeof (Class), 1,         f);
+  fread(&attributes.agility,                 sizeof (i32),   1,         f);
+  fread(&attributes.intelect,                sizeof (i32),   1,         f);
+  fread(&attributes.presence,                sizeof (i32),   1,         f);
+  fread(&attributes.strength,                sizeof (i32),   1,         f);
+  fread(&attributes.vigor,                   sizeof (i32),   1,         f);
+  fread(&character_sheet.level,              sizeof (u32),   1,         f);
+  fread(&character_sheet.experience,         sizeof (u32),   1,         f);
+  fread(&defensive_stats.armour_points,      sizeof (u32),   1,         f);
+  fread(&defensive_stats.hit_points_max,     sizeof (u32),   1,         f);
+  fread(&defensive_stats.hit_points_cur,     sizeof (u32),   1,         f);
+  fread(&character_sheet.food_points_cur,    sizeof (u32),   1,         f);
+  fread(&character_sheet.food_points_max,    sizeof (u32),   1,         f);
+  fread(&character_sheet.essence_points_cur, sizeof (u32),   1,         f);
+  fread(&character_sheet.essence_points_max, sizeof (u32),   1,         f);
+  fclose(f);
   ecs_entity_creation_begin("position", "direction", "position-lerp", "speed", "color", "input", "bump", "attributes", "defensive-stats", "character-name", "character-sheet", "class");
     ecs_entity_creation_setup_component(V2f, "position", position);
     ecs_entity_creation_setup_component(V2f, "direction", V2FS(0));
@@ -15,11 +51,11 @@ prefab_player(V2f position) {
     ecs_entity_creation_setup_component(f32, "speed", 6.0f);
     ecs_entity_creation_setup_component(Color, "color", 0xffaa00ff);
     ecs_entity_creation_setup_component(bool, "bump", false);
-    ecs_entity_creation_setup_component(Attributes, "attributes", ((Attributes){ -1, +0, +1, -2, -1 }));
-    ecs_entity_creation_setup_component(DefensiveStats, "defensive-stats", ((DefensiveStats){ 17, 20, 9 }));
-    ecs_entity_creation_setup_component(CharacterName, "character-name", ((CharacterName) { "Name", 4 }));
-    ecs_entity_creation_setup_component(CharacterSheet, "character-sheet", ((CharacterSheet){ 4, 6, 99, 99, 98, 2 }));
-    ecs_entity_creation_setup_component(Class, "class", CLASS_THIEF);
+    ecs_entity_creation_setup_component(Attributes, "attributes", attributes);
+    ecs_entity_creation_setup_component(DefensiveStats, "defensive-stats", defensive_stats);
+    ecs_entity_creation_setup_component(CharacterName, "character-name", name);
+    ecs_entity_creation_setup_component(CharacterSheet, "character-sheet", character_sheet);
+    ecs_entity_creation_setup_component(Class, "class", class);
   ecs_entity_creation_end();
 }
 

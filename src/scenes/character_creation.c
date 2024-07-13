@@ -14,7 +14,6 @@ static void
 get_character_name(CharacterName *name) {
   CharacterName *nc_name = ecs_entity_reference_get_component(new_character, "character-name");
   *nc_name = *name;
-  INFO("%.*s", name->size, name->buff);
 }
 
 static void
@@ -28,42 +27,36 @@ choose_class_option(CallbackArg class) {
   *nc_class = (uptr)class;
   global.cursor_id = 0;
   global.class = (uptr)class;
-  INFO("%d", *nc_class);
 }
 
 static void
 get_agility(i32 *agility) {
   Attributes *attributes = ecs_entity_reference_get_component(new_character, "attributes");
   attributes->agility = *agility;
-  INFO("agility: %d", attributes->agility);
 }
 
 static void
 get_intelect(i32 *intelect) {
   Attributes *attributes = ecs_entity_reference_get_component(new_character, "attributes");
   attributes->intelect = *intelect;
-  INFO("intelect: %d", attributes->intelect);
 }
 
 static void
 get_presence(i32 *presence) {
   Attributes *attributes = ecs_entity_reference_get_component(new_character, "attributes");
   attributes->presence = *presence;
-  INFO("presence: %d", attributes->presence);
 }
 
 static void
 get_strength(i32 *strength) {
   Attributes *attributes = ecs_entity_reference_get_component(new_character, "attributes");
   attributes->strength = *strength;
-  INFO("strength %d", attributes->strength);
 }
 
 static void
 get_vigor(i32 *vigor) {
   Attributes *attributes = ecs_entity_reference_get_component(new_character, "attributes");
   attributes->vigor = *vigor;
-  INFO("vigor: %d", attributes->vigor);
 }
 
 static void
@@ -74,21 +67,55 @@ attributes_option(void) {
 static void
 begin_adventure_option(void) {
   if (!global.has_name || global.total_attribute_points > 0 || global.class == CLASS_UNKNOWN) return;
+  /* get parameters */
   CharacterName *name = ecs_entity_reference_get_component(new_character, "character-name");
   Class *class = ecs_entity_reference_get_component(new_character, "class");
   Attributes *attributes = ecs_entity_reference_get_component(new_character, "attributes");
+  /* calculate stats */
+  DefensiveStats defensive_stats;
+  CharacterSheet character_sheet;
+  character_sheet.level              = 0;
+  character_sheet.experience         = 0;
+  defensive_stats.armour_points      = 6;
+  defensive_stats.hit_points_max     = 20 + (attributes->vigor + attributes->strength) * 3;
+  defensive_stats.hit_points_cur     = defensive_stats.hit_points_max;
+  character_sheet.food_points_max    = 49 + attributes->vigor * 10;
+  character_sheet.food_points_cur    = character_sheet.food_points_max;
+  character_sheet.essence_points_max = 10 + (attributes->intelect + attributes->presence) * 2;
+  character_sheet.essence_points_cur = character_sheet.essence_points_max;
+  /* create save file */
   char path[SAVE_PATH_SIZE];
   snprintf(path, SAVE_PATH_SIZE, SAVE_PATH_FMT, global.save_slot);
   FILE *f = fopen(path, "wb");
 #if DEVMODE
   if (!f) ERROR("couldn't create file");
 #endif
-  fwrite(&name->size, sizeof (u32), 1, f);
-  fwrite(name->buff, sizeof (char), name->size, f);
-  fwrite(class, sizeof (Class), 1, f);
-  fwrite(attributes, sizeof (Attributes), 1, f);
+  /* write to save file */
+  fwrite(&name->size,                         sizeof (u32),   1,          f);
+  fwrite(name->buff,                          sizeof (char),  name->size, f);
+  fwrite(class,                               sizeof (Class), 1,          f);
+  fwrite(&attributes->agility,                sizeof (i32),   1,          f);
+  fwrite(&attributes->intelect,               sizeof (i32),   1,          f);
+  fwrite(&attributes->presence,               sizeof (i32),   1,          f);
+  fwrite(&attributes->strength,               sizeof (i32),   1,          f);
+  fwrite(&attributes->vigor,                  sizeof (i32),   1,          f);
+  fwrite(&character_sheet.level,              sizeof (u32),   1,          f);
+  fwrite(&character_sheet.experience,         sizeof (u32),   1,          f);
+  fwrite(&defensive_stats.armour_points,      sizeof (u32),   1,          f);
+  fwrite(&defensive_stats.hit_points_max,     sizeof (u32),   1,          f);
+  fwrite(&defensive_stats.hit_points_cur,     sizeof (u32),   1,          f);
+  fwrite(&character_sheet.food_points_cur,    sizeof (u32),   1,          f);
+  fwrite(&character_sheet.food_points_max,    sizeof (u32),   1,          f);
+  fwrite(&character_sheet.essence_points_cur, sizeof (u32),   1,          f);
+  fwrite(&character_sheet.essence_points_max, sizeof (u32),   1,          f);
   fclose(f);
   scene_manager_goto_scene(scene_test0);
+}
+
+static void
+go_back_option(void) {
+  ecs_entity_clean_reference(&new_character);
+  scene_manager_goto_scene(save_slots_menu_scene);
 }
 
 void
@@ -122,7 +149,9 @@ character_creation_scene(void) {
   prefab_attribute_input(V2F(+14.0f, position.y), ATT_VIGOR,    4, 2, (Callback)get_vigor);
   position.y -= 4.5f;
   prefab_menu_option(position, "Begin Adventure", (Callback)begin_adventure_option, 0, 3, 0);
-  prefab_menu_cursor(4, 0, false);
+  position.y -= 2.0f;
+  prefab_menu_option(position, "Go Back", (Callback)go_back_option, 0, 4, 0);
+  prefab_menu_cursor(5, 0, false);
   prefab_menu_cursor(3, 1, true);
   prefab_menu_cursor(5, 2, true);
   prefab_menu_hint(V2F(0, SCREEN_BOTTOM + 2));
