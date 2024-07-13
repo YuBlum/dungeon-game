@@ -27,10 +27,10 @@ main_menu_scene(void) {
   global.cursor_id = 0;
   global.cursor_id_prv = 0;
   V2f position = { 0.0f, 2.5f };
-  prefab_menu_option(position, "Start", (OptionCallback)start_option, 0, 0, 0);
+  prefab_menu_option(position, "Start", (Callback)start_option, 0, 0, 0);
   position.y -= 2;
-  prefab_menu_option(position, "Help", (OptionCallback)help_option, 0, 1, 0);
+  prefab_menu_option(position, "Help", (Callback)help_option, 0, 1, 0);
   position.y -= 2;
-  prefab_menu_option(position, "Exit", (OptionCallback)exit_option, 0, 2, 0);
+  prefab_menu_option(position, "Exit", (Callback)exit_option, 0, 2, 0);
   prefab_menu_cursor(3, 0, false);
 }

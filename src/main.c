@@ -1,4 +1,5 @@
 #include "include/components.h"
+#include "include/core.h"
 #include "include/global.h"
 #include "include/systems.h"
 #include "include/ecs.h"

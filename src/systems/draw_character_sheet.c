@@ -14,11 +14,8 @@ draw_character_sheet_system(void) {
   Class *class = ecs_get_component_list("class");
   DefensiveStats *defensive_stats = ecs_get_component_list("defensive-stats");
   for (Entity e = 0; e < ecs_entities_amount(); e++) {
-    (void)attributes;
-    (void)character_sheet;
-    (void)defensive_stats;
     V2f pos = { 0, UI_TOP };
-    renderer_text(pos, 1, true, false, 0xffff00ff, 0, "%s", character_name[e]);
+    renderer_text(pos, 1, true, false, 0xffff00ff, 0, "%.*s", character_name[e].size, character_name[e].buff);
     pos.y -= 1 + PX_TO_UNIT;
     pos.x = UI_LEFT;
     renderer_rect(pos, V2F(UI_W, PX_TO_UNIT), false, BORDER_COLOR, 0);

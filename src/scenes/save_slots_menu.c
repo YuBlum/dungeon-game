@@ -21,6 +21,6 @@ save_slots_menu_scene(void) {
   position.y -= 2;
   prefab_save_slot(position, 2, 0);
   position.y -= 2;
-  prefab_menu_option(position, "Go Back", (OptionCallback)go_back_option, 0, 3, 0);
+  prefab_menu_option(position, "Go Back", (Callback)go_back_option, 0, 3, 0);
   prefab_menu_cursor(4, 0, false);
 }

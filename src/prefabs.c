@@ -33,11 +33,11 @@ prefab_solid(V2f position) {
 }
 
 void
-prefab_menu_option(V2f position, Tag tag, OptionCallback callback, OptionCallbackArg callback_arg, u32 id, u32 cursor_id) {
-  ecs_entity_creation_begin("position", "option-callback", "option-callback-arg", "tag", "option-id", "cursor-id");
+prefab_menu_option(V2f position, Tag tag, Callback callback, CallbackArg callback_arg, u32 id, u32 cursor_id) {
+  ecs_entity_creation_begin("position", "callback", "callback-arg", "tag", "option-id", "cursor-id");
     ecs_entity_creation_setup_component(V2f, "position", position);
-    ecs_entity_creation_setup_component(OptionCallback, "option-callback", callback);
-    ecs_entity_creation_setup_component(OptionCallbackArg, "option-callback-arg", callback_arg);
+    ecs_entity_creation_setup_component(Callback, "callback", callback);
+    ecs_entity_creation_setup_component(CallbackArg, "callback-arg", callback_arg);
     ecs_entity_creation_setup_component(Tag, "tag", tag);
     ecs_entity_creation_setup_component(u32, "option-id", id);
     ecs_entity_creation_setup_component(u32, "cursor-id", cursor_id);
@@ -45,11 +45,11 @@ prefab_menu_option(V2f position, Tag tag, OptionCallback callback, OptionCallbac
 }
 
 void
-prefab_menu_option_with_u32_arg(V2f position, Tag tag, OptionCallback callback, OptionCallbackArg callback_arg, u32 id, u32 cursor_id, u32 arg_starting_value, const char *extra_component) {
-  ecs_entity_creation_begin("position", "option-callback", "tag", "option-callback-arg", "option-id", "cursor-id", "u32-arg", extra_component);
+prefab_menu_option_with_u32_arg(V2f position, Tag tag, Callback callback, CallbackArg callback_arg, u32 id, u32 cursor_id, u32 arg_starting_value, const char *extra_component) {
+  ecs_entity_creation_begin("position", "callback", "tag", "callback-arg", "option-id", "cursor-id", "u32-arg", extra_component);
     ecs_entity_creation_setup_component(V2f, "position", position);
-    ecs_entity_creation_setup_component(OptionCallback, "option-callback", callback);
-    ecs_entity_creation_setup_component(OptionCallbackArg, "option-callback-arg", callback_arg);
+    ecs_entity_creation_setup_component(Callback, "callback", callback);
+    ecs_entity_creation_setup_component(CallbackArg, "callback-arg", callback_arg);
     ecs_entity_creation_setup_component(Tag, "tag", tag);
     ecs_entity_creation_setup_component(u32, "option-id", id);
     ecs_entity_creation_setup_component(u32, "cursor-id", cursor_id);
@@ -76,29 +76,39 @@ prefab_save_slot(V2f position, u32 id, u32 cursor_id) {
 }
 
 void
-prefab_character_name_input(V2f position, u32 id, u32 cursor_id) {
-  ecs_entity_creation_begin("position", "option-id", "cursor-id", "character-name");
+prefab_character_name_input(V2f position, u32 id, u32 cursor_id, Callback get_character_name) {
+  ecs_entity_creation_begin("position", "option-id", "cursor-id", "character-name", "callback");
     ecs_entity_creation_setup_component(V2f, "position", position);
     ecs_entity_creation_setup_component(u32, "option-id", id);
     ecs_entity_creation_setup_component(u32, "cursor-id", cursor_id);
+    ecs_entity_creation_setup_component(Callback, "callback", get_character_name);
     ecs_entity_creation_setup_component(CharacterName, "character-name", ((CharacterName){ 0 }));
   ecs_entity_creation_end();
 }
 
 void
-prefab_attribute_input(V2f position, AttributeType attribute_type, u32 id, u32 cursor_id) {
-  ecs_entity_creation_begin("position", "attribute-type", "option-id", "cursor-id", "attribute-points");
+prefab_attribute_input(V2f position, AttributeType attribute_type, u32 id, u32 cursor_id, Callback get_attribute) {
+  ecs_entity_creation_begin("position", "attribute-type", "option-id", "cursor-id", "attribute-points", "callback");
     ecs_entity_creation_setup_component(V2f, "position", position);
     ecs_entity_creation_setup_component(AttributeType, "attribute-type", attribute_type);
     ecs_entity_creation_setup_component(u32, "option-id", id);
     ecs_entity_creation_setup_component(u32, "cursor-id", cursor_id);
     ecs_entity_creation_setup_component(i32, "attribute-points", -2);
+    ecs_entity_creation_setup_component(Callback, "callback", get_attribute);
   ecs_entity_creation_end();
 }
 
 void
 prefab_menu_hint(V2f position) {
-  ecs_entity_creation_begin("position", "menu-hint");
+  ecs_entity_creation_begin("position", "menu-hint", "tag", "color");
     ecs_entity_creation_setup_component(V2f, "position", position);
+    ecs_entity_creation_setup_component(Tag, "tag", "");
+  ecs_entity_creation_end();
+}
+
+void
+prefab_new_character(EntityReference *reference) {
+  ecs_entity_creation_begin("character-name", "class", "attributes", "reference-ptr");
+    ecs_entity_creation_setup_component(EntityReference *, "reference-ptr", reference);
   ecs_entity_creation_end();
 }

@@ -1,15 +1,14 @@
 #include "include/components.h"
+#include "include/core.h"
 #include "include/ecs.h"
 #include <stdio.h>
-
-#define SAVE_PATH "res/saves/slot.save"
 
 void
 check_save_slot_system(void) {
   CharacterName *character_name = ecs_get_component_list("character-name");
   Class *class = ecs_get_component_list("class");
   u32 *id = ecs_get_component_list("option-id");
-  char path[sizeof (SAVE_PATH) + 1];
+  char path[SAVE_PATH_SIZE];
   for (Entity e = 0; e < ecs_entities_amount(); e++) {
     sprintf(path, "res/saves/slot%d.save", id[e]);
     FILE *f = fopen(path, "rb");

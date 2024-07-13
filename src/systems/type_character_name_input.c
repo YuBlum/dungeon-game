@@ -4,7 +4,7 @@
 #include "include/input.h"
 
 void
-select_character_name_input_system(void) {
+type_character_name_input_system(void) {
   CharacterName *character_name = ecs_get_component_list("character-name");
   u32 *id = ecs_get_component_list("option-id");
   u32 *cursor_id = ecs_get_component_list("cursor-id");

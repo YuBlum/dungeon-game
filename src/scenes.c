@@ -7,7 +7,7 @@
 #include "include/systems.h"
 #include "include/scenes.h"
 
-static void
+void
 scene_test0(void) {
   tilemap_setup(GAME_W, GAME_H);
   prefab_solid(V2F(2, 2));
@@ -41,13 +41,16 @@ scenes_create(void) {
   scene_manager_activate_system(character_creation_scene, draw_option_system);
   scene_manager_activate_system(character_creation_scene, select_option_system);
   scene_manager_activate_system(character_creation_scene, global_cursor_update_system);
-  scene_manager_activate_system(character_creation_scene, select_character_name_input_system);
+  scene_manager_activate_system(character_creation_scene, type_character_name_input_system);
   scene_manager_activate_system(character_creation_scene, draw_option_with_u32_arg_system);
   scene_manager_activate_system(character_creation_scene, total_attribute_points_system);
   scene_manager_activate_system(character_creation_scene, draw_attribute_input_system);
   scene_manager_activate_system(character_creation_scene, select_attribute_input);
   scene_manager_activate_system(character_creation_scene, draw_menu_hint_system);
   scene_manager_activate_system(character_creation_scene, menu_hint_system);
+  scene_manager_activate_system(character_creation_scene, new_character_setup_system);
+  scene_manager_activate_system(character_creation_scene, submit_character_input_system);
+  scene_manager_activate_system(character_creation_scene, submit_attribute_input_system);
 
   scene_manager_create_scene(scene_test0);
   scene_manager_activate_system(scene_test0, set_tile_system);

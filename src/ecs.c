@@ -392,7 +392,7 @@ __ecs_entity_reference_get_component(EntityReference reference, const char *comp
 #if DEVMODE
   if (cid == COMP_NOID) ERROR("%s:%u: Trying to get an empty component", file, line);
 #endif
-  return &world.archetypes[ref.archetype].component_buffs[cid] + world.archetypes[ref.archetype].component_sizes[cid] * ref.entity;
+  return world.archetypes[ref.archetype].component_buffs[cid] + world.archetypes[ref.archetype].component_sizes[cid] * ref.entity;
 }
 
 void
@@ -439,6 +439,7 @@ ecs_entities_amount(void) {
 void
 ecs_entities_terminate(void) {
   for (ArchetypeID a = 0; a < list_size(world.archetypes); a++) {
+    if (!world.archetypes[a].entities_amount) continue;
     for (Entity e = 0; e < world.archetypes[a].entities_amount; e++) {
       usize size = list_size(world.archetypes[a].entity_insert_component_data[e]);
       for (u32 i = 0; i < size; i++) {
@@ -448,10 +449,13 @@ ecs_entities_terminate(void) {
       list_destroy(world.archetypes[a].entity_insert_component_data[e]);
       list_destroy(world.archetypes[a].entity_insert_component[e]);
       list_destroy(world.archetypes[a].entity_remove_component[e]);
+      list_destroy(world.archetypes[a].entity_references[e]);
     }
-    for (ComponentID c = 0; c < list_size(world.archetypes[a].component_buffs); c++) {
+    usize siz = list_size(world.archetypes[a].component_buffs);
+    for (ComponentID c = 0; c < siz; c++) {
       list_clear(world.archetypes[a].component_buffs[c]);
     }
+    list_clear(world.archetypes[a].entity_references);
     list_clear(world.archetypes[a].entity_insert_component_data);
     list_clear(world.archetypes[a].entity_insert_component);
     list_clear(world.archetypes[a].entity_remove_component);

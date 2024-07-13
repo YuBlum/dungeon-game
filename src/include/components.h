@@ -6,9 +6,9 @@
 
 typedef const char *Tag;
 
-typedef void *OptionCallbackArg;
+typedef void *CallbackArg;
 
-typedef void(*OptionCallback)(void *);
+typedef void(*Callback)(void *);
 
 typedef enum {
   CLASS_UNKNOWN = -1,

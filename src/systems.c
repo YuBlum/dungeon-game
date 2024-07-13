@@ -32,7 +32,7 @@ systems_create(void) {
   ecs_system_must_have(cursor_navigation_system, "cursor", "cursor-id");
 
   ecs_system_create(select_option_system, ON_UPDATE);
-  ecs_system_must_have(select_option_system, "option-callback", "option-id");
+  ecs_system_must_have(select_option_system, "callback", "callback-arg", "option-id");
 
   ecs_system_create(check_save_slot_system, ON_SCENE_START);
   ecs_system_must_have(check_save_slot_system, "character-name", "class", "option-id");
@@ -49,8 +49,8 @@ systems_create(void) {
   ecs_system_create(global_cursor_update_system, ON_PRE_UPDATE);
   ecs_system_must_have(global_cursor_update_system, "cursor-id", "cursor");
 
-  ecs_system_create(select_character_name_input_system, ON_UPDATE);
-  ecs_system_must_have(select_character_name_input_system, "character-name", "option-id", "cursor-id");
+  ecs_system_create(type_character_name_input_system, ON_UPDATE);
+  ecs_system_must_have(type_character_name_input_system, "character-name", "option-id", "cursor-id");
 
   ecs_system_create(total_attribute_points_system, ON_UPDATE);
   ecs_system_must_have(total_attribute_points_system, "u32-arg", "total-attribute-points");
@@ -62,8 +62,17 @@ systems_create(void) {
   ecs_system_must_have(select_attribute_input, "attribute-type", "attribute-points", "option-id", "cursor-id");
 
   ecs_system_create(menu_hint_system, ON_UPDATE);
-  ecs_system_must_have(menu_hint_system, "menu-hint");
+  ecs_system_must_have(menu_hint_system, "menu-hint", "tag", "color");
 
   ecs_system_create(draw_menu_hint_system, ON_DRAW_SCREEN);
-  ecs_system_must_have(draw_menu_hint_system, "position", "menu-hint");
+  ecs_system_must_have(draw_menu_hint_system, "position", "menu-hint", "tag", "color");
+
+  ecs_system_create(new_character_setup_system, ON_SCENE_START);
+  ecs_system_must_have(new_character_setup_system, "character-name", "class", "attributes", "reference-ptr");
+
+  ecs_system_create(submit_character_input_system, ON_POS_UPDATE);
+  ecs_system_must_have(submit_character_input_system, "character-name", "option-id", "cursor-id", "callback");
+
+  ecs_system_create(submit_attribute_input_system, ON_POS_UPDATE);
+  ecs_system_must_have(submit_attribute_input_system, "attribute-points", "cursor-id", "callback");
 }

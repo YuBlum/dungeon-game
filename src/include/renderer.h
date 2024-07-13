@@ -31,7 +31,8 @@ void renderer_create(void);
 
 void __renderer_rect(V2f position, V2f size, bool center, f32 r, f32 g, f32 b, f32 a, Layer layer, const char *file, u32 line);
 void __renderer_sprite(V2f position, V2i sprite_start, V2i sprite_end, V2f scale, bool center, f32 r, f32 g, f32 b, f32 a, Layer layer, const char *file, u32 line);
-void __renderer_text(V2f position, f32 scale, bool center_x, bool center_y, f32 r, f32 g, f32 b, f32 a, Layer layer, const char *file, u32 line, const char *fmt, ...);
+
+void __renderer_text(V2f position, f32 scale, bool center_x, bool center_y, f32 r, f32 g, f32 b, f32 a, Layer layer, const char *file, u32 line, const char *fmt, ...) __attribute__((format (printf, 12, 13)));
 void renderer_batch_start(RenderTarget target);
 void renderer_batch_end(void);
 void renderer_to_screen(void);

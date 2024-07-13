@@ -15,6 +15,9 @@
 #  define ERROR(MSG, ...)
 #endif
 
+#define SAVE_PATH "res/saves/slot-.save"
+#define SAVE_PATH_FMT "res/saves/slot%d.save"
+#define SAVE_PATH_SIZE sizeof (SAVE_PATH)
 
 #define GAME_TITLE "Game"
 #define UNIT_TO_PX 8
