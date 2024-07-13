@@ -11,10 +11,10 @@ cancel_option(void) {
 
 void
 delete_save_menu_scene(void) {
-  global.split_screen = false;
-  global.option_id[0] = 0;
-  global.cursor_id = 0;
-  global.cursor_id_prv = 0;
+  global.all.split_screen = false;
+  global.menu.option_id[0] = 0;
+  global.menu.cursor_id = 0;
+  global.menu.cursor_id_prv = 0;
   V2f position = { 0.0f, 3.0f };
   u32 cursor_id = 0;
   prefab_save_slot(position, cursor_id++, 0);

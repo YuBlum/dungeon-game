@@ -37,7 +37,7 @@ window_create(void) {
   gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
   glfwSetKeyCallback(window, (GLFWkeyfun)input_key_callback);
   glfwSetCharCallback(window, (GLFWcharfun)input_char_callback);
-  global.dt = 1.0f/60.0f;
+  global.all.dt = 1.0f/60.0f;
 }
 
 bool
@@ -54,7 +54,7 @@ void
 window_frame_end(void) {
   glfwPollEvents();
   glfwSwapBuffers(window);
-  global.dt = glfwGetTime() - frame_start_time;
+  global.all.dt = glfwGetTime() - frame_start_time;
 }
 
 void

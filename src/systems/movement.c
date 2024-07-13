@@ -17,14 +17,14 @@ movement_system(void) {
         tilemap_clear(position_lerp[e].prv);
         tilemap_set(position_lerp[e].nxt, e);
       }
-      position_lerp[e].timer += global.dt * speed[e];
+      position_lerp[e].timer += global.all.dt * speed[e];
       if (position_lerp[e].timer >= 1.0f) {
         position[e] = position_lerp[e].nxt;
       } else {
         position[e] = v2f_lerp(position_lerp[e].prv, position_lerp[e].nxt, smoothstep(0, 1, position_lerp[e].timer));
       }
     } else {
-      position_lerp[e].timer += global.dt * speed[e];
+      position_lerp[e].timer += global.all.dt * speed[e];
       if (position_lerp[e].timer >= 1.0f) {
         position[e] = position_lerp[e].prv;
         bump[e] = false;

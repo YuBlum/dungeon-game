@@ -10,9 +10,9 @@ menu_hint_system(void) {
   Color *color = ecs_get_component_list("color");
   for (Entity e = 0; e < ecs_entities_amount(); e++) {
     if (scene_manager_is_current_scene(character_creation_scene)) {
-      switch (global.cursor_id) {
+      switch (global.menu.cursor_id) {
         case 0:
-          switch (global.option_id[0]) {
+          switch (global.menu.option_id[0]) {
             case 0:
               tag[e] = "Type your name.";
               color[e] = 0x00ff00ff;
@@ -26,13 +26,13 @@ menu_hint_system(void) {
               color[e] = 0x00ff00ff;
               break;
             case 3:
-              if (!global.has_name) {
+              if (!global.character_creation.has_name) {
                 tag[e] = "You need to type your name.";
                 color[e] = 0xff0000ff;
-              } else if (global.class == CLASS_UNKNOWN) {
+              } else if (global.character_creation.class == CLASS_UNKNOWN) {
                 tag[e] = "You need to choose a class.";
                 color[e] = 0xff0000ff;
-              } else if (global.total_attribute_points > 0) {
+              } else if (global.character_creation.total_attribute_points > 0) {
                 tag[e] = "You need to use all your attribute points.";
                 color[e] = 0xff0000ff;
               } else {
@@ -45,7 +45,7 @@ menu_hint_system(void) {
           }
           break;
         case 1:
-          switch (global.option_id[1]) {
+          switch (global.menu.option_id[1]) {
             case 0:
               tag[e] = "Good for melee combat.\nYour Strength starts at 0.";
               color[e] = 0x00ff00ff;
@@ -64,7 +64,7 @@ menu_hint_system(void) {
           }
           break;
         case 2:
-          switch (global.option_id[2]) {
+          switch (global.menu.option_id[2]) {
             case 0:
               tag[e] = "For ranged attacks and precision tests.";
               color[e] = 0x00ff00ff;

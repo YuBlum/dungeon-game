@@ -7,26 +7,28 @@
 #include "include/scene_manager.h"
 #include "include/scenes.h"
 #include <stdio.h>
+#include <string.h>
 
 static EntityReference new_character;
 
 static void
 get_character_name(CharacterName *name) {
   CharacterName *nc_name = ecs_entity_reference_get_component(new_character, "character-name");
-  *nc_name = *name;
+  memcpy(nc_name->buff, name->buff, name->size);
+  nc_name->size = name->size;
 }
 
 static void
 class_option(void) {
-  global.cursor_id = 1;
+  global.menu.cursor_id = 1;
 }
 
 static void
 choose_class_option(CallbackArg class) {
   Class *nc_class = ecs_entity_reference_get_component(new_character, "class");
   *nc_class = (uptr)class;
-  global.cursor_id = 0;
-  global.class = (uptr)class;
+  global.menu.cursor_id = 0;
+  global.character_creation.class = (uptr)class;
 }
 
 static void
@@ -61,12 +63,12 @@ get_vigor(i32 *vigor) {
 
 static void
 attributes_option(void) {
-  global.cursor_id = 2;
+  global.menu.cursor_id = 2;
 }
 
 static void
 begin_adventure_option(void) {
-  if (!global.has_name || global.total_attribute_points > 0 || global.class == CLASS_UNKNOWN) return;
+  if (!global.character_creation.has_name || global.character_creation.total_attribute_points > 0 || global.character_creation.class == CLASS_UNKNOWN) return;
   /* get parameters */
   CharacterName *name = ecs_entity_reference_get_component(new_character, "character-name");
   Class *class = ecs_entity_reference_get_component(new_character, "class");
@@ -85,7 +87,7 @@ begin_adventure_option(void) {
   character_sheet.essence_points_cur = character_sheet.essence_points_max;
   /* create save file */
   char path[SAVE_PATH_SIZE];
-  snprintf(path, SAVE_PATH_SIZE, SAVE_PATH_FMT, global.save_slot);
+  snprintf(path, SAVE_PATH_SIZE, SAVE_PATH_FMT, global.all.save_slot);
   FILE *f = fopen(path, "wb");
 #if DEVMODE
   if (!f) ERROR("couldn't create file");
@@ -109,7 +111,7 @@ begin_adventure_option(void) {
   fwrite(&character_sheet.essence_points_cur, sizeof (u32),   1,          f);
   fwrite(&character_sheet.essence_points_max, sizeof (u32),   1,          f);
   fclose(f);
-  scene_manager_goto_scene(scene_test0);
+  scene_manager_goto_scene(overworld_scene);
 }
 
 static void
@@ -120,16 +122,16 @@ go_back_option(void) {
 
 void
 character_creation_scene(void) {
-  global.split_screen = false;
-  global.total_attribute_points = 5;
-  global.has_name = false;
-  global.class = CLASS_UNKNOWN;
-  global.class_prv = CLASS_UNKNOWN;
-  global.option_id[0] = 0;
-  global.option_id[1] = 3;
-  global.option_id[2] = 0;
-  global.cursor_id = 0;
-  global.cursor_id_prv = 0;
+  global.all.split_screen = false;
+  global.character_creation.total_attribute_points = 5;
+  global.character_creation.has_name = false;
+  global.character_creation.class = CLASS_UNKNOWN;
+  global.character_creation.class_prv = CLASS_UNKNOWN;
+  global.menu.option_id[0] = 0;
+  global.menu.option_id[1] = 3;
+  global.menu.option_id[2] = 0;
+  global.menu.cursor_id = 0;
+  global.menu.cursor_id_prv = 0;
   prefab_new_character(&new_character);
   V2f position = { 0, 6 };
   prefab_character_name_input(position, 0, 0, (Callback)get_character_name);

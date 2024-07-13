@@ -18,7 +18,7 @@ draw_attribute_input_system(void) {
     Color color =  0xffffffff;
     char *select_start = "";
     char *select_end = "";
-    if (id[e] == global.option_id[cursor_id[e]] && global.cursor_id == cursor_id[e]) {
+    if (id[e] == global.menu.option_id[cursor_id[e]] && global.menu.cursor_id == cursor_id[e]) {
       color = 0xffff00ff;
       select_start = "> ";
       select_end = " <";

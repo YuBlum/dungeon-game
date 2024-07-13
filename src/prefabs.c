@@ -17,7 +17,7 @@ prefab_player(V2f position) {
   CharacterSheet character_sheet;
   DefensiveStats defensive_stats;
   char path[SAVE_PATH_SIZE];
-  snprintf(path, SAVE_PATH_SIZE, SAVE_PATH_FMT, global.save_slot);
+  snprintf(path, SAVE_PATH_SIZE, SAVE_PATH_FMT, global.all.save_slot);
   FILE *f = fopen(path, "rb");
   if (!f) {
 #if DEVMODE

@@ -4,8 +4,8 @@
 void main_menu_scene(void);
 void save_slots_menu_scene(void);
 void character_creation_scene(void);
-void scene_test0(void);
 void delete_save_menu_scene(void);
+void overworld_scene(void);
 
 void scenes_create(void);
 

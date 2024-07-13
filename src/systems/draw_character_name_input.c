@@ -14,9 +14,9 @@ draw_character_name_input_system(void) {
   for (Entity e = 0; e < ecs_entities_amount(); e++) {
     V2f pos = v2f_add(position[e], V2F(-PX_TO_UNIT, PX_TO_UNIT));
     Color color =  0xffffffff;
-    if (id[e] == global.option_id[cursor_id[e]]) {
+    if (id[e] == global.menu.option_id[cursor_id[e]]) {
       color = 0xffff00ff;
-      if (global.cursor_id == cursor_id[e]) {
+      if (global.menu.cursor_id == cursor_id[e]) {
         renderer_text(v2f_sub(pos, V2F(CHARACTER_NAME_CAP * 0.5f + 10*PX_TO_UNIT, 0)), 1, true, true, color, 1, ">");
         renderer_text(v2f_add(pos, V2F(CHARACTER_NAME_CAP * 0.5f + 10*PX_TO_UNIT, 0)), 1, true, true, color, 1, "<");
       }

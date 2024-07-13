@@ -1,5 +1,4 @@
 #include "include/components.h"
-#include "include/core.h"
 #include "include/global.h"
 #include "include/systems.h"
 #include "include/ecs.h"
@@ -23,7 +22,7 @@ main(void) {
     scene_manager_update();
     ecs_update();
     input_update();
-    if (global.split_screen) {
+    if (global.all.split_screen) {
       renderer_batch_start(RENDER_GAME);
         tilemap_draw();
         ecs_draw_game();
