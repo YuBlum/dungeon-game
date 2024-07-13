@@ -3,6 +3,14 @@
 #include "include/prefabs.h"
 #include "include/scene_manager.h"
 #include "include/scenes.h"
+#include <stdio.h>
+#ifdef WIN32
+#include <io.h>
+#define F_OK 0
+#define access _access
+#else
+#include <unistd.h>
+#endif
 
 static void
 go_back_option(void) {
@@ -11,7 +19,7 @@ go_back_option(void) {
 
 static void
 delete_save_option(void) {
-  WARN("Not Implemented");
+  scene_manager_goto_scene(delete_save_menu_scene);
 }
 
 void
@@ -20,15 +28,27 @@ save_slots_menu_scene(void) {
   global.option_id[0] = 0;
   global.cursor_id = 0;
   global.cursor_id_prv = 0;
-  V2f position = { 0.0f, 4.0f };
-  prefab_save_slot(position, 0, 0);
+  V2f position = { 0.0f, 3.0f };
+  u32 cursor_id = 0;
+  prefab_save_slot(position, cursor_id++, 0);
   position.y -= 2;
-  prefab_save_slot(position, 1, 0);
+  prefab_save_slot(position, cursor_id++, 0);
   position.y -= 2;
-  prefab_save_slot(position, 2, 0);
+  prefab_save_slot(position, cursor_id++, 0);
   position.y -= 3;
-  prefab_menu_option(position, "Delete Save", (Callback)delete_save_option, 0, 3, 0);
-  position.y -= 2;
-  prefab_menu_option(position, "Go Back", (Callback)go_back_option, 0, 4, 0);
-  prefab_menu_cursor(5, 0, false);
+  char save[3][SAVE_PATH_SIZE];
+  bool save_file_exists = false;
+  for (u32 i = 0; i < 3; i++) {
+    snprintf(save[i], SAVE_PATH_SIZE, SAVE_PATH_FMT, i);
+    if (access(save[i], F_OK) == 0) {
+      save_file_exists = true;
+      break;
+    }
+  }
+  if (save_file_exists) {
+    prefab_menu_option(position, "Delete Save", (Callback)delete_save_option, 0, cursor_id++, 0);
+    position.y -= 2;
+  }
+  prefab_menu_option(position, "Go Back", (Callback)go_back_option, 0, cursor_id++, 0);
+  prefab_menu_cursor(cursor_id, 0, false);
 }

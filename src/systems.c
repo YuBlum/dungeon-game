@@ -41,7 +41,7 @@ systems_create(void) {
   ecs_system_must_have(draw_save_slot_system, "character-name", "class", "option-id", "position");
 
   ecs_system_create(select_save_slot_system, ON_UPDATE);
-  ecs_system_must_have(select_save_slot_system, "option-id", "character-name");
+  ecs_system_must_have(select_save_slot_system, "option-id", "cursor-id", "character-name");
 
   ecs_system_create(draw_character_name_input_system, ON_DRAW_SCREEN);
   ecs_system_must_have(draw_character_name_input_system, "position", "character-name", "option-id");
@@ -75,4 +75,7 @@ systems_create(void) {
 
   ecs_system_create(submit_attribute_input_system, ON_POS_UPDATE);
   ecs_system_must_have(submit_attribute_input_system, "attribute-points", "cursor-id", "callback");
+
+  ecs_system_create(delete_save_slot_system, ON_UPDATE);
+  ecs_system_must_have(delete_save_slot_system, "option-id", "cursor-id", "character-name");
 }

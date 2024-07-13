@@ -25,6 +25,7 @@ void draw_menu_hint_system(void);
 void new_character_setup_system(void);
 void submit_character_input_system(void);
 void submit_attribute_input_system(void);
+void delete_save_slot_system(void);
 
 void systems_create(void);
 

@@ -35,6 +35,15 @@ scenes_create(void) {
   scene_manager_activate_system(save_slots_menu_scene, select_save_slot_system);
   scene_manager_activate_system(save_slots_menu_scene, global_cursor_update_system);
 
+  scene_manager_create_scene(delete_save_menu_scene);
+  scene_manager_activate_system(delete_save_menu_scene, cursor_navigation_system);
+  scene_manager_activate_system(delete_save_menu_scene, check_save_slot_system);
+  scene_manager_activate_system(delete_save_menu_scene, draw_save_slot_system);
+  scene_manager_activate_system(delete_save_menu_scene, draw_option_system);
+  scene_manager_activate_system(delete_save_menu_scene, select_option_system);
+  scene_manager_activate_system(delete_save_menu_scene, delete_save_slot_system);
+  scene_manager_activate_system(delete_save_menu_scene, global_cursor_update_system);
+
   scene_manager_create_scene(character_creation_scene);
   scene_manager_activate_system(character_creation_scene, cursor_navigation_system);
   scene_manager_activate_system(character_creation_scene, draw_character_name_input_system);
