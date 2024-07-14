@@ -6,6 +6,7 @@
 #include "include/prefabs.h"
 #include "include/scene_manager.h"
 #include "include/scenes.h"
+#include "include/serialization.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -69,11 +70,9 @@ attributes_option(void) {
 static void
 begin_adventure_option(void) {
   if (!global.character_creation.has_name || global.character_creation.total_attribute_points > 0 || global.character_creation.class == CLASS_UNKNOWN) return;
-  /* get parameters */
   CharacterName *name = ecs_entity_reference_get_component(new_character, "character-name");
   Class *class = ecs_entity_reference_get_component(new_character, "class");
   Attributes *attributes = ecs_entity_reference_get_component(new_character, "attributes");
-  /* calculate stats */
   DefensiveStats defensive_stats;
   CharacterSheet character_sheet;
   character_sheet.level              = 0;
@@ -85,32 +84,24 @@ begin_adventure_option(void) {
   character_sheet.food_points_cur    = character_sheet.food_points_max;
   character_sheet.essence_points_max = 10 + (attributes->intelect + attributes->presence) * 2;
   character_sheet.essence_points_cur = character_sheet.essence_points_max;
-  /* create save file */
-  char path[SAVE_PATH_SIZE];
-  snprintf(path, SAVE_PATH_SIZE, SAVE_PATH_FMT, global.all.save_slot);
-  FILE *f = fopen(path, "wb");
-#if DEVMODE
-  if (!f) ERROR("couldn't create file");
-#endif
-  /* write to save file */
-  fwrite(&name->size,                         sizeof (u32),   1,          f);
-  fwrite(name->buff,                          sizeof (char),  name->size, f);
-  fwrite(class,                               sizeof (Class), 1,          f);
-  fwrite(&attributes->agility,                sizeof (i32),   1,          f);
-  fwrite(&attributes->intelect,               sizeof (i32),   1,          f);
-  fwrite(&attributes->presence,               sizeof (i32),   1,          f);
-  fwrite(&attributes->strength,               sizeof (i32),   1,          f);
-  fwrite(&attributes->vigor,                  sizeof (i32),   1,          f);
-  fwrite(&character_sheet.level,              sizeof (u32),   1,          f);
-  fwrite(&character_sheet.experience,         sizeof (u32),   1,          f);
-  fwrite(&defensive_stats.armour_points,      sizeof (u32),   1,          f);
-  fwrite(&defensive_stats.hit_points_max,     sizeof (u32),   1,          f);
-  fwrite(&defensive_stats.hit_points_cur,     sizeof (u32),   1,          f);
-  fwrite(&character_sheet.food_points_cur,    sizeof (u32),   1,          f);
-  fwrite(&character_sheet.food_points_max,    sizeof (u32),   1,          f);
-  fwrite(&character_sheet.essence_points_cur, sizeof (u32),   1,          f);
-  fwrite(&character_sheet.essence_points_max, sizeof (u32),   1,          f);
-  fclose(f);
+  serialization_start();
+  deserialize(CHARACTER_SHEET_NAME_SIZE,          &name->size);
+  deserialize(CHARACTER_SHEET_NAME_BUFF,           name->buff);
+  deserialize(CHARACTER_SHEET_CLASS,               class);
+  deserialize(CHARACTER_SHEET_ATTRIBUTE_AGI,      &attributes->agility);
+  deserialize(CHARACTER_SHEET_ATTRIBUTE_INT,      &attributes->intelect);
+  deserialize(CHARACTER_SHEET_ATTRIBUTE_PRE,      &attributes->presence);
+  deserialize(CHARACTER_SHEET_ATTRIBUTE_STR,      &attributes->strength);
+  deserialize(CHARACTER_SHEET_ATTRIBUTE_VIG,      &attributes->vigor);
+  deserialize(CHARACTER_SHEET_LEVEL,              &character_sheet.level);
+  deserialize(CHARACTER_SHEET_EXPERIENCE,         &character_sheet.experience);
+  deserialize(CHARACTER_SHEET_ARMOUR_POINTS,      &defensive_stats.armour_points);
+  deserialize(CHARACTER_SHEET_HIT_POINTS_MAX,     &defensive_stats.hit_points_max);
+  deserialize(CHARACTER_SHEET_HIT_POINTS_CUR,     &defensive_stats.hit_points_cur);
+  deserialize(CHARACTER_SHEET_FOOD_POINTS_MAX,    &character_sheet.food_points_max);
+  deserialize(CHARACTER_SHEET_FOOD_POINTS_CUR,    &character_sheet.food_points_cur);
+  deserialize(CHARACTER_SHEET_ESSENCE_POINTS_MAX, &character_sheet.essence_points_max);
+  deserialize(CHARACTER_SHEET_ESSENCE_POINTS_CUR, &character_sheet.essence_points_cur);
   scene_manager_goto_scene(overworld_scene);
 }
 

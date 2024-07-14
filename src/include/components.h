@@ -48,7 +48,7 @@ typedef struct {
   u32 level;
 } CharacterSheet;
 
-#define CHARACTER_NAME_CAP 10
+#define CHARACTER_NAME_CAP 16
 typedef struct {
   char buff[CHARACTER_NAME_CAP];
   u32 size;

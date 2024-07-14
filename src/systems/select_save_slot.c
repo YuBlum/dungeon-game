@@ -4,6 +4,7 @@
 #include "include/input.h"
 #include "include/scene_manager.h"
 #include "include/scenes.h"
+#include "include/serialization.h"
 
 void
 select_save_slot_system(void) {
@@ -14,6 +15,7 @@ select_save_slot_system(void) {
     if (global.menu.cursor_id != cursor_id[e] || global.menu.option_id[cursor_id[e]] != id[e] || !input_key_pressed(KEY_A)) continue;
     global.all.save_slot = id[e];
     if (character_name[e].size) {
+      serialization_start();
       scene_manager_goto_scene(overworld_scene);
     } else {
       scene_manager_goto_scene(character_creation_scene);

@@ -1,11 +1,9 @@
 #include "include/components.h"
-#include "include/core.h"
 #include "include/ecs.h"
-#include "include/global.h"
 #include "include/math.h"
 #include "include/renderer.h"
+#include "include/serialization.h"
 #include "include/tilemap.h"
-#include <stdio.h>
 #include "include/prefabs.h"
 
 void
@@ -16,34 +14,23 @@ prefab_player(V2f position) {
   Attributes attributes;
   CharacterSheet character_sheet;
   DefensiveStats defensive_stats;
-  char path[SAVE_PATH_SIZE];
-  snprintf(path, SAVE_PATH_SIZE, SAVE_PATH_FMT, global.all.save_slot);
-  FILE *f = fopen(path, "rb");
-  if (!f) {
-#if DEVMODE
-    ERROR("Couldn't open '%s'", path);
-#else
-    exit(1);
-#endif
-  }
-  fread(&name.size,                          sizeof (u32),   1,         f);
-  fread(name.buff,                           sizeof (char),  name.size, f);
-  fread(&class,                              sizeof (Class), 1,         f);
-  fread(&attributes.agility,                 sizeof (i32),   1,         f);
-  fread(&attributes.intelect,                sizeof (i32),   1,         f);
-  fread(&attributes.presence,                sizeof (i32),   1,         f);
-  fread(&attributes.strength,                sizeof (i32),   1,         f);
-  fread(&attributes.vigor,                   sizeof (i32),   1,         f);
-  fread(&character_sheet.level,              sizeof (u32),   1,         f);
-  fread(&character_sheet.experience,         sizeof (u32),   1,         f);
-  fread(&defensive_stats.armour_points,      sizeof (u32),   1,         f);
-  fread(&defensive_stats.hit_points_max,     sizeof (u32),   1,         f);
-  fread(&defensive_stats.hit_points_cur,     sizeof (u32),   1,         f);
-  fread(&character_sheet.food_points_cur,    sizeof (u32),   1,         f);
-  fread(&character_sheet.food_points_max,    sizeof (u32),   1,         f);
-  fread(&character_sheet.essence_points_cur, sizeof (u32),   1,         f);
-  fread(&character_sheet.essence_points_max, sizeof (u32),   1,         f);
-  fclose(f);
+  deserialize(CHARACTER_SHEET_NAME_SIZE,          &name.size);
+  deserialize(CHARACTER_SHEET_NAME_BUFF,           name.buff);
+  deserialize(CHARACTER_SHEET_CLASS,              &class);
+  deserialize(CHARACTER_SHEET_ATTRIBUTE_AGI,      &attributes.agility);
+  deserialize(CHARACTER_SHEET_ATTRIBUTE_INT,      &attributes.intelect);
+  deserialize(CHARACTER_SHEET_ATTRIBUTE_PRE,      &attributes.presence);
+  deserialize(CHARACTER_SHEET_ATTRIBUTE_STR,      &attributes.strength);
+  deserialize(CHARACTER_SHEET_ATTRIBUTE_VIG,      &attributes.vigor);
+  deserialize(CHARACTER_SHEET_LEVEL,              &character_sheet.level);
+  deserialize(CHARACTER_SHEET_EXPERIENCE,         &character_sheet.experience);
+  deserialize(CHARACTER_SHEET_ARMOUR_POINTS,      &defensive_stats.armour_points);
+  deserialize(CHARACTER_SHEET_HIT_POINTS_MAX,     &defensive_stats.hit_points_max);
+  deserialize(CHARACTER_SHEET_HIT_POINTS_CUR,     &defensive_stats.hit_points_cur);
+  deserialize(CHARACTER_SHEET_FOOD_POINTS_MAX,    &character_sheet.food_points_max);
+  deserialize(CHARACTER_SHEET_FOOD_POINTS_CUR,    &character_sheet.food_points_cur);
+  deserialize(CHARACTER_SHEET_ESSENCE_POINTS_MAX, &character_sheet.essence_points_max);
+  deserialize(CHARACTER_SHEET_ESSENCE_POINTS_CUR, &character_sheet.essence_points_cur);
   ecs_entity_creation_begin("position", "direction", "position-lerp", "speed", "color", "input", "bump", "attributes", "defensive-stats", "character-name", "character-sheet", "class");
     ecs_entity_creation_setup_component(V2f, "position", position);
     ecs_entity_creation_setup_component(V2f, "direction", V2FS(0));
