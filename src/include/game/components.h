@@ -65,6 +65,15 @@ typedef struct {
   bool horizontal;
 } Cursor;
 
+#define TERMINAL_LINE_CAP 11
+#define TERMINAL_LINE_STR_CAP 21
+typedef struct {
+  u32  line;
+  u32  line_cursor;
+  char line_buff[TERMINAL_LINE_CAP][TERMINAL_LINE_STR_CAP];
+  u32  line_size[TERMINAL_LINE_CAP];
+} Terminal;
+
 void components_create(void);
 
 #endif/*__COMPONENTS_H__*/

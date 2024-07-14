@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 void
-delete_save_slot_system(void) {
+system_delete_save_slot(void) {
   u32 *id = ecs_get_component_list("option-id");
   u32 *cursor_id = ecs_get_component_list("cursor-id");
   CharacterName *character_name = ecs_get_component_list("character-name");
@@ -17,6 +17,6 @@ delete_save_slot_system(void) {
     if (global.menu.cursor_id != cursor_id[e] || global.menu.option_id[cursor_id[e]] != id[e] || !input_key_pressed(KEY_A) || character_name[e].size == 0) continue;
     snprintf(path, SAVE_PATH_SIZE, SAVE_PATH_FMT, id[e]);
     remove(path);
-    scene_manager_goto_scene(save_slots_menu_scene);
+    scene_manager_goto(scene_save_slots_menu);
   }
 }

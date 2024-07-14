@@ -102,17 +102,17 @@ begin_adventure_option(void) {
   serialize(CHARACTER_SHEET_FOOD_POINTS_CUR,    &character_sheet.food_points_cur);
   serialize(CHARACTER_SHEET_ESSENCE_POINTS_MAX, &character_sheet.essence_points_max);
   serialize(CHARACTER_SHEET_ESSENCE_POINTS_CUR, &character_sheet.essence_points_cur);
-  scene_manager_goto_scene(overworld_scene);
+  scene_manager_goto(scene_overworld);
 }
 
 static void
 go_back_option(void) {
   ecs_entity_clean_reference(&new_character);
-  scene_manager_goto_scene(save_slots_menu_scene);
+  scene_manager_goto(scene_save_slots_menu);
 }
 
 void
-character_creation_scene(void) {
+scene_character_creation(void) {
   global.all.split_screen = false;
   global.character_creation.total_attribute_points = 5;
   global.character_creation.has_name = false;

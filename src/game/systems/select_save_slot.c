@@ -7,7 +7,7 @@
 #include "engine/serialization.h"
 
 void
-select_save_slot_system(void) {
+system_select_save_slot(void) {
   u32 *id = ecs_get_component_list("option-id");
   u32 *cursor_id = ecs_get_component_list("cursor-id");
   CharacterName *character_name = ecs_get_component_list("character-name");
@@ -16,9 +16,9 @@ select_save_slot_system(void) {
     global.all.save_slot = id[e];
     if (character_name[e].size) {
       serialization_start();
-      scene_manager_goto_scene(overworld_scene);
+      scene_manager_goto(scene_overworld);
     } else {
-      scene_manager_goto_scene(character_creation_scene);
+      scene_manager_goto(scene_character_creation);
     }
   }
 }

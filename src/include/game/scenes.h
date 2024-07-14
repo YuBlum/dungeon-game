@@ -1,11 +1,11 @@
 #ifndef __SCENES_H__
 #define __SCENES_H__
 
-void main_menu_scene(void);
-void save_slots_menu_scene(void);
-void character_creation_scene(void);
-void delete_save_menu_scene(void);
-void overworld_scene(void);
+void scene_main_menu(void);
+void scene_save_slots_menu(void);
+void scene_character_creation(void);
+void scene_delete_save_menu(void);
+void scene_overworld(void);
 
 void scenes_create(void);
 

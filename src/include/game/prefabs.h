@@ -15,5 +15,6 @@ void prefab_menu_option_with_u32_arg(V2f position, Tag tag, Callback callback, C
 void prefab_attribute_input(V2f position, AttributeType attribute_type, u32 id, u32 cursor_id, Callback get_attribute);
 void prefab_menu_hint(V2f position);
 void prefab_new_character(EntityReference *reference);
+void prefab_terminal(void);
 
 #endif/*__PREFABS_H__*/

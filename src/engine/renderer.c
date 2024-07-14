@@ -451,7 +451,7 @@ renderer_batch_end(void) {
 }
 
 void
-renderer_to_screen(void) {
+renderer_to_window(void) {
   glViewport(0, 0, WINDOW_W, WINDOW_H);
   glScissor(0, 0, WINDOW_W, WINDOW_H);
   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);

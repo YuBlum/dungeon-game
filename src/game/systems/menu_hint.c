@@ -5,11 +5,11 @@
 #include "engine/scene_manager.h"
 
 void
-menu_hint_system(void) {
+system_menu_hint(void) {
   Tag *tag = ecs_get_component_list("tag");
   Color *color = ecs_get_component_list("color");
   for (Entity e = 0; e < ecs_entities_amount(); e++) {
-    if (scene_manager_is_current_scene(character_creation_scene)) {
+    if (scene_manager_is_current_scene(scene_character_creation)) {
       switch (global.menu.cursor_id) {
         case 0:
           switch (global.menu.option_id[0]) {

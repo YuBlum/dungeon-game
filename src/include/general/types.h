@@ -15,7 +15,7 @@ typedef uint64_t  u64;
 typedef float     f32;
 typedef double    f64;
 typedef size_t    usize;
-typedef ptrdiff_t uptr;
+typedef uintptr_t uptr;
 typedef u8        bool;
 #define false ((bool)0)
 #define true  ((bool)1)

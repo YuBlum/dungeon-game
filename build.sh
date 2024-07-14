@@ -72,6 +72,7 @@ src/game/systems/new_character_setup.c       \
 src/game/systems/submit_character_input.c    \
 src/game/systems/submit_attribute_input.c    \
 src/game/systems/delete_save_slot.c          \
+src/game/systems/draw_terminal.c             \
                                              \
 src/game/scenes/main_menu.c                  \
 src/game/scenes/save_slots_menu.c            \
@@ -88,6 +89,7 @@ src/game/prefabs/new_character.c             \
 src/game/prefabs/player.c                    \
 src/game/prefabs/save_slot.c                 \
 src/game/prefabs/solid.c                     \
+src/game/prefabs/terminal.c                  \
 "
 
 $CC $FLAGS $GLAD $DEFS $GENERAL $ENGINE $GAME $INCS $LIBS $OUT

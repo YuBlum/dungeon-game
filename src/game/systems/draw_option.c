@@ -5,7 +5,7 @@
 #include "engine/renderer.h"
 
 void
-draw_option_system(void) {
+system_draw_option(void) {
   V2f *position = ecs_get_component_list("position");
   Tag *tag = ecs_get_component_list("tag");
   u32 *id = ecs_get_component_list("option-id");
@@ -26,7 +26,7 @@ draw_option_system(void) {
 }
 
 void
-draw_option_with_u32_arg_system(void) {
+system_draw_option_with_u32_arg(void) {
   V2f *position = ecs_get_component_list("position");
   Tag *tag = ecs_get_component_list("tag");
   u32 *id = ecs_get_component_list("option-id");

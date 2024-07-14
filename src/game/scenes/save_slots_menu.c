@@ -14,16 +14,16 @@
 
 static void
 go_back_option(void) {
-  scene_manager_goto_scene(main_menu_scene);
+  scene_manager_goto(scene_main_menu);
 }
 
 static void
 delete_save_option(void) {
-  scene_manager_goto_scene(delete_save_menu_scene);
+  scene_manager_goto(scene_delete_save_menu);
 }
 
 void
-save_slots_menu_scene(void) {
+scene_save_slots_menu(void) {
   global.all.split_screen = false;
   global.menu.option_id[0] = 0;
   global.menu.cursor_id = 0;

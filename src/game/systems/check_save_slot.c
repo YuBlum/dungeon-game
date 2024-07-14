@@ -3,7 +3,7 @@
 #include "engine/serialization.h"
 
 void
-check_save_slot_system(void) {
+system_check_save_slot(void) {
   CharacterName *character_name = ecs_get_component_list("character-name");
   Class *class = ecs_get_component_list("class");
   u32 *id = ecs_get_component_list("option-id");

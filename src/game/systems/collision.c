@@ -4,7 +4,7 @@
 #include "engine/tilemap.h"
 
 void
-collision_system(void) {
+system_collision(void) {
   V2f *position = ecs_get_component_list("position");
   V2f *direction = ecs_get_component_list("direction");
   PositionLerp *position_lerp = ecs_get_component_list("position-lerp");

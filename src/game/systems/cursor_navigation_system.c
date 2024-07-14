@@ -4,7 +4,7 @@
 #include "game/components.h"
 
 void
-cursor_navigation_system(void) {
+system_cursor_navigation(void) {
   u32 *id = ecs_get_component_list("cursor-id");
   Cursor *cursor = ecs_get_component_list("cursor");
   for (Entity e = 0; e < ecs_entities_amount(); e++) {

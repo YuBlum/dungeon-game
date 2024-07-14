@@ -4,7 +4,7 @@
 #include "engine/input.h"
 
 void
-select_attribute_input(void) {
+system_select_attribute_input(void) {
   AttributeType *attribute_type = ecs_get_component_list("attribute-type");
   i32 *attribute_points = ecs_get_component_list("attribute-points");
   u32 *id = ecs_get_component_list("option-id");

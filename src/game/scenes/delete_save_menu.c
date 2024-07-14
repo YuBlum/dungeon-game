@@ -6,11 +6,11 @@
 
 static void
 cancel_option(void) {
-  scene_manager_goto_scene(save_slots_menu_scene);
+  scene_manager_goto(scene_save_slots_menu);
 }
 
 void
-delete_save_menu_scene(void) {
+scene_delete_save_menu(void) {
   global.all.split_screen = false;
   global.menu.option_id[0] = 0;
   global.menu.cursor_id = 0;

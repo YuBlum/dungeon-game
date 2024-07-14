@@ -7,7 +7,7 @@
 
 static void
 start_option(void) {
-  scene_manager_goto_scene(save_slots_menu_scene);
+  scene_manager_goto(scene_save_slots_menu);
 }
 
 static void
@@ -21,7 +21,7 @@ exit_option(void) {
 }
 
 void
-main_menu_scene(void) {
+scene_main_menu(void) {
   global.all.split_screen = false;
   global.menu.option_id[0] = 0;
   global.menu.cursor_id = 0;

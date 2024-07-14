@@ -3,7 +3,7 @@
 #include "engine/input.h"
 
 void
-input_direction_system(void) {
+system_input_direction(void) {
   V2f *direction = ecs_get_component_list("direction");
   i32 dir_x = input_key_pressed(KEY_RIGHT) - input_key_pressed(KEY_LEFT);
   i32 dir_y = input_key_pressed(KEY_UP)    - input_key_pressed(KEY_DOWN);

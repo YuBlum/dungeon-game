@@ -36,7 +36,7 @@ main(void) {
         ecs_draw_screen();
       renderer_batch_end();
     }
-    renderer_to_screen();
+    renderer_to_window();
     window_frame_end();
   }
   serialization_end();

@@ -72,30 +72,12 @@ __scene_manager_is_current_scene(const char *name, const char *file, u32 line) {
 }
 
 void
-__scene_manager_goto_scene(const char *name, const char *file, u32 line) {
+__scene_manager_goto(const char *name, const char *file, u32 line) {
 #if DEVMODE
   if (!hashtable_has(scene_manager.scene_ids, name)) ERROR("%s:%u: Scene '%s' doesn't exist", file, line, name);
 #endif
   scene_manager.changing = true;
   scene_manager.scene_nxt = hashtable_get(scene_manager.scene_ids, name);
-}
-
-void
-__scene_manager_goto_next(const char *file, u32 line) {
-#if DEVMODE
-  if (scene_manager.scene_cur + 1 >= list_size(scene_manager.scenes)) ERROR("%s:%u: Out of bounds scene", file, line);
-#endif
-  scene_manager.changing = true;
-  scene_manager.scene_nxt = scene_manager.scene_cur + 1;
-}
-
-void
-__scene_manager_goto_prev(const char *file, u32 line) {
-#if DEVMODE
-  if (scene_manager.scene_cur == 0) ERROR("%s:%u: Out of bounds scene", file, line);
-#endif
-  scene_manager.changing = true;
-  scene_manager.scene_nxt = scene_manager.scene_cur - 1;
 }
 
 static void

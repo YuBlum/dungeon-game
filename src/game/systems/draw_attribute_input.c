@@ -8,7 +8,7 @@
 static const char *attrib_names[] = { "Agility", "Intelect", "Presence", "Strength", "Vigor", };
 
 void
-draw_attribute_input_system(void) {
+system_draw_attribute_input(void) {
   V2f *position = ecs_get_component_list("position");
   AttributeType *attribute_type = ecs_get_component_list("attribute-type");
   i32 *attribute_points = ecs_get_component_list("attribute-points");

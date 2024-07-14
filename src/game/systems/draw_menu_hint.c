@@ -4,7 +4,7 @@
 #include "engine/renderer.h"
 
 void
-draw_menu_hint_system(void) {
+system_draw_menu_hint(void) {
   V2f *position = ecs_get_component_list("position");
   Color *color = ecs_get_component_list("color");
   Tag *tag = ecs_get_component_list("tag");

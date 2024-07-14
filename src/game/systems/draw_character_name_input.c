@@ -6,7 +6,7 @@
 #include "general/core.h"
 
 void
-draw_character_name_input_system(void) {
+system_draw_character_name_input(void) {
   V2f *position = ecs_get_component_list("position");
   CharacterName *character_name = ecs_get_component_list("character-name");
   u32 *id = ecs_get_component_list("option-id");

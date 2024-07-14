@@ -4,8 +4,9 @@
 #include "game/prefabs.h"
 
 void
-overworld_scene(void) {
+scene_overworld(void) {
   global.all.split_screen = true;
   tilemap_setup(GAME_W, GAME_H);
-  prefab_player(V2FS(0));
+  prefab_terminal();
+  prefab_player(V2FS(1));
 }

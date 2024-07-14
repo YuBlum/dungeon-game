@@ -5,7 +5,7 @@
 #include "general/global.h"
 
 void
-movement_system(void) {
+system_movement(void) {
   V2f *position = ecs_get_component_list("position");
   PositionLerp *position_lerp = ecs_get_component_list("position-lerp");
   f32 *speed = ecs_get_component_list("speed");

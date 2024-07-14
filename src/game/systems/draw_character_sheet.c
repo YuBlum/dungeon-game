@@ -7,7 +7,7 @@ static const char *attrib_names[] = { "AGI", "INT", "PRE", "STR", "VIG", };
 static const char *class_names[] = { "Fighter", "Thief", "Wizard" };
 
 void
-draw_character_sheet_system(void) {
+system_draw_character_sheet(void) {
   Attributes *attributes = ecs_get_component_list("attributes");
   CharacterName *character_name = ecs_get_component_list("character-name");
   CharacterSheet *character_sheet = ecs_get_component_list("character-sheet");

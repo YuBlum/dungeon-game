@@ -6,7 +6,7 @@
 static const char *class_names[] = { "Fighter", "Thief", "Wizard" };
 
 void
-draw_save_slot_system(void) {
+system_draw_save_slot(void) {
   CharacterName *character_name = ecs_get_component_list("character-name");
   Class *class = ecs_get_component_list("class");
   V2f *position = ecs_get_component_list("position");

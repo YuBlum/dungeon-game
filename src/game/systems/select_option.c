@@ -4,7 +4,7 @@
 #include "engine/input.h"
 
 void
-select_option_system(void) {
+system_select_option(void) {
   u32 *id = ecs_get_component_list("option-id");
   u32 *cursor_id = ecs_get_component_list("cursor-id");
   Callback *callback = ecs_get_component_list("callback");
