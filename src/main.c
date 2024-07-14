@@ -1,5 +1,6 @@
 #include "include/components.h"
 #include "include/global.h"
+#include "include/serialization.h"
 #include "include/systems.h"
 #include "include/ecs.h"
 #include "include/input.h"
@@ -38,5 +39,6 @@ main(void) {
     renderer_to_screen();
     window_frame_end();
   }
+  serialization_end();
   return 0;
 }
