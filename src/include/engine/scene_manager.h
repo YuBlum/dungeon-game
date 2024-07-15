@@ -12,7 +12,7 @@ void __scene_manager_goto(const char *name, const char *file, u32 line);
 void scene_manager_update(void);
 
 #define scene_manager_create_scene(SCENE) do { (void)SCENE; __scene_manager_create_scene(SCENE, #SCENE, __FILE__, __LINE__); } while(0)
-#define scene_manager_activate_system(SCENE, SYSTEM) do { (void)SCENE; (void)SYSTEM; __scene_manager_activate_system(#SCENE, #SYSTEM, __FILE__, __LINE__); } while(0)
+#define scene_manager_activate_system(SCENE, SYSTEM) do { (void)SCENE; __scene_manager_activate_system(#SCENE, SYSTEM, __FILE__, __LINE__); } while(0)
 #define scene_manager_is_current_scene(SCENE) __scene_manager_is_current_scene(#SCENE, __FILE__, __LINE__)
 #define scene_manager_goto(SCENE) do { (void)SCENE; __scene_manager_goto(#SCENE, __FILE__, __LINE__); } while(0)
 

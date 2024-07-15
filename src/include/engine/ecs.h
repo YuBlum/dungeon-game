@@ -58,6 +58,10 @@ void  __ecs_system_must_not_have(const char *name, usize comps_amount, const cha
 void  __ecs_system_activate(const char *name, const char *file, u32 line);
 void  __ecs_system_deactivate(const char *name, const char *file, u32 line);
 void ecs_system_deactivate_all(void);
+void __ecs_system_pause(const char *name, const char *file, u32 line);
+void __ecs_system_unpause(const char *name, const char *file, u32 line);
+void ecs_system_pause_event(SystemEvent event);
+void ecs_system_unpause_event(SystemEvent event);
 void ecs_scene_start(void);
 void ecs_scene_end(void);
 void ecs_update(void);
@@ -85,11 +89,13 @@ void ecs_draw_screen(void);
 #define ecs_entity_reference_insert_component(REFERENCE, TYPE, COMPONENT, VALUE) do { *(TYPE *)__ecs_entity_reference_insert_component(REFERENCE, COMPONENT, __FILE__, __LINE__) = VALUE; } while(0)
 #define ecs_entity_reference_insert_empty_component(REFERENCE, COMPONENT) __ecs_entity_reference_insert_empty_component(REFERENCE, COMPONENT, __FILE__, __LINE__)
 #define ecs_entity_reference_destroy(REFERENCE) __ecs_entity_reference_destroy(REFERENCE, __FILE__, __LINE__)
-#define ecs_system_create(SYSTEM, EVENT) do { (void)SYSTEM; __ecs_system_create(#SYSTEM, SYSTEM, EVENT, __FILE__, __LINE__); } while(0)
-#define ecs_system_exists(SYSTEM) do { (void)SYSTEM; __ecs_system_exists(#SYSTEM); } while(0)
-#define ecs_system_must_have(SYSTEM, ...) do { (void)SYSTEM; const char *comps_names[] = { __VA_ARGS__ }; __ecs_system_must_have(#SYSTEM, sizeof (comps_names) / sizeof (comps_names[0]), comps_names, __FILE__, __LINE__); } while(0)
-#define ecs_system_must_not_have(SYSTEM, ...) do { (void)SYSTEM; const char *comps_names[] = { __VA_ARGS__ }; __ecs_system_must_not_have(#SYSTEM, sizeof (comps_names) / sizeof (comps_names[0]), comps_names, __FILE__, __LINE__); } while(0)
+#define ecs_system_create(SYSTEM, FN, EVENT) do { __ecs_system_create(SYSTEM, FN, EVENT, __FILE__, __LINE__); } while(0)
+#define ecs_system_exists(SYSTEM) __ecs_system_exists(SYSTEM)
+#define ecs_system_must_have(SYSTEM, ...) do { const char *comps_names[] = { __VA_ARGS__ }; __ecs_system_must_have(SYSTEM, sizeof (comps_names) / sizeof (comps_names[0]), comps_names, __FILE__, __LINE__); } while(0)
+#define ecs_system_must_not_have(SYSTEM, ...) do { const char *comps_names[] = { __VA_ARGS__ }; __ecs_system_must_not_have(SYSTEM, sizeof (comps_names) / sizeof (comps_names[0]), comps_names, __FILE__, __LINE__); } while(0)
 #define ecs_system_activate(SYSTEM) do { (void)SYSTEM; __ecs_system_activate(#SYSTEM, __FILE__, __LINE__); } while(0)
-#define ecs_system_deactivate(SYSTEM) do { (void)SYSTEM; __ecs_system_deactivate(#SYSTEM, __FILE__, __LINE__); } while(0)
+#define ecs_system_deactivate(SYSTEM) __ecs_system_deactivate(SYSTEM, __FILE__, __LINE__)
+#define ecs_system_pause(SYSTEM) __ecs_system_pause(SYSTEM, __FILE__, __LINE__)
+#define ecs_system_unpause(SYSTEM) __ecs_system_unpause(SYSTEM, __FILE__, __LINE__)
 
 #endif/*__ECS_H__*/

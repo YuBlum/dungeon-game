@@ -51,6 +51,7 @@ typedef struct {
 typedef struct {
   SystemFn fn;
   bool active;
+  bool paused;
   const char **must_have;
   const char **must_not_have;
 #if DEVMODE
@@ -486,12 +487,7 @@ __ecs_get_component_list(const char *comp_name, const char *file, u32 line) {
 void
 __ecs_system_create(const char *name, SystemFn fn, SystemEvent event, const char *file, u32 line) {
 #if DEVMODE
-  if (!fn) ERROR("%s:%u: System function is NULL", file, line);
-  for (SystemEvent j = 0; j < SYSTEM_EVENTS_AMOUNT; j++) {
-    for (usize i = 0; i < list_size(world.systems[j]); i++) {
-      if (fn == world.systems[j][i].fn) ERROR("%s:%u: System already exists on event %s", file, line, system_event_str[j]);
-    }
-  }
+  if (hashtable_has(world.system_ids, name)) ERROR("%s:%u: System '%s' already exists", file, line, name);
 #endif
   SystemID id = {
     .index = list_size(world.systems[event]),
@@ -507,6 +503,7 @@ __ecs_system_create(const char *name, SystemFn fn, SystemEvent event, const char
   system->creation_line = line;
 #endif
   system->active = false;
+  system->paused = false;
   hashtable_insert(world.system_ids, name, id);
 }
 
@@ -596,7 +593,43 @@ ecs_system_deactivate_all(void) {
   for (SystemEvent event = 0; event < SYSTEM_EVENTS_AMOUNT; event++) {
     for (usize system_id = 0; system_id < list_size(world.systems[event]); system_id++) {
       world.systems[event][system_id].active = false;
+      world.systems[event][system_id].paused = false;
     }
+  }
+}
+
+
+void
+__ecs_system_pause(const char *name, const char *file, u32 line) {
+#if DEVMODE
+  if (!hashtable_has(world.system_ids, name)) ERROR("%s:%u: '%s' is not a system", file, line, name);
+#endif
+  SystemID id = hashtable_get(world.system_ids, name);
+  System *system = &world.systems[id.event][id.index];
+  system->paused = true;
+}
+
+void
+__ecs_system_unpause(const char *name, const char *file, u32 line) {
+#if DEVMODE
+  if (!hashtable_has(world.system_ids, name)) ERROR("%s:%u: '%s' is not a system", file, line, name);
+#endif
+  SystemID id = hashtable_get(world.system_ids, name);
+  System *system = &world.systems[id.event][id.index];
+  system->paused = false;
+}
+
+void
+ecs_system_pause_event(SystemEvent event) {
+  for (usize system_id = 0; system_id < list_size(world.systems[event]); system_id++) {
+    world.systems[event][system_id].paused = true;
+  }
+}
+
+void
+ecs_system_unpause_event(SystemEvent event) {
+  for (usize system_id = 0; system_id < list_size(world.systems[event]); system_id++) {
+    world.systems[event][system_id].paused = false;
   }
 }
 
@@ -609,7 +642,7 @@ ecs_run_event_systems(SystemEvent event) {
       ERROR("%s:%u: System must have a component filter. Forgot 'ecs_system_must_have'?", system->creation_file, system->creation_line);
     }
 #endif
-    if (!system->active) continue;
+    if (!system->active || system->paused) continue;
     /* get all qualified archetypes */
     list_clear(world.archetype_queue);
     Component *comp = hashtable_get_address(world.components, system->must_have[0]);

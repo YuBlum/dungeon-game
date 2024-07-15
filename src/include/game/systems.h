@@ -27,6 +27,7 @@ void system_submit_character_input(void);
 void system_submit_attribute_input(void);
 void system_delete_save_slot(void);
 void system_draw_terminal(void);
+void system_pause(void);
 
 void systems_create(void);
 

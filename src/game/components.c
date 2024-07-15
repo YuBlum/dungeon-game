@@ -28,9 +28,9 @@ components_create(void) {
   ecs_component_create(AttributeType, "attribute-type");
   ecs_component_create(EntityReference *, "reference-ptr");
   ecs_component_create(Terminal, "terminal");
+  ecs_component_create(bool, "pause");
 
   ecs_empty_component_create("input");
   ecs_empty_component_create("total-attribute-points");
   ecs_empty_component_create("menu-hint");
-  ecs_empty_component_create("pause");
 }

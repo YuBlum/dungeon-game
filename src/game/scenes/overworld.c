@@ -1,3 +1,7 @@
+#include "engine/scene_manager.h"
+#include "engine/serialization.h"
+#include "game/components.h"
+#include "game/scenes.h"
 #include "general/core.h"
 #include "general/global.h"
 #include "engine/tilemap.h"
