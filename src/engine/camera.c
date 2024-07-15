@@ -1,6 +1,6 @@
 #include "engine/camera.h"
+#include "engine/types.h"
 #include "general/core.h"
-#include "general/types.h"
 
 static const f32 screen_projection[3][3] = {
   { 2.0f/(SCREEN_RIGHT - SCREEN_LEFT), 0                                , -(SCREEN_RIGHT + SCREEN_LEFT)/(SCREEN_RIGHT - SCREEN_LEFT) },

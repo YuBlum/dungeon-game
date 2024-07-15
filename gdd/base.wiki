@@ -144,6 +144,8 @@ With EXP you can level up.
 === Fighter ===
 Fighters have more HP and do more physical damage than the other classes.
 
+You start with one Wood Sword and one Small Wood Shield.
+
 ==== Fighter Progression ====
 | LVL | Progression          |
 |-----|----------------------|
@@ -177,6 +179,8 @@ Fighters have more HP and do more physical damage than the other classes.
 === Thief ===
 Thiefs are good in exploration, finding secret doors, opening locks and distance attacks.
 
+You start with one Slingshot with 10 rocks and 2 Lockpicks.
+
 ==== Thief Progression ====
 | LVL | Progression         |
 |-----|---------------------|
@@ -193,26 +197,27 @@ Thiefs are good in exploration, finding secret doors, opening locks and distance
 | 10  | +2 Thief Abilities  |
 
 ==== Thief Abilities ====
-| Name         | Description                                          | EP Cost | Requires              |
-|--------------|------------------------------------------------------|---------|-----------------------|
-| Shooter I    | Your next distance attack have +5 damage             | 8       | Agility 1             |
-| Shooter II   | Your next distance attack have +10 damage            | 10      | Agility 3, Shooter I  |
-| Shooter III  | Your next distance attack have +15 damage            | 12      | Agility 5, Shooter II |
-| Dodge I      | You have +1 AP for the next 5 rounds                 | 8       | Agility 1             |
-| Dodge II     | You have +1 AP for the next 10 rounds                | 10      | Agility 3, Dodge I    |
-| Dodge II     | You have +1 AP for the next 15 rounds                | 12      | Agility 5, Dodge II   |
-| Theft        | Learn an hability of another class                   | -       | Presence 3            |
-| Lucky Person | You have more chances of finding good loot           | -       | Presence 1            |
-| Deft         | You can do two actions per turn                      | -       | Agility 4             |
-| Stealth      | The enemies can't see you as often for 10 rounds     | 4       | Agility 1             |
-| Lucky Aim    | You have advantage on your next distance attack test | 8       | Presence 1            |
-| Perfect Aim  | You have +2 on your next distance attack test        | 12      | Agility 2             |
-| Burgler      | You have +2 when using a lockpick                    | 12      | Agility 2             |
+| Name            | Description                                          | EP Cost | Requires              |
+|-----------------|------------------------------------------------------|---------|-----------------------|
+| Shooter I       | Your next distance attack have +5 damage             | 8       | Agility 1             |
+| Shooter II      | Your next distance attack have +10 damage            | 10      | Agility 3, Shooter I  |
+| Shooter III     | Your next distance attack have +15 damage            | 12      | Agility 5, Shooter II |
+| Dodge I         | You have +1 AP for the next 5 rounds                 | 8       | Agility 1             |
+| Dodge II        | You have +1 AP for the next 10 rounds                | 10      | Agility 3, Dodge I    |
+| Dodge II        | You have +1 AP for the next 15 rounds                | 12      | Agility 5, Dodge II   |
+| Theft           | Learn an hability of another class                   | -       | Presence 3            |
+| Lucky Person    | You have more chances of finding good loot           | -       | Presence 1            |
+| Deft            | You can do two actions per turn                      | -       | Agility 4             |
+| Stealth         | The enemies can't see you as often for 10 rounds     | 4       | Agility 1             |
+| Stealth         | The enemies can't see you as often for 10 rounds     | 4       | Agility 1             |
+| Massive Shooter | All your ranged weapons have +1 die of damage        | -       | Agility 4             |
+| Perfect Aim     | You have +2 on your next distance attack test        | 12      | Agility 2             |
+| Burgler         | You have +2 when using a lockpick                    | 12      | Agility 2             |
 
 === Wizard ===
 Wizards have more EP than the other classes, this is the only class that can use magic.
 
-You start with two spells of intelect 0.
+You start with the Weak Fire Ball and Gambling spells.
 
 ==== Wizard Progression ====
 | LVL | Progression         |
@@ -230,19 +235,21 @@ You start with two spells of intelect 0.
 | 05  | +4 Spells           |
 
 ==== Wizard Abilities ====
-| Name           | Description                                               | EP Cost | Requires                |
-|----------------|-----------------------------------------------------------|---------|-------------------------|
-| Powerful I     | Your next spell attack have +5 damage                     | 10      | Intelect 1              |
-| Powerful II    | Your next spell attack have +10 damage                    | 12      | Intelect 3, Powerful I  |
-| Powerful III   | Your next spell attack have +15 damage                    | 14      | Intelect 5, Powerful II |
-| Sorcerer I     | The DT of the spell lower in 1                            | 8       | Intelect 1              |
-| Sorcerer II    | The DT of the spell lower in 2                            | 10      | Intelect 3, Sorcerer I  |
-| Sorcerer III   | The DT of the spell lower in 3                            | 12      | Intelect 5, Sorcerer II |
-| Lucky Wizard   | You have advantage on spell tests for 2 rounds            | 12      | Presence 1              |
-| Enhence        | Your next spell will have double of the effect            | 20      | Intelect 3              |
-| Proficient     | You gain +2 EP when you level up                          | -       | Intelect 2              |
-| Favorite Spell | You choose one spell to always have advantage on the test | -       | Intelect 3              |
-| Expert Wizard  | You don't need components to cast spells anymore          | -       | Intelect 5              |
+| Name           | Description                                                          | EP Cost | Requires                |
+|----------------|----------------------------------------------------------------------|---------|-------------------------|
+| Powerful I     | Your next spell attack have +5 damage                                | 10      | Intelect 1              |
+| Powerful II    | Your next spell attack have +10 damage                               | 12      | Intelect 3, Powerful I  |
+| Powerful III   | Your next spell attack have +15 damage                               | 14      | Intelect 5, Powerful II |
+| Sorcerer I     | The DT of the spell lower in 1                                       | 8       | Intelect 1              |
+| Sorcerer II    | The DT of the spell lower in 2                                       | 10      | Intelect 3, Sorcerer I  |
+| Sorcerer III   | The DT of the spell lower in 3                                       | 12      | Intelect 5, Sorcerer II |
+| Lucky Wizard   | You have advantage on spell tests for 2 rounds                       | 12      | Presence 1              |
+| Enhence        | Your next spell will have double of the effect                       | 20      | Intelect 3              |
+| Proficient     | You gain +2 EP when you level up                                     | -       | Intelect 2              |
+| Favorite Spell | You choose one spell to always have advantage on the test            | -       | Intelect 3              |
+| Natural Caster | You don't need components to cast spells anymore                     | -       | Presence 5              |
+| Quick Cast     | You can use half of magical components rounded up on the next round  | -       | Agility  2              |
+| Find Barrier   | You can sense magical walls                                          | -       | Presence 2              |
 
 ==== Spells ====
 
@@ -251,20 +258,144 @@ The Spell Test is an Intelect test.
 
 Spells always costs 5 EP, but if you fail the test you lose 10 EP. The spell still works even if you fail. 
 
+You can only cast spells that are on your prepared spells section.
+
 The DT of the test is based on the spell type
 
 | Type    | DT |
 |---------|----|
-| Normal  | 12 |
+| Regular | 12 |
 | Complex | 16 |
 | Extreme | 20 |
 
 ===== List of Spells =====
-| Name           | Description                              | Type   | Intelect |
-|----------------|------------------------------------------|--------|----------|
-| Gambling       | Your next test have advantage            | Normal | 0        |
-| Speed of Light | You can make 3 actions on the next round | Normal |          |
-| Speed of Light | You can make 3 actions on the next round | Normal |          |
+| Name            | Description                                                                                                          | Type    | Intelect | Components                                |
+|-----------------|----------------------------------------------------------------------------------------------------------------------|---------|----------|-------------------------------------------|
+| Gambling        | Your next test have advantage                                                                                        | Regular | 0        | 02 Sacred Wood                            |
+| Weak Fire Ball  | You throw a ball of fire, it causes 1d4 damage                                                                       | Regular | 0        | 05 Slime Fluid                            |
+| Open Mind       | Use to destroy magical walls                                                                                         | Regular | 1        | 02 Sacred Wood                            |
+| Tiny Heal       | You heal 1d4 of HP                                                                                                   | Regular | 1        | 02 Holy Water                             |
+| Rot Body        | You make a target become poisoned for 1d4 rounds, in other words 1 of damage per round                               | Regular | 2        | 02 Undead Meat                            |
+| Heal            | You heal 2d4 of HP                                                                                                   | Regular | 2        | 05 Holy Water         02 Slime Fluid      |
+| Spine Walk      | You make one tile of the ground be filled with spikes for 1d4 + 1 rounds, it causes 2 of damage to walk in that tile | Regular | 2        | 10 Skullwalker Bone                       |
+| Tiny Explosion  | All enemies in a radius of 3 tiles receive 1d4 + 2 damage                                                            | Regular | 3        | 20 Slime Fluid        02 Skullwalker Bone |
+| Dark Vision     | You can see in the dark for 2d4 rounds                                                                               | Regular | 2        | 10 Slime Fluid                            |
+| Big Heal        | You heal 4d4 of HP                                                                                                   | Complex | 2        | 10 Holy Water         06 Slime Fluid      |
+| Speed of Light  | You can make 3 actions on the next round                                                                             | Complex | 2        | 05 Undead Meat                            |
+| Consume Flesh   | You choose a target to be consumed, you deal 1d4 of damage for 1d4 + 1 rounds to that target                         | Complex | 3        | 05 Undead Meat        01 Human Blood      |
+| Fire Ball       | You throw a ball of fire, it causes 2d6 damage                                                                       | Complex | 3        | 10 Slime Fluid                            |
+| Rot Mind        | You make a target become extra poisoned for 1d4 rounds, in other words 4 of damage per round                         | Complex | 4        | 06 Undead Meat        01 Animal Organ     |
+| Great Heal      | You heal 6d4 of HP                                                                                                   | Complex | 4        | 20 Holy Water         12 Slime Fluid      |
+| Explosion       | All enemies in a radius of 6 tiles receive 2d4 + 2 damage                                                            | Complex | 4        | 40 Slime Fluid        10 Skullwalker Bone |
+| Big Explosion   | All enemies in a radius of 8 tiles receive 2d6 + 4 damage                                                            | Extreme | 5        | 60 Slime Fluid        15 Skullwalker Bone |
+| Giant Fire Ball | You throw a ball of fire, it causes 4d8 damage                                                                       | Extreme | 5        | 10 Slime Fluid        05 Animal Blood     |
+| Rot Being       | You make a target become super poisoned for 1d4 rounds, in other words 8 of damage per round                         | Extreme | 5        | 05 Animal Organ       02 Human Organ      |
+
+== Items ==
+
+=== Inventory ===
+Items have different weights and you have a capacity of weight that you can carry.
+Your inventory weight is defined by 70 + (Strength + Agility) * 10
+
+-4 * 10 = -40 + 70 = 30
+-3 * 10 = -30 + 70 = 40
+-2 * 10 = -20 + 70 = 50
+-1 * 10 = -10 + 70 = 60
+ 0 * 10 =  00 + 70 = 70
+ 1 * 10 =  10 + 70 = 80
+ 2 * 10 =  20 + 70 = 90
+ 3 * 10 =  30 + 70 = 100
+ 4 * 10 =  40 + 70 = 110
+ 5 * 10 =  50 + 70 = 120
+ 6 * 10 =  60 + 70 = 130
+ 7 * 10 =  70 + 70 = 140
+ 8 * 10 =  80 + 70 = 150
+ 9 * 10 =  90 + 70 = 160
+10 * 10 = 100 + 70 = 170
+
+=== Weapons ===
+
+==== Melee ====
+| Name        | Damage     | Critical Hit | Strength | Weight | Cost           |
+|-------------|------------|--------------|----------|--------|----------------|
+| Wood Sword  | 1d4  + STR | 18           | 0        | 04     | $0030 to $0060 |
+| Knife       | 1d6  + STR | 18           | 1        | 02     | $0040 to $0075 |
+| Dagger      | 1d6  + STR | 16           | 1        | 02     | $0045 to $0080 |
+| Shortsword  | 1d8  + STR | 18           | 2        | 06     | $0100 to $0150 |
+| Handaxe     | 1d8  + STR | 16           | 2        | 10     | $0180 to $0220 |
+| Longsword   | 2d4  + STR | 18           | 3        | 14     | $0180 to $0220 |
+| Tridant     | 2d4  + STR | 16           | 3        | 14     | $0200 to $0250 |
+| Warhammer   | 1d12 + STR | 18           | 3        | 20     | $0250 to $0320 |
+| GreatSword  | 2d6  + STR | 18           | 3        | 24     | $0400 to $0500 |
+| Battleaxe   | 1d12 + STR | 16           | 4        | 28     | $0400 to $0500 |
+| Maul        | 3d4  + STR | 16           | 4        | 32     | $0700 to $1000 |
+| Dreamsword  | 2d12 + STR | 18           | 4        | 36     | $1500 to $2000 |
+| Mastersword | 2d12 + STR | 16           | 5        | 36     | $1800 to $2800 |
+| God's Spear | 3d12 + STR | 16           | 5        | 40     | $6000 to $9500 |
+
+==== Ranged ====
+| Name                 | Damage  | Critical Hit | Ammo Type   | Agility | Weight | Cost           |
+|----------------------|---------|--------------|-------------|---------|--------|----------------|
+| Slingshot            | 1d4     | 18           | Rock        | 0       | 02     | $0010 to $0015 |
+| Big Slingshot        | 1d4     | 16           | Rock        | 1       | 02     | $0020 to $0030 |
+| Small Throwing-Knife | 1d6     | 18           | -           | 1       | 04     | $0015 to $0025 |
+| Shortbow             | 1d6     | 16           | Small Arrow | 2       | 08     | $0050 to $0080 |
+| Throwing-Knife       | 1d8     | 16           | -           | 2       | 06     | $0020 to $0040 |
+| Light Crossbow       | 1d8     | 16           | Small Arrow | 2       | 16     | $0110 to $0130 |
+| Hand Crossbow        | 2d4     | 18           | Arrow       | 3       | 26     | $0200 to $0250 |
+| Longbow              | 1d10    | 18           | Arrow       | 3       | 36     | $0300 to $0400 |
+| Hunting Bow          | 1d10    | 16           | Arrow       | 3       | 34     | $0380 to $0500 |
+| Heavy Crossbow       | 2d4 + 2 | 18           | Large Arrow | 4       | 50     | $0450 to $0600 |
+| Masterbow            | 2d6 + 2 | 16           | Large Arrow | 4       | 45     | $0800 to $1200 |
+| Killer Crossbow      | 2d8     | 16           | Large Arrow | 5       | 58     | $2500 to $5000 |
+
+==== Ammo ====
+| Name        | Weight | Cost           |
+|-------------|--------|----------------|
+| Rock        | 01     | $0001 to $0005 |
+| Small Arrow | 06     | $0005 to $0015 |
+| Arrow       | 08     | $0010 to $0025 |
+| Large Arrow | 12     | $0020 to $0040 |
+
+=== Defensive Items ===
+| Name                  | Extra PA | Strength | Weight | Cost           |
+|-----------------------|----------|----------|--------|----------------|
+| Wood Shield           | 1        | 0        | 06     | $0050 to $0100 |
+| Small Metal Shield    | 2        | 2        | 12     | $0100 to $0200 |
+| Metal Shield          | 3        | 3        | 18     | $0160 to $0310 |
+| Strong Metal Shield   | 4        | 4        | 24     | $0250 to $0500 |
+| Titanium Shield       | 5        | 5        | 36     | $0420 to $0800 |
+| Light Armour          | 1        | 1        | 08     | $0120 to $0230 |
+| Weak Metal Armour     | 2        | 2        | 12     | $0300 to $0450 |
+| Metal Armour          | 3        | 3        | 16     | $0520 to $1200 |
+| Strong Metal Armour   | 4        | 4        | 24     | $1150 to $3200 |
+| Titanium Metal Armour | 5        | 5        | 26     | $3400 to $6900 |
+
+=== Magic Components ===
+| Name             | Weight | Cost           |
+|------------------|--------|----------------|
+| Slime Fluid      | 01     | $0010 to $0015 |
+| Sacred Wood      | 01     | $0020 to $0030 |
+| Undead Meat      | 02     | $0020 to $0030 |
+| Skullwalker Bone | 04     | $0040 to $0060 |
+| Holy Water       | 01     | $0050 to $0080 |
+| Animal Blood     | 02     | $0150 to $0300 |
+| Human Blood      | 02     | $0300 to $0800 |
+| Animal Organ     | 04     | $0900 to $1300 |
+| Human Organ      | 04     | $1600 to $4500 |
+
+=== General Items ===
+| Name                       | Description                                | Weight | Cost           |
+|----------------------------|--------------------------------------------|--------|----------------|
+| Lockpick                   | Used to open simple doors and chests       | 02     | $0010 to $0030 |
+| Advanced Lockpick          | Used to open all types of doors and chests | 04     | $0015 to $0040 |
+| Magical Lockpick           | Used to open magical walls                 | 04     | $0020 to $0060 |
+| Healing Potion             | Heals 1d4 HP                               | 01     | $0010 to $0030 |
+| Large Healing Potion       | Heals 2d4 HP                               | 02     | $0020 to $0050 |
+| Great Healing Potion       | Heals 3d4 HP                               | 04     | $0050 to $0080 |
+| Determination Potion       | Gain 1d4 EP                                | 01     | $0010 to $0030 |
+| Large Determination Potion | Gain 2d4 EP                                | 02     | $0020 to $0050 |
+| Great Determination Potion | Gain 3d4 EP                                | 04     | $0050 to $0080 |
 
 == Attribute Tests ==
 When something have a chance for failure an attribute test is gonna be performed.
@@ -294,10 +425,67 @@ Three random numbers that goes from 1 to 6 are gonna be picked, the sum of them 
 | 18    | 00.46%     |
 
 ==== DT ====
-DT stands for Difficulty of the Test. It is the value that the test has to surpass.
+DT stands for Difficulty Threshold. It is the value that the test has to surpass.
 
+===== Attribute -2 =====
 | DT | Difficulty | Percentage |
 |----|------------|------------|
+| 01 | Auto Pass  | 100.0%     |
+| 02 | Very Easy  | 099.0%     |
+| 03 | Very Easy  | 098.0%     |
+| 04 | Easy       | 095.0%     |
+| 05 | Easy       | 090.0%     |
+| 06 | Easy       | 083.0%     |
+| 07 | A Bit Easy | 074.0%     |
+| 08 | Avarage    | 062.0%     |
+| 09 | Avarage    | 050.0%     |
+| 10 | A Bit Hard | 037.0%     |
+| 11 | Hard       | 025.0%     |
+| 12 | Hard       | 016.0%     |
+| 13 | Hard       | 009.0%     |
+| 14 | Very Hard  | 004.0%     |
+| 15 | Very Hard  | 001.0%     |
+| 16 | Critic     | 000.5%     |
+| 17 | Impossible | 000.0%     |
+| 18 | Impossible | 000.0%     |
+| 19 | Impossible | 000.0%     |
+| 20 | Impossible | 000.0%     |
+| 21 | Impossible | 000.0%     |
+| 22 | Impossible | 000.0%     |
+| 23 | Impossible | 000.0%     |
+
+===== Attribute -1 =====
+| DT | Difficulty | Percentage |
+|----|------------|------------|
+| 01 | Auto Pass  | 100.0%     |
+| 02 | Auto Pass  | 100.0%     |
+| 03 | Very Easy  | 099.0%     |
+| 04 | Very Easy  | 098.0%     |
+| 05 | Easy       | 095.0%     |
+| 06 | Easy       | 090.0%     |
+| 07 | Easy       | 083.0%     |
+| 08 | A Bit Easy | 074.0%     |
+| 09 | Avarage    | 062.0%     |
+| 10 | Avarage    | 050.0%     |
+| 11 | A Bit Hard | 037.0%     |
+| 12 | Hard       | 025.0%     |
+| 13 | Hard       | 016.0%     |
+| 14 | Hard       | 009.0%     |
+| 15 | Very Hard  | 004.0%     |
+| 16 | Very Hard  | 001.0%     |
+| 17 | Critic     | 000.5%     |
+| 18 | Impossible | 000.0%     |
+| 19 | Impossible | 000.0%     |
+| 20 | Impossible | 000.0%     |
+| 21 | Impossible | 000.0%     |
+| 22 | Impossible | 000.0%     |
+| 23 | Impossible | 000.0%     |
+
+===== Attribute +0 =====
+| DT | Difficulty | Percentage |
+|----|------------|------------|
+| 01 | Auto Pass  | 100.0%     |
+| 02 | Auto Pass  | 100.0%     |
 | 03 | Auto Pass  | 100.0%     |
 | 04 | Very Easy  | 099.0%     |
 | 05 | Very Easy  | 098.0%     |
@@ -320,4 +508,137 @@ DT stands for Difficulty of the Test. It is the value that the test has to surpa
 | 22 | Impossible | 000.0%     |
 | 23 | Impossible | 000.0%     |
 
-This table is considering that you have 0 points on the attribute used on the test, the percentages and difficulties may change depending of how many points you have.
+===== Attribute +1 =====
+| DT | Difficulty | Percentage |
+|----|------------|------------|
+| 01 | Auto Pass  | 100.0%     |
+| 02 | Auto Pass  | 100.0%     |
+| 03 | Auto Pass  | 100.0%     |
+| 04 | Auto Pass  | 100.0%     |
+| 05 | Very Easy  | 099.0%     |
+| 06 | Very Easy  | 098.0%     |
+| 07 | Easy       | 095.0%     |
+| 08 | Easy       | 090.0%     |
+| 09 | Easy       | 083.0%     |
+| 10 | A Bit Easy | 074.0%     |
+| 11 | Avarage    | 062.0%     |
+| 12 | Avarage    | 050.0%     |
+| 13 | A Bit Hard | 037.0%     |
+| 14 | Hard       | 025.0%     |
+| 15 | Hard       | 016.0%     |
+| 16 | Hard       | 009.0%     |
+| 17 | Very Hard  | 004.0%     |
+| 18 | Very Hard  | 001.0%     |
+| 19 | Critic     | 000.5%     |
+| 20 | Impossible | 000.0%     |
+| 21 | Impossible | 000.0%     |
+| 22 | Impossible | 000.0%     |
+| 23 | Impossible | 000.0%     |
+
+===== Attribute +2 =====
+| DT | Difficulty | Percentage |
+|----|------------|------------|
+| 01 | Auto Pass  | 100.0%     |
+| 02 | Auto Pass  | 100.0%     |
+| 03 | Auto Pass  | 100.0%     |
+| 04 | Auto Pass  | 100.0%     |
+| 05 | Auto Pass  | 100.0%     |
+| 06 | Very Easy  | 099.0%     |
+| 07 | Very Easy  | 098.0%     |
+| 08 | Easy       | 095.0%     |
+| 09 | Easy       | 090.0%     |
+| 10 | Easy       | 083.0%     |
+| 11 | A Bit Easy | 074.0%     |
+| 12 | Avarage    | 062.0%     |
+| 13 | Avarage    | 050.0%     |
+| 14 | A Bit Hard | 037.0%     |
+| 15 | Hard       | 025.0%     |
+| 16 | Hard       | 016.0%     |
+| 17 | Hard       | 009.0%     |
+| 18 | Very Hard  | 004.0%     |
+| 19 | Very Hard  | 001.0%     |
+| 20 | Critic     | 000.5%     |
+| 21 | Impossible | 000.0%     |
+| 22 | Impossible | 000.0%     |
+| 23 | Impossible | 000.0%     |
+
+===== Attribute +3 =====
+| DT | Difficulty | Percentage |
+|----|------------|------------|
+| 01 | Auto Pass  | 100.0%     |
+| 02 | Auto Pass  | 100.0%     |
+| 03 | Auto Pass  | 100.0%     |
+| 04 | Auto Pass  | 100.0%     |
+| 05 | Auto Pass  | 100.0%     |
+| 06 | Auto Pass  | 100.0%     |
+| 07 | Very Easy  | 099.0%     |
+| 08 | Very Easy  | 098.0%     |
+| 09 | Easy       | 095.0%     |
+| 10 | Easy       | 090.0%     |
+| 11 | Easy       | 083.0%     |
+| 12 | A Bit Easy | 074.0%     |
+| 13 | Avarage    | 062.0%     |
+| 14 | Avarage    | 050.0%     |
+| 15 | A Bit Hard | 037.0%     |
+| 16 | Hard       | 025.0%     |
+| 17 | Hard       | 016.0%     |
+| 18 | Hard       | 009.0%     |
+| 19 | Very Hard  | 004.0%     |
+| 20 | Very Hard  | 001.0%     |
+| 21 | Critic     | 000.5%     |
+| 22 | Impossible | 000.0%     |
+| 23 | Impossible | 000.0%     |
+
+===== Attribute +4 =====
+| DT | Difficulty | Percentage |
+|----|------------|------------|
+| 01 | Auto Pass  | 100.0%     |
+| 02 | Auto Pass  | 100.0%     |
+| 03 | Auto Pass  | 100.0%     |
+| 04 | Auto Pass  | 100.0%     |
+| 05 | Auto Pass  | 100.0%     |
+| 06 | Auto Pass  | 100.0%     |
+| 07 | Auto Pass  | 100.0%     |
+| 08 | Very Easy  | 099.0%     |
+| 09 | Very Easy  | 098.0%     |
+| 10 | Easy       | 095.0%     |
+| 11 | Easy       | 090.0%     |
+| 12 | Easy       | 083.0%     |
+| 13 | A Bit Easy | 074.0%     |
+| 14 | Avarage    | 062.0%     |
+| 15 | Avarage    | 050.0%     |
+| 16 | A Bit Hard | 037.0%     |
+| 17 | Hard       | 025.0%     |
+| 18 | Hard       | 016.0%     |
+| 19 | Hard       | 009.0%     |
+| 20 | Very Hard  | 004.0%     |
+| 21 | Very Hard  | 001.0%     |
+| 22 | Critic     | 000.5%     |
+| 23 | Impossible | 000.0%     |
+
+===== Attribute +5 =====
+| DT | Difficulty | Percentage |
+|----|------------|------------|
+| 01 | Auto Pass  | 100.0%     |
+| 02 | Auto Pass  | 100.0%     |
+| 03 | Auto Pass  | 100.0%     |
+| 04 | Auto Pass  | 100.0%     |
+| 05 | Auto Pass  | 100.0%     |
+| 06 | Auto Pass  | 100.0%     |
+| 07 | Auto Pass  | 100.0%     |
+| 08 | Auto Pass  | 100.0%     |
+| 09 | Very Easy  | 099.0%     |
+| 10 | Very Easy  | 098.0%     |
+| 11 | Easy       | 095.0%     |
+| 12 | Easy       | 090.0%     |
+| 13 | Easy       | 083.0%     |
+| 14 | A Bit Easy | 074.0%     |
+| 15 | Avarage    | 062.0%     |
+| 16 | Avarage    | 050.0%     |
+| 17 | A Bit Hard | 037.0%     |
+| 18 | Hard       | 025.0%     |
+| 19 | Hard       | 016.0%     |
+| 20 | Hard       | 009.0%     |
+| 21 | Very Hard  | 004.0%     |
+| 22 | Very Hard  | 001.0%     |
+| 23 | Critic     | 000.5%     |

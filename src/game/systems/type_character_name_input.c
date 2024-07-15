@@ -12,6 +12,11 @@ system_type_character_name_input(void) {
     if (global.menu.cursor_id != cursor_id[e] || global.menu.option_id[cursor_id[e]] != id[e]) continue;
     char letter = input_letter_pressed();
     if (letter != -1 && character_name[e].size < CHARACTER_NAME_CAP) {
+      if (character_name[e].size == 0 && letter >= 'a' && letter <= 'z') {
+        letter -= 32;
+      } else if (character_name[e].size > 0 && letter >= 'A' && letter <= 'Z') {
+        letter += 32;
+      }
       character_name[e].buff[character_name[e].size] = letter;
       character_name[e].size++;
     } else if (input_key_repeated(KEY_BACKSPACE) && character_name[e].size > 0) {

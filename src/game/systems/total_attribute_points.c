@@ -1,6 +1,6 @@
 #include "engine/ecs.h"
 #include "general/global.h"
-#include "general/types.h"
+#include "engine/types.h"
 
 void
 system_total_attribute_points(void) {

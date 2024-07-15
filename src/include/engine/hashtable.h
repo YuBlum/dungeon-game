@@ -1,7 +1,7 @@
 #ifndef __HASHTABLE_H__
 #define __HASHTABLE_H__
 
-#include "general/types.h"
+#include "engine/types.h"
 
 void *hashtable_create(usize type);
 i32  __hashtable_insert(void **hashtable, const char *key, const char *file, u32 line);

@@ -8,5 +8,6 @@ scene_overworld(void) {
   global.all.split_screen = true;
   tilemap_setup(GAME_W, GAME_H);
   prefab_terminal();
+  prefab_pause();
   prefab_player(V2FS(1));
 }

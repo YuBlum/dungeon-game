@@ -1,7 +1,7 @@
 #ifndef __INPUT_H__
 #define __INPUT_H__
 
-#include "general/types.h"
+#include "engine/types.h"
 typedef enum {
   KEY_LEFT = 0,
   KEY_RIGHT,
@@ -10,6 +10,7 @@ typedef enum {
   KEY_A,
   KEY_B,
   KEY_BACKSPACE,
+  KEY_ESC,
 
   KEY_CAP
 } Key;

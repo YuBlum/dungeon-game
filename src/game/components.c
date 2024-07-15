@@ -32,4 +32,5 @@ components_create(void) {
   ecs_empty_component_create("input");
   ecs_empty_component_create("total-attribute-points");
   ecs_empty_component_create("menu-hint");
+  ecs_empty_component_create("pause");
 }

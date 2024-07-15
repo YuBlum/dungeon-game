@@ -1,7 +1,7 @@
 #ifndef __CAMERA_H__
 #define __CAMERA_H__
 
-#include "general/types.h"
+#include "engine/types.h"
 typedef f32 *Camera;
 
 typedef Camera (*CameraProjFn)(void);

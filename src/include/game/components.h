@@ -2,7 +2,7 @@
 #define __COMPONENTS_H__
 
 #include "engine/math.h"
-#include "general/types.h"
+#include "engine/types.h"
 
 typedef const char *Tag;
 
@@ -46,9 +46,10 @@ typedef struct {
   u32 food_points_max;
   u32 experience;
   u32 level;
+  u32 gold;
 } CharacterSheet;
 
-#define CHARACTER_NAME_CAP 16
+#define CHARACTER_NAME_CAP 8
 typedef struct {
   char buff[CHARACTER_NAME_CAP];
   u32 size;

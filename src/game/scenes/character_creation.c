@@ -84,6 +84,7 @@ begin_adventure_option(void) {
   character_sheet.food_points_cur    = character_sheet.food_points_max;
   character_sheet.essence_points_max = 10 + (attributes->intelect + attributes->presence) * 2;
   character_sheet.essence_points_cur = character_sheet.essence_points_max;
+  character_sheet.gold               = 0;
   serialization_start();
   serialize(CHARACTER_SHEET_NAME_SIZE,          &name->size);
   serialize(CHARACTER_SHEET_NAME_BUFF,           name->buff);
@@ -93,6 +94,7 @@ begin_adventure_option(void) {
   serialize(CHARACTER_SHEET_ATTRIBUTE_PRE,      &attributes->presence);
   serialize(CHARACTER_SHEET_ATTRIBUTE_STR,      &attributes->strength);
   serialize(CHARACTER_SHEET_ATTRIBUTE_VIG,      &attributes->vigor);
+  serialize(CHARACTER_SHEET_GOLD,               &character_sheet.gold);
   serialize(CHARACTER_SHEET_LEVEL,              &character_sheet.level);
   serialize(CHARACTER_SHEET_EXPERIENCE,         &character_sheet.experience);
   serialize(CHARACTER_SHEET_ARMOUR_POINTS,      &defensive_stats.armour_points);

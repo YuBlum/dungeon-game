@@ -7,8 +7,8 @@
 #include "engine/renderer.h"
 #include "engine/camera.h"
 #include "engine/math.h"
+#include "engine/types.h"
 #include "general/core.h"
-#include "general/types.h"
 
 #define QUADS_CAP    10000
 #define VERTICES_CAP (QUADS_CAP * 4)

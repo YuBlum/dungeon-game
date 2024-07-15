@@ -1,7 +1,7 @@
 #ifndef __WINDOW_H__
 #define __WINDOW_H__
 
-#include "general/types.h"
+#include "engine/types.h"
 
 void window_create(void);
 bool window_is_running(void);

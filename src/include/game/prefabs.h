@@ -16,5 +16,6 @@ void prefab_attribute_input(V2f position, AttributeType attribute_type, u32 id, 
 void prefab_menu_hint(V2f position);
 void prefab_new_character(EntityReference *reference);
 void prefab_terminal(void);
+void prefab_pause(void);
 
 #endif/*__PREFABS_H__*/

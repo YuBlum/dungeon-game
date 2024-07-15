@@ -2,7 +2,7 @@
 #define __GLOBAL_H__
 
 #include "game/components.h"
-#include "general/types.h"
+#include "engine/types.h"
 
 #define GLOBAL_MENU_OPTION_ID_CAP 5
 typedef struct {

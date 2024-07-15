@@ -20,6 +20,7 @@ prefab_player(V2f position) {
   deserialize(CHARACTER_SHEET_ATTRIBUTE_PRE,      &attributes.presence);
   deserialize(CHARACTER_SHEET_ATTRIBUTE_STR,      &attributes.strength);
   deserialize(CHARACTER_SHEET_ATTRIBUTE_VIG,      &attributes.vigor);
+  deserialize(CHARACTER_SHEET_GOLD,               &character_sheet.gold);
   deserialize(CHARACTER_SHEET_LEVEL,              &character_sheet.level);
   deserialize(CHARACTER_SHEET_EXPERIENCE,         &character_sheet.experience);
   deserialize(CHARACTER_SHEET_ARMOUR_POINTS,      &defensive_stats.armour_points);

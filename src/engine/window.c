@@ -1,8 +1,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "engine/input.h"
+#include "engine/types.h"
 #include "general/global.h"
-#include "general/types.h"
 #include "general/core.h"
 
 #if DEVMODE

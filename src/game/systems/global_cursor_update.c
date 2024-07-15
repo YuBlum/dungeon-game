@@ -1,6 +1,6 @@
 #include "engine/ecs.h"
+#include "engine/types.h"
 #include "general/global.h"
-#include "general/types.h"
 
 void
 system_global_cursor_update(void) {

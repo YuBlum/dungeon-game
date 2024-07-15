@@ -1,9 +1,9 @@
 #include <string.h>
-#include "general/core.h"
-#include "general/types.h"
+#include "engine/types.h"
 #include "engine/ecs.h"
 #include "engine/hashtable.h"
 #include "engine/list.h"
+#include "general/core.h"
 
 typedef u32 ComponentID, ArchetypeID;
 

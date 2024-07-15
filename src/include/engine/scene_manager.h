@@ -1,7 +1,7 @@
 #ifndef __SCENE_MANAGER_H__
 #define __SCENE_MANAGER_H__
 
-#include "general/types.h"
+#include "engine/types.h"
 typedef void(*SceneFn)(void);
 
 void scene_manager_create(void);

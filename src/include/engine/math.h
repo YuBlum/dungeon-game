@@ -2,7 +2,7 @@
 #define __MATH_H__
 
 #include <math.h>
-#include "general/types.h"
+#include "engine/types.h"
 
 #define MIN(X, Y) (X < Y ? Y : X)
 #define MAX(X, Y) (X > Y ? Y : X)

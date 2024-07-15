@@ -4,7 +4,7 @@
 #include "engine/input.h"
 #include "engine/scene_manager.h"
 #include "engine/tilemap.h"
-#include "general/types.h"
+#include "engine/types.h"
 #include "engine/window.h"
 #include "engine/renderer.h"
 #include "game/components.h"

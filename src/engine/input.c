@@ -1,6 +1,5 @@
 #include "engine/input.h"
-#include "general/core.h"
-#include "general/types.h"
+#include "engine/types.h"
 #include <GLFW/glfw3.h>
 #include <string.h>
 
@@ -18,9 +17,10 @@ static i32 key_to_glfw_key[] = {
   [KEY_A]         =  GLFW_KEY_Z,
   [KEY_B]         =  GLFW_KEY_X,
   [KEY_BACKSPACE] =  GLFW_KEY_BACKSPACE,
+  [KEY_ESC]       =  GLFW_KEY_ESCAPE,
 };
 #if DEVMODE
-_Static_assert(KEY_CAP == 7, "Not all keys are handled.");
+_Static_assert(KEY_CAP == 8, "Not all keys are handled.");
 #endif
 
 static char letter_pressed;

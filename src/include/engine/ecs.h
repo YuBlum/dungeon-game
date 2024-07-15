@@ -2,7 +2,7 @@
 #define __ECS_H__
 
 
-#include "general/types.h"
+#include "engine/types.h"
 
 typedef u32 Entity;
 typedef i64 SignedEntity;

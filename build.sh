@@ -90,6 +90,7 @@ src/game/prefabs/player.c                    \
 src/game/prefabs/save_slot.c                 \
 src/game/prefabs/solid.c                     \
 src/game/prefabs/terminal.c                  \
+src/game/prefabs/pause.c                     \
 "
 
 $CC $FLAGS $GLAD $DEFS $GENERAL $ENGINE $GAME $INCS $LIBS $OUT

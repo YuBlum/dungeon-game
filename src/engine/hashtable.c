@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <xxhash.h>
-#include "general/types.h"
+#include "engine/types.h"
 #include "general/core.h"
 #include "engine/hashtable.h"
 #include "engine/hash.h"

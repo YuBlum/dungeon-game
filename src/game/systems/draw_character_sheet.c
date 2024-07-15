@@ -15,7 +15,7 @@ system_draw_character_sheet(void) {
   DefensiveStats *defensive_stats = ecs_get_component_list("defensive-stats");
   for (Entity e = 0; e < ecs_entities_amount(); e++) {
     V2f pos = { 0, UI_TOP };
-    renderer_text(pos, 1, true, false, 0xffff00ff, 0, "%.*s", character_name[e].size, character_name[e].buff);
+    renderer_text(pos, 1, true, false, 0xffff00ff, 0, "%.*s, The %s", character_name[e].size, character_name[e].buff, class_names[class[e]]);
     pos.y -= 1 + PX_TO_UNIT;
     pos.x = UI_LEFT;
     renderer_rect(pos, V2F(UI_W, PX_TO_UNIT), false, BORDER_COLOR, 0);
@@ -73,7 +73,7 @@ system_draw_character_sheet(void) {
 
 
     pos.y += PX_TO_UNIT + 1;
-    renderer_text(V2F(0, pos.y - 0.5f), 1, true, false, BORDER_COLOR, 0, "~ %s ~", class_names[class[e]]);
+    renderer_text(V2F(0, pos.y - 0.5f), 1, true, false, BORDER_COLOR, 0, "$%.3u,%.3u", character_sheet[e].gold/1000, character_sheet[e].gold%1000);
 
     siz = v2f_adds(siz, 2*PX_TO_UNIT);
     pos.x = UI_RIGHT - siz.y - 2.0f;

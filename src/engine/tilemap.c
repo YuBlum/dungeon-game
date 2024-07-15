@@ -1,12 +1,12 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#include "engine/types.h"
 #include "engine/ecs.h"
 #include "engine/math.h"
 #include "engine/tilemap.h"
 #include "engine/renderer.h"
 #include "general/core.h"
-#include "general/types.h"
 
 typedef struct {
   EntityReference *map;
