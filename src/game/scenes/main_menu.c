@@ -1,3 +1,4 @@
+#include "engine/types.h"
 #include "general/core.h"
 #include "general/global.h"
 #include "engine/scene_manager.h"
@@ -27,10 +28,11 @@ scene_main_menu(void) {
   global.menu.cursor_id = 0;
   global.menu.cursor_id_prv = 0;
   V2f position = { 0.0f, 2.5f };
-  prefab_menu_option(position, "Start", (Callback)start_option, 0, 0, 0);
+  global.menu.option_amount[0] = 0;
+  prefab_menu_option(position, "Start", (Callback)start_option, 0, global.menu.option_amount[0]++, 0, true);
   position.y -= 2;
-  prefab_menu_option(position, "Help", (Callback)help_option, 0, 1, 0);
+  prefab_menu_option(position, "Help", (Callback)help_option, 0, global.menu.option_amount[0]++, 0, true);
   position.y -= 2;
-  prefab_menu_option(position, "Exit", (Callback)exit_option, 0, 2, 0);
-  prefab_menu_cursor(3, 0, false);
+  prefab_menu_option(position, "Exit", (Callback)exit_option, 0, global.menu.option_amount[0]++, 0, true);
+  prefab_menu_cursor(0, false);
 }

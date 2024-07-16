@@ -57,4 +57,5 @@ scenes_create(void) {
   scene_manager_activate_system(scene_overworld, "draw-option-ui");
   scene_manager_activate_system(scene_overworld, "select-option");
   scene_manager_activate_system(scene_overworld, "global-cursor-update");
+  scene_manager_activate_system(scene_overworld, "activate-game-option");
 }

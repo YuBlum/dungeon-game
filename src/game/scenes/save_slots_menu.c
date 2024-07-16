@@ -29,12 +29,12 @@ scene_save_slots_menu(void) {
   global.menu.cursor_id = 0;
   global.menu.cursor_id_prv = 0;
   V2f position = { 0.0f, 3.0f };
-  u32 cursor_id = 0;
-  prefab_save_slot(position, cursor_id++, 0);
+  global.menu.option_amount[0] = 0;
+  prefab_save_slot(position, global.menu.option_amount[0]++, 0);
   position.y -= 2;
-  prefab_save_slot(position, cursor_id++, 0);
+  prefab_save_slot(position, global.menu.option_amount[0]++, 0);
   position.y -= 2;
-  prefab_save_slot(position, cursor_id++, 0);
+  prefab_save_slot(position, global.menu.option_amount[0]++, 0);
   position.y -= 3;
   char save[3][SAVE_PATH_SIZE];
   bool save_file_exists = false;
@@ -46,9 +46,9 @@ scene_save_slots_menu(void) {
     }
   }
   if (save_file_exists) {
-    prefab_menu_option(position, "Delete Save", (Callback)delete_save_option, 0, cursor_id++, 0);
+    prefab_menu_option(position, "Delete Save", (Callback)delete_save_option, 0, global.menu.option_amount[0]++, 0, true);
     position.y -= 2;
   }
-  prefab_menu_option(position, "Go Back", (Callback)go_back_option, 0, cursor_id++, 0);
-  prefab_menu_cursor(cursor_id, 0, false);
+  prefab_menu_option(position, "Go Back", (Callback)go_back_option, 0, global.menu.option_amount[0]++, 0, true);
+  prefab_menu_cursor(0, false);
 }

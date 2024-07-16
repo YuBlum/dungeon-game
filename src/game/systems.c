@@ -88,4 +88,7 @@ systems_create(void) {
 
   ecs_system_create("pause", system_pause, ON_UPDATE);
   ecs_system_must_have("pause", "pause");
+
+  ecs_system_create("activate-game-option", system_activate_game_option, ON_PRE_UPDATE);
+  ecs_system_must_have("activate-game-option", "active", "in-game-menu-type", "option-id");
 }

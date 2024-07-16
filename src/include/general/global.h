@@ -4,12 +4,13 @@
 #include "game/components.h"
 #include "engine/types.h"
 
-#define GLOBAL_MENU_OPTION_ID_CAP 5
+#define GLOBAL_MENU_CURSOR_CAP 5
 typedef struct {
   u32 cursor_id;
   u32 cursor_id_prv;
-  u32 option_id[GLOBAL_MENU_OPTION_ID_CAP];
-  u32 option_id_prv[GLOBAL_MENU_OPTION_ID_CAP];
+  u32 option_amount[GLOBAL_MENU_CURSOR_CAP];
+  u32 option_id[GLOBAL_MENU_CURSOR_CAP];
+  u32 option_id_prv[GLOBAL_MENU_CURSOR_CAP];
 } GlobalMenu;
 
 typedef struct {
@@ -26,7 +27,8 @@ typedef struct {
 } GlobalAll;
 
 typedef struct {
-  u8 a;
+  InGameMenuType menu_type;
+  Class class;
 } GlobalGame;
 
 typedef struct {

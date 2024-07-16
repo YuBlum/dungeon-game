@@ -3,18 +3,18 @@
 #include "engine/renderer.h"
 #include "engine/serialization.h"
 #include "engine/tilemap.h"
+#include "general/global.h"
 
 void
 prefab_player(V2f position) {
   position = tilemap_snap_to_grid(position);
   CharacterName name;
-  Class class;
   Attributes attributes;
   CharacterSheet character_sheet;
   DefensiveStats defensive_stats;
   deserialize(CHARACTER_SHEET_NAME_SIZE,          &name.size);
   deserialize(CHARACTER_SHEET_NAME_BUFF,           name.buff);
-  deserialize(CHARACTER_SHEET_CLASS,              &class);
+  deserialize(CHARACTER_SHEET_CLASS,              &global.game.class);
   deserialize(CHARACTER_SHEET_ATTRIBUTE_AGI,      &attributes.agility);
   deserialize(CHARACTER_SHEET_ATTRIBUTE_INT,      &attributes.intelect);
   deserialize(CHARACTER_SHEET_ATTRIBUTE_PRE,      &attributes.presence);
@@ -41,6 +41,6 @@ prefab_player(V2f position) {
     ecs_entity_creation_setup_component(DefensiveStats, "defensive-stats", defensive_stats);
     ecs_entity_creation_setup_component(CharacterName, "character-name", name);
     ecs_entity_creation_setup_component(CharacterSheet, "character-sheet", character_sheet);
-    ecs_entity_creation_setup_component(Class, "class", class);
+    ecs_entity_creation_setup_component(Class, "class", global.game.class);
   ecs_entity_creation_end();
 }

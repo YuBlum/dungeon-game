@@ -1,32 +1,7 @@
 #include "engine/ecs.h"
 #include "engine/input.h"
-#include "engine/scene_manager.h"
-#include "engine/serialization.h"
-#include "general/core.h"
+#include "game/components.h"
 #include "general/global.h"
-#include "game/scenes.h"
-#include "game/prefabs.h"
-
-static void
-abilities_option(void) {
-  WARN("Not Implemented");
-}
-
-static void
-inventory_option(void) {
-  WARN("Not Implemented");
-}
-
-static void
-spells_option(void) {
-  WARN("Not Implemented");
-}
-
-static void
-go_to_menu_option(void) {
-  serialization_end();
-  scene_manager_goto(scene_main_menu);
-}
 
 void
 system_pause(void) {
@@ -46,25 +21,13 @@ system_pause(void) {
         ecs_system_unpause("draw-option-ui");
         ecs_system_unpause("select-option");
         ecs_system_unpause("global-cursor-update");
+        ecs_system_unpause("activate-game-option");
         global.menu.cursor_id = 0;
         global.menu.option_id[0] = 0;
         global.menu.cursor_id_prv = 0;
         global.menu.option_id_prv[0] = 0;
-        Class class;
-        deserialize(CHARACTER_SHEET_CLASS, &class);
-
-        V2f position = { 0, 2.5f };
-        u32 option_id = 0;
-        prefab_menu_option(position, "Inventory [C]", (Callback)inventory_option, 0, option_id++, 0);
-        position.y -= 2;
-        prefab_menu_option(position, "Abilities [A]", (Callback)abilities_option, 0, option_id++, 0);
-        if (class == CLASS_WIZARD) {
-          position.y -= 2;
-          prefab_menu_option(position, "Spells [S]", (Callback)spells_option, 0, option_id++, 0);
-        }
-        position.y -= 2;
-        prefab_menu_option(position, "Go to Menu", (Callback)go_to_menu_option, 0, option_id++, 0);
-        prefab_menu_cursor(option_id, 0, false);
+        global.menu.option_amount[0] = 3 + (global.game.class == CLASS_WIZARD);
+        global.game.menu_type = IGM_PAUSE;
       } else {
         ecs_system_unpause_event(ON_PRE_UPDATE);
         ecs_system_unpause_event(ON_UPDATE);
@@ -77,6 +40,9 @@ system_pause(void) {
         ecs_system_pause("select-option");
         ecs_system_pause("global-cursor-update");
       }
+    }
+    if (!pause[e]) {
+      global.game.menu_type = IGM_NONE;
     }
   }
 }

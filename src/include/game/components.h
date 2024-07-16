@@ -62,7 +62,6 @@ typedef struct {
 } PositionLerp;
 
 typedef struct {
-  u32 options_amount;
   bool horizontal;
 } Cursor;
 
@@ -74,6 +73,14 @@ typedef struct {
   char line_buff[TERMINAL_LINE_CAP][TERMINAL_LINE_STR_CAP];
   u32  line_size[TERMINAL_LINE_CAP];
 } Terminal;
+
+typedef enum {
+  IGM_NONE = 0,
+  IGM_PAUSE,
+  IGM_INVENTORY,
+  IGM_ABILITIES,
+  IGM_SPELLS
+} InGameMenuType;
 
 void components_create(void);
 
