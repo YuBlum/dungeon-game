@@ -74,7 +74,9 @@ src/game/systems/submit_attribute_input.c    \
 src/game/systems/delete_save_slot.c          \
 src/game/systems/draw_terminal.c             \
 src/game/systems/pause.c                     \
+src/game/systems/in_game_menu_title.c        \
 src/game/systems/activate_game_option.c      \
+src/game/systems/draw_carrying_weight.c      \
                                              \
 src/game/scenes/main_menu.c                  \
 src/game/scenes/save_slots_menu.c            \

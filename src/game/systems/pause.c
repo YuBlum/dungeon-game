@@ -22,6 +22,8 @@ system_pause(void) {
         ecs_system_unpause("select-option");
         ecs_system_unpause("global-cursor-update");
         ecs_system_unpause("activate-game-option");
+        ecs_system_unpause("in-game-menu-title");
+        ecs_system_unpause("draw-carrying-weight");
         global.menu.cursor_id = 0;
         global.menu.option_id[0] = 0;
         global.menu.cursor_id_prv = 0;

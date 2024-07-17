@@ -24,7 +24,7 @@ system_draw_character_sheet(void) {
     pos.x = UI_LEFT + 2 * PX_TO_UNIT;
     for (u32 i = 0; i < 5; i++) {
       renderer_text(pos, 1, false, false, BORDER_COLOR, 0, "%s", attrib_names[i]);
-      renderer_text(v2f_add(pos, V2F(3*PX_TO_UNIT, -1)), 1, false, false, 0xffff00ff, 0, "%+d", ((i32 *)&attributes[e])[i]);
+      renderer_text(v2f_add(pos, V2F(3*PX_TO_UNIT, -1)), 1, false, false, 0xffff00ff, 0, "%+d", attributes[e].arr[i]);
       pos.x += 3.78125f;
     }
 

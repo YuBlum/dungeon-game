@@ -3,30 +3,52 @@
 #include "engine/serialization.h"
 #include "engine/scene_manager.h"
 #include "game/components.h"
-#include "general/core.h"
 #include "game/scenes.h"
 #include "game/prefabs.h"
+#include "general/core.h"
 #include "general/global.h"
 
 static void
 inventory_option(void) {
   global.game.menu_type = IGM_INVENTORY;
+  global.menu.cursor_id = 1;
+  global.menu.option_id[1] = 0;
+  global.menu.cursor_id = 1;
+  global.menu.option_id[1] = 0;
+  global.menu.cursor_id_prv = 1;
+  global.menu.option_id_prv[1] = 0;
+  global.menu.option_amount[1] = 3;
 }
 
 static void
 abilities_option(void) {
-  WARN("Not Implemented");
+  global.game.menu_type = IGM_ABILITIES;
 }
 
 static void
 spells_option(void) {
-  WARN("Not Implemented");
+  global.game.menu_type = IGM_SPELLS;
 }
 
 static void
 go_to_menu_option(void) {
   serialization_end();
   scene_manager_goto(scene_main_menu);
+}
+
+static void
+inventory_equip_option(void) {
+  WARN("Not Implemented");
+}
+
+static void
+inventory_active_option(void) {
+  WARN("Not Implemented");
+}
+
+static void
+inventory_passive_option(void) {
+  WARN("Not Implemented");
 }
 
 void
@@ -40,8 +62,10 @@ prefab_pause(void) {
   ecs_system_pause("select-option");
   ecs_system_pause("global-cursor-update");
 
+  V2f start_position = { 0, 2.5f };
+
   global.game.menu_type = IGM_NONE;
-  V2f position = { 0, 2.5f };
+  V2f position = start_position;
   u32 option_id = 0;
   prefab_in_game_menu_option(position, "Inventory (E)", (Callback)inventory_option, 0, option_id++, 0, false, IGM_PAUSE);
   position.y -= 2;
@@ -53,5 +77,14 @@ prefab_pause(void) {
   position.y -= 2;
   prefab_in_game_menu_option(position, "Go to Menu", (Callback)go_to_menu_option, 0, option_id++, 0, false, IGM_PAUSE);
 
+  position = V2F(-5.5f, UI_TOP - 6.5f);
+  option_id = 0;
+  prefab_in_game_menu_option(position, "Equip", (Callback)inventory_equip_option, 0, option_id++, 1, false, IGM_INVENTORY);
+  position.x += 5.5f;
+  prefab_in_game_menu_option(position, "Active", (Callback)inventory_active_option, 0, option_id++, 1, false, IGM_INVENTORY);
+  position.x += 5.5f;
+  prefab_in_game_menu_option(position, "Passive", (Callback)inventory_passive_option, 0, option_id++, 1, false, IGM_INVENTORY);
+
   prefab_menu_cursor(0, false);
+  prefab_menu_cursor(1, true);
 }

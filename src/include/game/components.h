@@ -25,12 +25,15 @@ typedef enum {
   ATT_VIGOR
 } AttributeType;
 
-typedef struct {
-  i32 agility;
-  i32 intelect;
-  i32 presence;
-  i32 strength;
-  i32 vigor;
+typedef union {
+  struct {
+    i32 agility;
+    i32 intelect;
+    i32 presence;
+    i32 strength;
+    i32 vigor;
+  };
+  i32 arr[5];
 } Attributes;
 
 typedef struct {
@@ -40,6 +43,8 @@ typedef struct {
 } DefensiveStats;
 
 typedef struct {
+  u32 carrying_weight_cur;
+  u32 carrying_weight_max;
   u32 essence_points_cur;
   u32 essence_points_max;
   u32 food_points_cur;
@@ -81,6 +86,37 @@ typedef enum {
   IGM_ABILITIES,
   IGM_SPELLS
 } InGameMenuType;
+
+typedef enum {
+  ITEM_MELEE = 0,
+  ITEM_RANGED,
+  ITEM_RANGED_STACK,
+  ITEM_AMMO,
+  ITEM_STAFF,
+  ITEM_SHIELD,
+  ITEM_ARMOUR,
+  ITEM_LOCKPICK,
+  ITEM_POTION
+} ItemType;
+
+typedef enum {
+  AMMO_ROCK = 0,
+  AMMO_SMALL_ARROW,
+  AMMO_ARROW,
+  AMMO_LARGE_ARROW
+} AmmoType;
+
+typedef struct {
+  u32 min;
+  u32 mid;
+  u32 max;
+} ItemPriceRange;
+
+typedef struct {
+  u32 amount;
+  u32 faces;
+  u32 add;
+} DiceTest;
 
 void components_create(void);
 

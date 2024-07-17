@@ -7,7 +7,6 @@
 #include "game/scenes.h"
 #include "game/prefabs.h"
 #include "game/components.h"
-#include <stdio.h>
 #include <string.h>
 
 static EntityReference new_character;
@@ -75,35 +74,39 @@ begin_adventure_option(void) {
   Attributes *attributes = ecs_entity_reference_get_component(new_character, "attributes");
   DefensiveStats defensive_stats;
   CharacterSheet character_sheet;
-  character_sheet.level              = 0;
-  character_sheet.experience         = 0;
-  defensive_stats.armour_points      = 6;
-  defensive_stats.hit_points_max     = 20 + (attributes->vigor + attributes->strength) * 3;
-  defensive_stats.hit_points_cur     = defensive_stats.hit_points_max;
-  character_sheet.food_points_max    = 49 + attributes->vigor * 10;
-  character_sheet.food_points_cur    = character_sheet.food_points_max;
-  character_sheet.essence_points_max = 10 + (attributes->intelect + attributes->presence) * 2;
-  character_sheet.essence_points_cur = character_sheet.essence_points_max;
-  character_sheet.gold               = 0;
+  character_sheet.gold                = 0;
+  character_sheet.level               = 0;
+  character_sheet.experience          = 0;
+  defensive_stats.armour_points       = 6;
+  defensive_stats.hit_points_max      = 20 + (attributes->vigor + attributes->strength) * 3;
+  defensive_stats.hit_points_cur      = defensive_stats.hit_points_max;
+  character_sheet.food_points_max     = 49 + attributes->vigor * 10;
+  character_sheet.food_points_cur     = character_sheet.food_points_max;
+  character_sheet.essence_points_max  = 10 + (attributes->intelect + attributes->presence) * 2;
+  character_sheet.essence_points_cur  = character_sheet.essence_points_max;
+  character_sheet.carrying_weight_max = 70 + (attributes->strength + attributes->agility) * 10;
+  character_sheet.carrying_weight_cur = 0;
   serialization_start();
-  serialize(CHARACTER_SHEET_NAME_SIZE,          &name->size);
-  serialize(CHARACTER_SHEET_NAME_BUFF,           name->buff);
-  serialize(CHARACTER_SHEET_CLASS,               class);
-  serialize(CHARACTER_SHEET_ATTRIBUTE_AGI,      &attributes->agility);
-  serialize(CHARACTER_SHEET_ATTRIBUTE_INT,      &attributes->intelect);
-  serialize(CHARACTER_SHEET_ATTRIBUTE_PRE,      &attributes->presence);
-  serialize(CHARACTER_SHEET_ATTRIBUTE_STR,      &attributes->strength);
-  serialize(CHARACTER_SHEET_ATTRIBUTE_VIG,      &attributes->vigor);
-  serialize(CHARACTER_SHEET_GOLD,               &character_sheet.gold);
-  serialize(CHARACTER_SHEET_LEVEL,              &character_sheet.level);
-  serialize(CHARACTER_SHEET_EXPERIENCE,         &character_sheet.experience);
-  serialize(CHARACTER_SHEET_ARMOUR_POINTS,      &defensive_stats.armour_points);
-  serialize(CHARACTER_SHEET_HIT_POINTS_MAX,     &defensive_stats.hit_points_max);
-  serialize(CHARACTER_SHEET_HIT_POINTS_CUR,     &defensive_stats.hit_points_cur);
-  serialize(CHARACTER_SHEET_FOOD_POINTS_MAX,    &character_sheet.food_points_max);
-  serialize(CHARACTER_SHEET_FOOD_POINTS_CUR,    &character_sheet.food_points_cur);
-  serialize(CHARACTER_SHEET_ESSENCE_POINTS_MAX, &character_sheet.essence_points_max);
-  serialize(CHARACTER_SHEET_ESSENCE_POINTS_CUR, &character_sheet.essence_points_cur);
+  serialize(CHARACTER_SHEET_NAME_SIZE,           &name->size);
+  serialize(CHARACTER_SHEET_NAME_BUFF,            name->buff);
+  serialize(CHARACTER_SHEET_CLASS,                class);
+  serialize(CHARACTER_SHEET_ATTRIBUTE_AGI,       &attributes->agility);
+  serialize(CHARACTER_SHEET_ATTRIBUTE_INT,       &attributes->intelect);
+  serialize(CHARACTER_SHEET_ATTRIBUTE_PRE,       &attributes->presence);
+  serialize(CHARACTER_SHEET_ATTRIBUTE_STR,       &attributes->strength);
+  serialize(CHARACTER_SHEET_ATTRIBUTE_VIG,       &attributes->vigor);
+  serialize(CHARACTER_SHEET_GOLD,                &character_sheet.gold);
+  serialize(CHARACTER_SHEET_LEVEL,               &character_sheet.level);
+  serialize(CHARACTER_SHEET_EXPERIENCE,          &character_sheet.experience);
+  serialize(CHARACTER_SHEET_ARMOUR_POINTS,       &defensive_stats.armour_points);
+  serialize(CHARACTER_SHEET_HIT_POINTS_MAX,      &defensive_stats.hit_points_max);
+  serialize(CHARACTER_SHEET_HIT_POINTS_CUR,      &defensive_stats.hit_points_cur);
+  serialize(CHARACTER_SHEET_FOOD_POINTS_MAX,     &character_sheet.food_points_max);
+  serialize(CHARACTER_SHEET_FOOD_POINTS_CUR,     &character_sheet.food_points_cur);
+  serialize(CHARACTER_SHEET_ESSENCE_POINTS_MAX,  &character_sheet.essence_points_max);
+  serialize(CHARACTER_SHEET_ESSENCE_POINTS_CUR,  &character_sheet.essence_points_cur);
+  serialize(CHARACTER_SHEET_CARRYING_WEIGHT_MAX, &character_sheet.carrying_weight_max);
+  serialize(CHARACTER_SHEET_CARRYING_WEIGHT_CUR, &character_sheet.carrying_weight_cur);
   scene_manager_goto(scene_overworld);
 }
 

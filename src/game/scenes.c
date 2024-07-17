@@ -58,4 +58,6 @@ scenes_create(void) {
   scene_manager_activate_system(scene_overworld, "select-option");
   scene_manager_activate_system(scene_overworld, "global-cursor-update");
   scene_manager_activate_system(scene_overworld, "activate-game-option");
+  scene_manager_activate_system(scene_overworld, "in-game-menu-title");
+  scene_manager_activate_system(scene_overworld, "draw-carrying-weight");
 }

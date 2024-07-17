@@ -4,7 +4,7 @@
 void
 systems_create(void) {
   ecs_system_create("set-tile", system_set_tile, ON_SCENE_START);
-  ecs_system_must_have("set-tile", "position");
+  ecs_system_must_have("set-tile", "tile", "position");
 
   ecs_system_create("input-direction", system_input_direction, ON_UPDATE);
   ecs_system_must_have("input-direction", "direction", "input");
@@ -16,7 +16,7 @@ systems_create(void) {
   ecs_system_must_have("movement", "bump");
 
   ecs_system_create("draw-rect", system_draw_rect, ON_DRAW_GAME);
-  ecs_system_must_have("draw-rect", "color");
+  ecs_system_must_have("draw-rect", "tile", "position", "color");
 
   ecs_system_create("draw-character-sheet", system_draw_character_sheet, ON_DRAW_UI);
   ecs_system_must_have("draw-character-sheet", "attributes", "defensive-stats", "character-sheet", "character-name", "class");
@@ -91,4 +91,10 @@ systems_create(void) {
 
   ecs_system_create("activate-game-option", system_activate_game_option, ON_PRE_UPDATE);
   ecs_system_must_have("activate-game-option", "active", "in-game-menu-type", "option-id");
+
+  ecs_system_create("in-game-menu-title", system_in_game_menu_title, ON_DRAW_UI);
+  ecs_system_must_have("in-game-menu-title", "pause");
+
+  ecs_system_create("draw-carrying-weight", system_draw_carrying_weight, ON_DRAW_UI);
+  ecs_system_must_have("draw-carrying-weight", "character-sheet");
 }

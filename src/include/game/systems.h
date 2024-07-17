@@ -29,6 +29,8 @@ void system_delete_save_slot(void);
 void system_draw_terminal(void);
 void system_pause(void);
 void system_activate_game_option(void);
+void system_in_game_menu_title(void);
+void system_draw_carrying_weight(void);
 
 void systems_create(void);
 
