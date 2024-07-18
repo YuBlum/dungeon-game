@@ -77,6 +77,10 @@ src/game/systems/pause.c                     \
 src/game/systems/in_game_menu_title.c        \
 src/game/systems/activate_game_option.c      \
 src/game/systems/draw_carrying_weight.c      \
+src/game/systems/inventory_header.c          \
+src/game/systems/draw_item.c                 \
+src/game/systems/reset_items_amount.c        \
+src/game/systems/update_items_amount.c       \
                                              \
 src/game/scenes/main_menu.c                  \
 src/game/scenes/save_slots_menu.c            \
@@ -95,6 +99,7 @@ src/game/prefabs/save_slot.c                 \
 src/game/prefabs/solid.c                     \
 src/game/prefabs/terminal.c                  \
 src/game/prefabs/pause.c                     \
+src/game/prefabs/item.c                      \
 "
 
 $CC $FLAGS $GLAD $DEFS $GENERAL $ENGINE $GAME $INCS $LIBS $OUT

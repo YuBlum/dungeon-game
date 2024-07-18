@@ -19,5 +19,6 @@ void prefab_terminal(void);
 void prefab_pause(void);
 void prefab_in_game_menu_option(V2f position, Tag tag, Callback callback, CallbackArg callback_arg, u32 id, u32 cursor_id, bool active, InGameMenuType type);
 void prefab_in_game_menu_option_with_u32_arg(V2f position, Tag tag, Callback callback, CallbackArg callback_arg, u32 id, u32 cursor_id, bool active, u32 arg_starting_value, const char *extra_component, InGameMenuType type);
+void prefab_item(const char *name, u32 weight, u32 id);
 
 #endif/*__PREFABS_H__*/

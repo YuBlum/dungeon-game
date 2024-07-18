@@ -30,16 +30,23 @@ components_create(void) {
   ecs_component_create(Terminal, "terminal");
   ecs_component_create(bool, "pause");
   ecs_component_create(InGameMenuType, "in-game-menu-type");
-  ecs_component_create(ItemType, "item-type");
   ecs_component_create(ItemPriceRange, "item-price-range");
+  ecs_component_create(AmmoType, "ammo-type");
+  ecs_component_create(DiceTest, "dice-test");
+  ecs_component_create(u32, "critical-hit");
   ecs_component_create(u32, "item-weight");
   ecs_component_create(u32, "item-amount");
-  ecs_component_create(AmmoType, "ammo-type");
   ecs_component_create(bool, "item-equiped");
-  ecs_component_create(DiceTest, "dice-test");
+  ecs_component_create(Item, "item");
 
   ecs_empty_component_create("input");
   ecs_empty_component_create("tile");
   ecs_empty_component_create("total-attribute-points");
   ecs_empty_component_create("menu-hint");
+  ecs_empty_component_create("item-melee");
+  ecs_empty_component_create("item-ranged");
+  ecs_empty_component_create("item-ammo");
+  ecs_empty_component_create("item-potion");
+  ecs_empty_component_create("item-lockpick");
+  ecs_empty_component_create("item-component");
 }

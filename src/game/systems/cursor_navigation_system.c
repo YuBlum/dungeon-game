@@ -1,3 +1,4 @@
+#include "general/core.h"
 #include "general/global.h"
 #include "engine/ecs.h"
 #include "engine/input.h"

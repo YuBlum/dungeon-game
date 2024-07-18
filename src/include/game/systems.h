@@ -31,6 +31,10 @@ void system_pause(void);
 void system_activate_game_option(void);
 void system_in_game_menu_title(void);
 void system_draw_carrying_weight(void);
+void system_inventory_header(void);
+void system_draw_item(void);
+void system_reset_items_amount(void);
+void system_update_items_amount(void);
 
 void systems_create(void);
 

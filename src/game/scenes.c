@@ -60,4 +60,8 @@ scenes_create(void) {
   scene_manager_activate_system(scene_overworld, "activate-game-option");
   scene_manager_activate_system(scene_overworld, "in-game-menu-title");
   scene_manager_activate_system(scene_overworld, "draw-carrying-weight");
+  scene_manager_activate_system(scene_overworld, "inventory-header");
+  scene_manager_activate_system(scene_overworld, "draw-item");
+  scene_manager_activate_system(scene_overworld, "reset-items-amount");
+  scene_manager_activate_system(scene_overworld, "update-items-amount");
 }

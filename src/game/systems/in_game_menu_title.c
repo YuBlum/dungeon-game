@@ -28,9 +28,9 @@ system_in_game_menu_title(void) {
         break;
     }
     if (title) {
-      V2f position = V2F(0, UI_TOP - 1);
-      renderer_text(v2f_sub(position, V2F(0, PX_TO_UNIT)), 1, true, false, 0xff5500ff, 0, "%s", title);
-      renderer_text(position, 1, true, false, 0xffffaaff, 0, "%s", title);
+      global.game.inventory_y = UI_TOP - 1;
+      renderer_text(V2F(0, global.game.inventory_y - PX_TO_UNIT), 1, true, false, 0xff5500ff, 0, "%s", title);
+      renderer_text(V2F(0, global.game.inventory_y), 1, true, false, 0xffffaaff, 0, "%s", title);
     }
   }
 }
