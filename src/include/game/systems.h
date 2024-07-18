@@ -35,6 +35,7 @@ void system_inventory_header(void);
 void system_draw_item(void);
 void system_reset_items_amount(void);
 void system_update_items_amount(void);
+void system_items_offset(void);
 
 void systems_create(void);
 

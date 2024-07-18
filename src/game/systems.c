@@ -109,4 +109,7 @@ systems_create(void) {
 
   ecs_system_create("update-items-amount", system_update_items_amount, ON_PRE_UPDATE);
   ecs_system_must_have("update-items-amount", "item");
+  
+  ecs_system_create("items-offset", system_items_offset, ON_UPDATE);
+  ecs_system_must_have("items-offset", "cursor-id");
 }

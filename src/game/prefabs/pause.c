@@ -17,6 +17,7 @@ inventory_option(void) {
   global.menu.cursor_id_prv = 0;
   global.menu.option_id_prv[0] = 0;
   global.menu.option_amount[0] = global.game.items_amount;
+  global.game.items_offset = 0;
 }
 
 static void

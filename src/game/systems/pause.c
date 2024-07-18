@@ -28,6 +28,7 @@ system_pause(void) {
         ecs_system_unpause("inventory-header");
         ecs_system_unpause("reset-items-amount");
         ecs_system_unpause("update-items-amount");
+        ecs_system_unpause("items-offset");
         global.menu.cursor_id = 0;
         global.menu.option_id[0] = 0;
         global.menu.cursor_id_prv = 0;

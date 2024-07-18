@@ -31,6 +31,7 @@ typedef struct {
   Class class;
   f32 inventory_y;
   u32 items_amount;
+  f32 items_offset;
 } GlobalGame;
 
 typedef struct {
