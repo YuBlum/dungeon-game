@@ -107,6 +107,7 @@ begin_adventure_option(void) {
   serialize(CHARACTER_SHEET_ESSENCE_POINTS_CUR,  &character_sheet.essence_points_cur);
   serialize(CHARACTER_SHEET_CARRYING_WEIGHT_MAX, &character_sheet.carrying_weight_max);
   serialize(CHARACTER_SHEET_CARRYING_WEIGHT_CUR, &character_sheet.carrying_weight_cur);
+  ecs_entity_clean_reference(&new_character);
   scene_manager_goto(scene_overworld);
 }
 
@@ -152,8 +153,8 @@ scene_character_creation(void) {
   prefab_menu_option(position, "Begin Adventure", (Callback)begin_adventure_option, 0, global.menu.option_amount[0]++, 0, true);
   position.y -= 2.0f;
   prefab_menu_option(position, "Go Back", (Callback)go_back_option, 0, global.menu.option_amount[0]++, 0, true);
-  prefab_menu_cursor(0, false);
-  prefab_menu_cursor(1, true);
-  prefab_menu_cursor(2, true);
+  prefab_menu_cursor(0, false, true);
+  prefab_menu_cursor(1, true, true);
+  prefab_menu_cursor(2, true, true);
   prefab_menu_hint(V2F(0, SCREEN_BOTTOM + 2));
 }

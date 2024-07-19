@@ -47,16 +47,17 @@ prefab_player(V2f position) {
     ecs_entity_creation_setup_component(Class, "class", global.game.class);
   ecs_entity_creation_end();
 
-  prefab_item("Wood Sword",          4,  0);
-  prefab_item("Wood Shield",         6,  1);
-  prefab_item("Light Armour",        8,  2);
-  prefab_item("Kinfe",               4,  3);
-  prefab_item("Slingshot",           6,  4);
-  prefab_item("Sacred Staff",        8,  5);
-  prefab_item("Slime Fluid",         4,  6);
-  prefab_item("Holy Water",          6,  7);
-  prefab_item("Lockpick",            8,  8);
-  prefab_item("Will Potion",         4,  9);
-  prefab_item("Healing Potion",      6, 10);
-  prefab_item("Strong Metal Armour", 8, 11);
+  u32 cursor_id = 1;
+  prefab_item("Wood Sword",          4,  0, cursor_id);
+  prefab_item("Wood Shield",         6,  1, cursor_id);
+  prefab_item("Light Armour",        8,  2, cursor_id);
+  prefab_item("Kinfe",               4,  3, cursor_id);
+  prefab_item("Slingshot",           6,  4, cursor_id);
+  prefab_item("Sacred Staff",        8,  5, cursor_id);
+  prefab_item("Slime Fluid",         4,  6, cursor_id);
+  prefab_item("Holy Water",          6,  7, cursor_id);
+  prefab_item("Lockpick",            8,  8, cursor_id);
+  prefab_item("Will Potion",         4,  9, cursor_id);
+  prefab_item("Healing Potion",      6, 10, cursor_id);
+  prefab_item("Strong Metal Armour", 8, 11, cursor_id);
 }

@@ -10,13 +10,11 @@
 static void
 inventory_option(void) {
   global.game.menu_type = IGM_INVENTORY;
-  global.menu.cursor_id = 0;
-  global.menu.option_id[0] = 0;
-  global.menu.cursor_id = 0;
-  global.menu.option_id[0] = 0;
-  global.menu.cursor_id_prv = 0;
-  global.menu.option_id_prv[0] = 0;
-  global.menu.option_amount[0] = global.game.items_amount;
+  global.menu.cursor_id = 1;
+  global.menu.option_id[1] = 0;
+  global.menu.cursor_id_prv = 1;
+  global.menu.option_id_prv[1] = 0;
+  global.menu.option_amount[1] = global.game.items_amount;
   global.game.items_offset = 0;
 }
 
@@ -89,6 +87,6 @@ prefab_pause(void) {
   prefab_in_game_menu_option(position, "Passive", (Callback)inventory_passive_option, 0, option_id++, 1, false, IGM_INVENTORY);
   */
 
-  prefab_menu_cursor(0, false);
-  //prefab_menu_cursor(1, true);
+  prefab_menu_cursor(0, false, true);
+  prefab_menu_cursor(1, false, false);
 }

@@ -24,5 +24,5 @@ scene_delete_save_menu(void) {
   prefab_save_slot(position, global.menu.option_amount[0]++, 0);
   position.y -= 3;
   prefab_menu_option(position, "Cancel", (Callback)cancel_option, 0, global.menu.option_amount[0]++, 0, true);
-  prefab_menu_cursor(0, false);
+  prefab_menu_cursor(0, false, true);
 }

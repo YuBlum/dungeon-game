@@ -2,6 +2,7 @@
 #define __COMPONENTS_H__
 
 #include "engine/math.h"
+#include "engine/renderer.h"
 #include "engine/types.h"
 
 typedef const char *Tag;
@@ -68,6 +69,7 @@ typedef struct {
 
 typedef struct {
   bool horizontal;
+  bool wrap;
 } Cursor;
 
 #define TERMINAL_LINE_CAP 11
@@ -106,6 +108,7 @@ typedef enum {
  */
 
 typedef enum {
+#if 0
   ITEM_WOOD_SWORD = 0,
   ITEM_KNIFE,
   ITEM_DAGGER,
@@ -174,6 +177,14 @@ typedef enum {
   ITEM_WILL_POTION,
   ITEM_LARGE_WILL_POTION,
   ITEM_GREAT_WILL_POTION,
+#endif
+  ITEM_MELEE = 0,
+  ITEM_RANGED,
+  ITEM_STAFF,
+  ITEM_AMMO,
+  ITEM_DEFENSIVE,
+  ITEM_LOCKPICK,
+  ITEM_POTION,
 } ItemType;
 
 #define ITEM_NAME_CAP 24
@@ -182,6 +193,7 @@ typedef struct {
   u32  name_size;
   u32  weight;
   u32  id;
+  ItemType type;
 } Item;
 
 typedef enum {
@@ -192,25 +204,42 @@ typedef enum {
 } AmmoType;
 
 typedef enum {
+  LOCKPICK_REGULAR,
+  LOCKPICK_ADVANCED,
+  LOCKPICK_MAGIC
+} LockpickType;
+
+typedef enum {
   POTION_HEALING,
   POTION_WILL
 } PotionType;
 
 typedef enum {
-  LOCKPICK_REGULAR,
-  LOCKPICK_ADVANCED,
-  LOCKPICK_MAGIC
-} LockpickType;
+  DEF_SHIELD,
+  DEF_ARMOUR
+} DefensiveType;
+
+typedef struct {
+  DefensiveType type;
+  u32 extra_armour_points;
+} DefensiveItem;
+
+typedef enum {
+  SPELL_REGULAR,
+  SPELL_COMPLEX,
+  SPELL_EXTREME
+} SpellType;
+
+typedef struct {
+  SpellType spell_type;
+  u32 reduce_dt;
+} Staff;
 
 typedef struct {
   u32 min;
   u32 mid;
   u32 max;
 } ItemPriceRange;
-
-typedef struct {
-  u32 critical_hit;
-} Weapon;
 
 typedef struct {
   u32 amount;

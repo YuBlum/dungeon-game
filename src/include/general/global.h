@@ -26,12 +26,22 @@ typedef struct {
   i32 save_slot;
 } GlobalAll;
 
+
+#define ITEM_DESCRIPTION_LINE_CAP 4
+#define ITEM_DESCRIPTION_LINE_STR_CAP 21
+typedef struct {
+  char  line_buff[ITEM_DESCRIPTION_LINE_CAP][ITEM_DESCRIPTION_LINE_STR_CAP];
+  u32   line_size[ITEM_DESCRIPTION_LINE_CAP];
+  Color line_color[ITEM_DESCRIPTION_LINE_CAP];
+} ItemDescription;
+
 typedef struct {
   InGameMenuType menu_type;
   Class class;
   f32 inventory_y;
   u32 items_amount;
   f32 items_offset;
+  ItemDescription item_description;
 } GlobalGame;
 
 typedef struct {

@@ -34,5 +34,5 @@ scene_main_menu(void) {
   prefab_menu_option(position, "Help", (Callback)help_option, 0, global.menu.option_amount[0]++, 0, true);
   position.y -= 2;
   prefab_menu_option(position, "Exit", (Callback)exit_option, 0, global.menu.option_amount[0]++, 0, true);
-  prefab_menu_cursor(0, false);
+  prefab_menu_cursor(0, false, true);
 }

@@ -4,7 +4,7 @@
 #include <string.h>
 
 static void
-setup_item(Item *item, const char *name, u32 weight, u32 id) {
+setup_item(Item *item, const char *name, ItemType type, u32 weight, u32 id) {
 #if 0
   const char *name = 0;
   switch (type) {
@@ -217,15 +217,128 @@ setup_item(Item *item, const char *name, u32 weight, u32 id) {
   item->weight = weight;
   item->id = id;
   item->name_size = strlen(name);
+  item->type = type;
   memcpy(item->name_buff, name, item->name_size);
 }
 
 void
-prefab_item(const char *name, u32 weight, u32 id) {
+prefab_item_melee(const char *name, u32 weight, u32 id, u32 cursor_id, bool equiped, u32 dice_amount, u32 dice_faces, u32 test_modifier, u32 critical_hit, u32 attribute_threshold) {
+  DiceTest dice_test = {
+    dice_amount,
+    dice_faces,
+    test_modifier
+  };
   Item item;
-  setup_item(&item, name, weight, id);
-  ecs_entity_creation_begin("item", "active");
+  setup_item(&item, name, ITEM_MELEE, weight, id);
+  ecs_entity_creation_begin("item", "active", "cursor-id", "dice-test", "critical-hit", "attribute-threshold", "item-equiped");
     ecs_entity_creation_setup_component(Item, "item", item);
+    ecs_entity_creation_setup_component(u32, "cursor-id", cursor_id);
+    ecs_entity_creation_setup_component(DiceTest, "dice-test", dice_test);
+    ecs_entity_creation_setup_component(u32, "critical-hit", critical_hit);
+    ecs_entity_creation_setup_component(u32, "attribute-threshold", attribute_threshold);
+    ecs_entity_creation_setup_component(bool, "item-equiped", equiped);
+    ecs_entity_creation_setup_component(bool, "active", false);
+  ecs_entity_creation_end();
+}
+
+void
+prefab_item_ranged(const char *name, u32 weight, u32 id, u32 cursor_id, bool equiped, u32 dice_amount, u32 dice_faces, u32 test_modifier, u32 critical_hit, u32 attribute_threshold, AmmoType ammo_type) {
+  DiceTest dice_test = {
+    dice_amount,
+    dice_faces,
+    test_modifier
+  };
+  Item item;
+  setup_item(&item, name, ITEM_RANGED, weight, id);
+  ecs_entity_creation_begin("item", "active", "cursor-id", "dice-test", "critical-hit", "ammo-type", "attribute-threshold", "item-equiped");
+    ecs_entity_creation_setup_component(Item, "item", item);
+    ecs_entity_creation_setup_component(u32, "cursor-id", cursor_id);
+    ecs_entity_creation_setup_component(DiceTest, "dice-test", dice_test);
+    ecs_entity_creation_setup_component(u32, "critical-hit", critical_hit);
+    ecs_entity_creation_setup_component(AmmoType, "ammo-type", ammo_type);
+    ecs_entity_creation_setup_component(u32, "attribute-threshold", attribute_threshold);
+    ecs_entity_creation_setup_component(bool, "item-equiped", equiped);
+    ecs_entity_creation_setup_component(bool, "active", false);
+  ecs_entity_creation_end();
+}
+
+void
+prefab_item_staff(const char *name, u32 weight, u32 id, u32 cursor_id, bool equiped, SpellType spell_type, u32 reduce_spell_dt, u32 attribute_threshold) {
+  Staff staff = {
+    spell_type,
+    reduce_spell_dt
+  };
+  Item item;
+  setup_item(&item, name, ITEM_MELEE, weight, id);
+  ecs_entity_creation_begin("item", "active", "cursor-id", "staff", "attribute-threshold", "item-equiped");
+    ecs_entity_creation_setup_component(Item, "item", item);
+    ecs_entity_creation_setup_component(u32, "cursor-id", cursor_id);
+    ecs_entity_creation_setup_component(Staff, "staff", staff);
+    ecs_entity_creation_setup_component(u32, "attribute-threshold", attribute_threshold);
+    ecs_entity_creation_setup_component(bool, "item-equiped", equiped);
+    ecs_entity_creation_setup_component(bool, "active", false);
+  ecs_entity_creation_end();
+}
+
+void
+prefab_item_ammo(const char *name, u32 weight, u32 id, u32 cursor_id, AmmoType ammo_type, u32 amount) {
+  Item item;
+  setup_item(&item, name, ITEM_RANGED, weight, id);
+  ecs_entity_creation_begin("item", "active", "cursor-id", "ammo-type", "item-amount");
+    ecs_entity_creation_setup_component(Item, "item", item);
+    ecs_entity_creation_setup_component(u32, "cursor-id", cursor_id);
+    ecs_entity_creation_setup_component(AmmoType, "ammo-type", ammo_type);
+    ecs_entity_creation_setup_component(u32, "item-amount", amount);
+    ecs_entity_creation_setup_component(bool, "active", false);
+  ecs_entity_creation_end();
+}
+
+void
+prefab_item_defensive(const char *name, u32 weight, u32 id, u32 cursor_id, bool equiped, u32 attribute_threshold, DefensiveType defensive_type, u32 extra_armour_points) {
+  DefensiveItem defensive_item = {
+    defensive_type,
+    extra_armour_points
+  };
+  Item item;
+  setup_item(&item, name, ITEM_MELEE, weight, id);
+  ecs_entity_creation_begin("item", "active", "cursor-id", "attribute-threshold", "item-equiped", "defensive-item");
+    ecs_entity_creation_setup_component(Item, "item", item);
+    ecs_entity_creation_setup_component(u32, "cursor-id", cursor_id);
+    ecs_entity_creation_setup_component(u32, "attribute-threshold", attribute_threshold);
+    ecs_entity_creation_setup_component(bool, "item-equiped", equiped);
+    ecs_entity_creation_setup_component(DefensiveItem, "defensive-item", defensive_item);
+    ecs_entity_creation_setup_component(bool, "active", false);
+  ecs_entity_creation_end();
+}
+
+void
+prefab_item_lockpick(const char *name, u32 weight, u32 id, u32 cursor_id, LockpickType lockpick_type, u32 amount) {
+  Item item;
+  setup_item(&item, name, ITEM_RANGED, weight, id);
+  ecs_entity_creation_begin("item", "active", "cursor-id", "lockpick-type", "item-amount");
+    ecs_entity_creation_setup_component(Item, "item", item);
+    ecs_entity_creation_setup_component(u32, "cursor-id", cursor_id);
+    ecs_entity_creation_setup_component(LockpickType, "lockpick-type", lockpick_type);
+    ecs_entity_creation_setup_component(u32, "item-amount", amount);
+    ecs_entity_creation_setup_component(bool, "active", false);
+  ecs_entity_creation_end();
+}
+
+void
+prefab_item_potion(const char *name, u32 weight, u32 id, u32 cursor_id, u32 dice_amount, u32 dice_faces, u32 test_modifier, PotionType potion_type, u32 amount) {
+  DiceTest dice_test = {
+    dice_amount,
+    dice_faces,
+    test_modifier
+  };
+  Item item;
+  setup_item(&item, name, ITEM_RANGED, weight, id);
+  ecs_entity_creation_begin("item", "active", "cursor-id", "potion-type", "dice-test", "item-amount");
+    ecs_entity_creation_setup_component(Item, "item", item);
+    ecs_entity_creation_setup_component(u32, "cursor-id", cursor_id);
+    ecs_entity_creation_setup_component(PotionType, "potion-type", potion_type);
+    ecs_entity_creation_setup_component(DiceTest, "dice-test", dice_test);
+    ecs_entity_creation_setup_component(u32, "item-amount", amount);
     ecs_entity_creation_setup_component(bool, "active", false);
   ecs_entity_creation_end();
 }
