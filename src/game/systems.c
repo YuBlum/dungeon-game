@@ -104,10 +104,7 @@ systems_create(void) {
   ecs_system_create("draw-item", system_draw_item, ON_DRAW_UI);
   ecs_system_must_have("draw-item", "item");
 
-  ecs_system_create("reset-items-amount", system_reset_items_amount, ON_PRE_UPDATE);
-  ecs_system_must_have("reset-items-amount", "pause");
-
-  ecs_system_create("update-items-amount", system_update_items_amount, ON_PRE_UPDATE);
+  ecs_system_create("update-items-amount", system_update_items_amount, ON_CREATE);
   ecs_system_must_have("update-items-amount", "item");
   
   ecs_system_create("items-offset", system_items_offset, ON_UPDATE);

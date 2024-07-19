@@ -4,9 +4,9 @@
 #include "general/global.h"
 
 void
-system_pause(void) {
+system_pause(usize entities_amount) {
   bool *pause = ecs_get_component_list("pause");
-  for (Entity e = 0; e < ecs_entities_amount(); e++) {
+  for (Entity e = 0; e < entities_amount; e++) {
     if (input_key_pressed(KEY_B)) {
       pause[e] = !pause[e];
       if (pause[e]) {
@@ -26,7 +26,6 @@ system_pause(void) {
         ecs_system_unpause("draw-carrying-weight");
         ecs_system_unpause("draw-item");
         ecs_system_unpause("inventory-header");
-        ecs_system_unpause("reset-items-amount");
         ecs_system_unpause("update-items-amount");
         ecs_system_unpause("items-offset");
         global.menu.cursor_id = 0;

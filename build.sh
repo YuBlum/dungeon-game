@@ -79,7 +79,6 @@ src/game/systems/activate_game_option.c      \
 src/game/systems/draw_carrying_weight.c      \
 src/game/systems/inventory_header.c          \
 src/game/systems/draw_item.c                 \
-src/game/systems/reset_items_amount.c        \
 src/game/systems/update_items_amount.c       \
 src/game/systems/items_offset.c              \
                                              \

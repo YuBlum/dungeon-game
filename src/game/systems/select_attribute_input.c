@@ -4,12 +4,12 @@
 #include "engine/input.h"
 
 void
-system_select_attribute_input(void) {
+system_select_attribute_input(usize entities_amount) {
   AttributeType *attribute_type = ecs_get_component_list("attribute-type");
   i32 *attribute_points = ecs_get_component_list("attribute-points");
   u32 *id = ecs_get_component_list("option-id");
   u32 *cursor_id = ecs_get_component_list("cursor-id");
-  for (Entity e = 0; e < ecs_entities_amount(); e++) {
+  for (Entity e = 0; e < entities_amount; e++) {
     bool is_base_attribute = (global.character_creation.class == CLASS_FIGHTER && attribute_type[e] == ATT_STRENGTH) ||
                              (global.character_creation.class == CLASS_THIEF   && attribute_type[e] == ATT_AGILITY)  ||
                              (global.character_creation.class == CLASS_WIZARD  && attribute_type[e] == ATT_INTELECT);

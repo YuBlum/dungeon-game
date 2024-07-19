@@ -1,3 +1,4 @@
+#include "engine/types.h"
 #include "game/components.h"
 #include "general/core.h"
 #include "engine/ecs.h"
@@ -7,13 +8,13 @@ static const char *attrib_names[] = { "AGI", "INT", "PRE", "STR", "VIG", };
 static const char *class_names[] = { "Fighter", "Thief", "Wizard" };
 
 void
-system_draw_character_sheet(void) {
+system_draw_character_sheet(usize entities_amount) {
   Attributes *attributes = ecs_get_component_list("attributes");
   CharacterName *character_name = ecs_get_component_list("character-name");
   CharacterSheet *character_sheet = ecs_get_component_list("character-sheet");
   Class *class = ecs_get_component_list("class");
   DefensiveStats *defensive_stats = ecs_get_component_list("defensive-stats");
-  for (Entity e = 0; e < ecs_entities_amount(); e++) {
+  for (Entity e = 0; e < entities_amount; e++) {
     V2f pos = { 0, UI_TOP };
     renderer_text(pos, 1, true, false, 0xffff00ff, 0, "%.*s, The %s", character_name[e].size, character_name[e].buff, class_names[class[e]]);
     pos.y -= 1 + PX_TO_UNIT;

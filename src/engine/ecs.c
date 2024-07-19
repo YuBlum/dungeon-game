@@ -30,12 +30,14 @@ typedef struct {
   usize component_amount;
   usize not_empty_component_amount;
   usize entities_amount;
-  bool *entity_destroy;
+  bool *entity_is_last_frame;
+  bool *entity_is_first_frame;
   void ***entity_insert_component_data;
   const char ***entity_insert_component;
   const char ***entity_remove_component;
   usize entity_requested_remove_component_amount;
   usize entity_requested_insert_component_amount;
+  u32  entity_requested_create_amount;
   bool entity_requested_destroy;
   void *entity_creation_queue;
   usize entity_size;
@@ -92,12 +94,17 @@ static const char *system_event_str[] = {
   "ON_PRE_DRAW_SCREEN",
   "ON_DRAW_SCREEN",
   "ON_POS_DRAW_SCREEN",
+  "ON_CREATE",
+  "ON_DESTROY",
 };
 _Static_assert(sizeof (system_event_str) / sizeof (char *) == SYSTEM_EVENTS_AMOUNT, "system_event_str doesn't handle all system events");
 #endif
 
 void
 ecs_create(void) {
+#if DEVMODE
+  (void)system_event_str;
+#endif
   world.components = hashtable_create(sizeof (Component));
   world.system_ids = hashtable_create(sizeof (SystemID));
   for (SystemEvent event = 0; event < SYSTEM_EVENTS_AMOUNT; event++) {
@@ -173,12 +180,14 @@ ecs_find_archetype(usize comps_amount, const char *comps_names[comps_amount], co
       archetype->component_amount++;
     }
     archetype->entity_creation_queue = list_create(archetype->entity_size);
-    archetype->entity_destroy = list_create(sizeof (bool));
+    archetype->entity_is_last_frame  = list_create(sizeof (bool));
+    archetype->entity_is_first_frame = list_create(sizeof (bool));
     archetype->entity_references = list_create(sizeof (EntityReferenceInternal **));
     archetype->entity_insert_component_data = list_create(sizeof (void **));
     archetype->entity_insert_component = list_create(sizeof (const char **));
     archetype->entity_remove_component = list_create(sizeof (const char **));
     archetype->entity_requested_destroy = false;
+    archetype->entity_requested_create_amount = 0;
     archetype->entity_requested_insert_component_amount = 0;
     archetype->entity_requested_remove_component_amount = 0;
   }
@@ -280,12 +289,21 @@ ecs_archetype_entity_has_component(Archetype *archetype, Entity e, const char *c
 }
 
 static bool
-ecs_archetype_entity_is_destroyed(Archetype *archetype, Entity e, const char *file, u32 line, const char *fn_name) {
+ecs_archetype_entity_is_last_frame(Archetype *archetype, Entity e, const char *file, u32 line, const char *fn_name) {
 #if DEVMODE
   if (!world.on_system) ERROR("%s:%u: Function '%s' must be called inside of a system.", file, line, fn_name);
-  if (e >= archetype->entities_amount) ERROR("%s:%u: Trying to check if entity is gonna be destroyed of an unexisting entity.", file, line);
+  if (e >= archetype->entities_amount) ERROR("%s:%u: Trying to check if is entity last frame of an unexisting entity.", file, line);
 #endif
-  return archetype->entity_destroy[e];
+  return archetype->entity_is_last_frame[e];
+}
+
+static bool
+ecs_archetype_entity_is_first_frame(Archetype *archetype, Entity e, const char *file, u32 line, const char *fn_name) {
+#if DEVMODE
+  if (!world.on_system) ERROR("%s:%u: Function '%s' must be called inside of a system.", file, line, fn_name);
+  if (e >= archetype->entities_amount) ERROR("%s:%u: Trying to check if is entity first frame of an unexisting entity.", file, line);
+#endif
+  return archetype->entity_is_first_frame[e];
 }
 
 static void
@@ -295,7 +313,7 @@ ecs_archetype_entity_destroy(Archetype *archetype, Entity e, const char *file, u
   if (e >= archetype->entities_amount) ERROR("%s:%u: Trying to destroy unexisting entity.", file, line);
 #endif
   archetype->entity_requested_destroy = true;
-  archetype->entity_destroy[e] = true;
+  archetype->entity_is_last_frame[e] = true;
 }
 
 void
@@ -319,8 +337,13 @@ __ecs_entity_has_component(Entity e, const char *comp_name, const char *file, u3
 }
 
 bool
-__ecs_entity_is_destroyed(Entity e, const char *file, u32 line) {
-  return ecs_archetype_entity_is_destroyed(world.archetype_cur, e, file, line, "ecs_entity_is_destroyed");
+__ecs_entity_is_last_frame(Entity e, const char *file, u32 line) {
+  return ecs_archetype_entity_is_last_frame(world.archetype_cur, e, file, line, "ecs_entity_is_last_frame");
+}
+
+bool
+__ecs_entity_is_first_frame(Entity e, const char *file, u32 line) {
+  return ecs_archetype_entity_is_first_frame(world.archetype_cur, e, file, line, "ecs_entity_is_first_frame");
 }
 
 void
@@ -421,9 +444,15 @@ __ecs_entity_reference_has_component(EntityReference reference, const char *comp
 }
 
 bool
-__ecs_entity_reference_is_destroyed(EntityReference reference, const char *file, u32 line) {
+__ecs_entity_reference_is_last_frame(EntityReference reference, const char *file, u32 line) {
   EntityReferenceInternal ref = ecs_entity_reference_internal(reference, file, line);
-  return ecs_archetype_entity_is_destroyed(&world.archetypes[ref.archetype], ref.entity, file, line, "ecs_entity_reference_is_destroyed");
+  return ecs_archetype_entity_is_last_frame(&world.archetypes[ref.archetype], ref.entity, file, line, "ecs_entity_reference_is_last_frame");
+}
+
+bool
+__ecs_entity_reference_is_first_frame(EntityReference reference, const char *file, u32 line) {
+  EntityReferenceInternal ref = ecs_entity_reference_internal(reference, file, line);
+  return ecs_archetype_entity_is_first_frame(&world.archetypes[ref.archetype], ref.entity, file, line, "_ecs_entity_reference_is_first_frame");
 }
 
 void
@@ -461,10 +490,12 @@ ecs_entities_terminate(void) {
     list_clear(world.archetypes[a].entity_insert_component);
     list_clear(world.archetypes[a].entity_remove_component);
     list_clear(world.archetypes[a].entity_creation_queue);
-    list_clear(world.archetypes[a].entity_destroy);
+    list_clear(world.archetypes[a].entity_is_last_frame);
+    list_clear(world.archetypes[a].entity_is_first_frame);
     world.archetypes[a].entity_requested_insert_component_amount = 0;
-    world.archetypes[a].entity_requested_remove_component_amount = 0;
-    world.archetypes[a].entity_requested_destroy = 0;
+    world.archetypes[a].entity_requested_insert_component_amount = 0;
+    world.archetypes[a].entity_requested_create_amount = 0;
+    world.archetypes[a].entity_requested_destroy = false;
     world.archetypes[a].entities_amount = 0;
   }
   world.entities_amount = 0;
@@ -665,8 +696,9 @@ ecs_run_event_systems(SystemEvent event) {
     }
     for (usize i = 0; i < list_size(world.archetype_queue); i++) {
       world.archetype_cur = world.archetype_queue[i];
+      if ((event == ON_CREATE && world.archetype_cur->entity_requested_create_amount == 0) || (event == ON_DESTROY && !world.archetype_cur->entity_requested_destroy)) continue;
       world.on_system = true;
-      system->fn();
+      system->fn(world.archetype_cur->entities_amount);
       world.on_system = false;
     }
     world.archetype_cur = 0;
@@ -678,7 +710,7 @@ ecs_remove_component_from_entities(void) {
   for (ArchetypeID i = 0; i < list_size(world.archetypes); i++) {
     if (!world.archetypes[i].entity_requested_remove_component_amount) continue;
     for (SignedEntity e = world.archetypes[i].entities_amount - 1; e >= 0; e--) {
-      if (list_size(world.archetypes[i].entity_remove_component[e]) == 0 || world.archetypes[i].entity_destroy[e]) continue;
+      if (list_size(world.archetypes[i].entity_remove_component[e]) == 0 || world.archetypes[i].entity_is_last_frame[e]) continue;
       list_clear(world.temp_comps_names);
       for (usize j = 0; j < list_size(world.archetypes[i].component_names); j++) {
         bool skip = false;
@@ -710,17 +742,23 @@ ecs_remove_component_from_entities(void) {
         world.archetypes[i].entity_requested_insert_component_amount--;
         new_archetype->entity_requested_insert_component_amount++;
       }
+      if (world.archetypes[i].entity_is_first_frame[e]) {
+        world.archetypes[i].entity_requested_create_amount--;
+        new_archetype->entity_requested_create_amount++;
+      }
       for (u32 j = 0; j < list_size(world.archetypes[i].entity_references[e]); j++) {
         world.archetypes[i].entity_references[e][j]->archetype = new_archetype->id + 1;
         world.archetypes[i].entity_references[e][j]->entity = new_archetype->entities_amount + 1;
       }
       list_push(new_archetype->entity_references, world.archetypes[i].entity_references[e]);
       list_clear(world.archetypes[i].entity_remove_component[e]);
-      list_push(new_archetype->entity_destroy, false);
+      list_push(new_archetype->entity_is_last_frame, false);
+      list_push(new_archetype->entity_is_first_frame, new_archetype->entity_is_first_frame[e]);
       list_push(new_archetype->entity_insert_component_data, world.archetypes[i].entity_insert_component_data[e]);
       list_push(new_archetype->entity_insert_component, world.archetypes[i].entity_insert_component[e]);
       list_push(new_archetype->entity_remove_component, world.archetypes[i].entity_remove_component[e]);
-      list_remove(world.archetypes[i].entity_destroy, e);
+      list_remove(world.archetypes[i].entity_is_last_frame, e);
+      list_remove(world.archetypes[i].entity_is_first_frame, e);
       list_remove(world.archetypes[i].entity_references, e);
       list_remove(world.archetypes[i].entity_insert_component_data, e);
       list_remove(world.archetypes[i].entity_insert_component, e);
@@ -737,7 +775,7 @@ ecs_insert_component_into_entities(void) {
   for (ArchetypeID i = 0; i < list_size(world.archetypes); i++) {
     if (!world.archetypes[i].entity_requested_insert_component_amount) continue;
     for (SignedEntity e = world.archetypes[i].entities_amount - 1; e >= 0; e--) {
-      if (list_size(world.archetypes[i].entity_insert_component[e]) == 0 || world.archetypes[i].entity_destroy[e]) continue;
+      if (list_size(world.archetypes[i].entity_insert_component[e]) == 0 || world.archetypes[i].entity_is_last_frame[e]) continue;
       list_clear(world.temp_comps_names);
       for (usize j = 0; j < list_size(world.archetypes[i].component_names); j++) {
         list_push(world.temp_comps_names, world.archetypes[i].component_names[j]);
@@ -764,6 +802,10 @@ ecs_insert_component_into_entities(void) {
         memcpy(new_archetype->component_buffs[new] + size * (list_size(new_archetype->component_buffs[new]) - 1), data, size);
         free(data);
       }
+      if (world.archetypes[i].entity_is_first_frame[e]) {
+        world.archetypes[i].entity_requested_create_amount--;
+        new_archetype->entity_requested_create_amount++;
+      }
       for (u32 j = 0; j < list_size(world.archetypes[i].entity_references[e]); j++) {
         world.archetypes[i].entity_references[e][j]->archetype = new_archetype->id + 1;
         world.archetypes[i].entity_references[e][j]->entity = new_archetype->entities_amount + 1;
@@ -771,11 +813,13 @@ ecs_insert_component_into_entities(void) {
       list_push(new_archetype->entity_references, world.archetypes[i].entity_references[e]);
       list_clear(world.archetypes[i].entity_insert_component_data[e]);
       list_clear(world.archetypes[i].entity_insert_component[e]);
-      list_push(new_archetype->entity_destroy, false);
+      list_push(new_archetype->entity_is_last_frame, false);
+      list_push(new_archetype->entity_is_first_frame, new_archetype->entity_is_first_frame[e]);
       list_push(new_archetype->entity_insert_component_data, world.archetypes[i].entity_insert_component_data[e]);
       list_push(new_archetype->entity_insert_component, world.archetypes[i].entity_insert_component[e]);
       list_push(new_archetype->entity_remove_component, world.archetypes[i].entity_remove_component[e]);
-      list_remove(world.archetypes[i].entity_destroy, e);
+      list_remove(world.archetypes[i].entity_is_last_frame, e);
+      list_remove(world.archetypes[i].entity_is_first_frame, e);
       list_remove(world.archetypes[i].entity_references, e);
       list_remove(world.archetypes[i].entity_insert_component_data, e);
       list_remove(world.archetypes[i].entity_insert_component, e);
@@ -792,7 +836,7 @@ ecs_destroy_entities(void) {
   for (ArchetypeID i = 0; i < list_size(world.archetypes); i++) {
     if (!world.archetypes[i].entity_requested_destroy) continue;
     for (SignedEntity e = world.archetypes[i].entities_amount - 1; e >= 0; e--) {
-      if (!world.archetypes[i].entity_destroy[e]) continue;
+      if (!world.archetypes[i].entity_is_last_frame[e]) continue;
       for (Entity other = e; other < world.archetypes[i].entities_amount; other++) {
         for (u32 j = 0; j < list_size(world.archetypes[i].entity_references[other]); j++) {
           world.archetypes[i].entity_references[other][j]->entity--;
@@ -812,7 +856,8 @@ ecs_destroy_entities(void) {
       list_destroy(world.archetypes[i].entity_insert_component[e]);
       list_destroy(world.archetypes[i].entity_remove_component[e]);
       list_destroy(world.archetypes[i].entity_references[e]);
-      list_remove(world.archetypes[i].entity_destroy, e);
+      list_remove(world.archetypes[i].entity_is_last_frame, e);
+      list_remove(world.archetypes[i].entity_is_first_frame, e);
       list_remove(world.archetypes[i].entity_references, e);
       list_remove(world.archetypes[i].entity_insert_component_data, e);
       list_remove(world.archetypes[i].entity_insert_component, e);
@@ -836,15 +881,26 @@ ecs_create_entities(void) {
         memcpy(component_buffs[c] + size * (list_size(component_buffs[c]) - 1), base_entity, size);
         base_entity += size;
       }
-      list_push(world.archetypes[i].entity_destroy, false);
+      list_push(world.archetypes[i].entity_is_last_frame, false);
+      list_push(world.archetypes[i].entity_is_first_frame, true);
       list_push(world.archetypes[i].entity_references, list_create(sizeof (EntityReferenceInternal *)));
       list_push(world.archetypes[i].entity_remove_component, list_create(sizeof (const char *)));
       list_push(world.archetypes[i].entity_insert_component, list_create(sizeof (const char *)));
       list_push(world.archetypes[i].entity_insert_component_data, list_create(sizeof (void *)));
+      world.archetypes[i].entity_requested_create_amount++;
       world.archetypes[i].entities_amount++;
       world.entities_amount++;
     }
     list_clear(world.archetypes[i].entity_creation_queue);
+  }
+}
+
+static void
+ecs_check_entities_first_frame(void) {
+  for (ArchetypeID i = 0; i < list_size(world.archetypes); i++) {
+    if (world.archetypes[i].entity_requested_create_amount == 0) continue;
+    memset(world.archetypes[i].entity_is_first_frame, 0, list_size(world.archetypes[i].entity_is_first_frame) * sizeof (bool));
+    world.archetypes[i].entity_requested_create_amount = 0;
   }
 }
 
@@ -865,29 +921,31 @@ ecs_update(void) {
   ecs_insert_component_into_entities();
   ecs_destroy_entities();
   ecs_create_entities();
-  /* run on update event systems */
-  for (SystemEvent event = ON_PRE_UPDATE; event <= ON_POS_UPDATE; event++) {
-    ecs_run_event_systems(event);
-  }
+  ecs_run_event_systems(ON_CREATE);
+  ecs_run_event_systems(ON_PRE_UPDATE);
+  ecs_run_event_systems(ON_UPDATE);
+  ecs_run_event_systems(ON_POS_UPDATE);
+  ecs_run_event_systems(ON_DESTROY);
+  ecs_check_entities_first_frame();
 }
 
 void
 ecs_draw_game(void) {
-  for (SystemEvent event = ON_PRE_DRAW_GAME; event <= ON_POS_DRAW_GAME; event++) {
-    ecs_run_event_systems(event);
-  }
+  ecs_run_event_systems(ON_PRE_DRAW_GAME);
+  ecs_run_event_systems(ON_DRAW_GAME);
+  ecs_run_event_systems(ON_POS_DRAW_GAME);
 }
 
 void
 ecs_draw_ui(void) {
-  for (SystemEvent event = ON_PRE_DRAW_UI; event <= ON_POS_DRAW_UI; event++) {
-    ecs_run_event_systems(event);
-  }
+  ecs_run_event_systems(ON_PRE_DRAW_UI);
+  ecs_run_event_systems(ON_DRAW_UI);
+  ecs_run_event_systems(ON_POS_DRAW_UI);
 }
 
 void
 ecs_draw_screen(void) {
-  for (SystemEvent event = ON_PRE_DRAW_SCREEN; event <= ON_POS_DRAW_SCREEN; event++) {
-    ecs_run_event_systems(event);
-  }
+  ecs_run_event_systems(ON_PRE_DRAW_SCREEN);
+  ecs_run_event_systems(ON_DRAW_SCREEN);
+  ecs_run_event_systems(ON_POS_DRAW_SCREEN);
 }

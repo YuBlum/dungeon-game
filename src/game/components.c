@@ -41,8 +41,9 @@ components_create(void) {
   ecs_component_create(u32, "attribute-threshold");
   ecs_component_create(Staff, "staff");
   ecs_component_create(LockpickType, "lockpick-type");
-  ecs_component_create(PotionType, "lockpick-type");
+  ecs_component_create(PotionType, "potion-type");
   ecs_component_create(DefensiveItem, "defensive-item");
+  ecs_component_create(MagicComponentType, "magic-component-type");
 
   ecs_empty_component_create("input");
   ecs_empty_component_create("tile");

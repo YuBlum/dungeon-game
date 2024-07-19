@@ -6,13 +6,13 @@
 static const char *class_names[] = { "Fighter", "Thief", "Wizard" };
 
 void
-system_draw_save_slot(void) {
+system_draw_save_slot(usize entities_amount) {
   CharacterName *character_name = ecs_get_component_list("character-name");
   Class *class = ecs_get_component_list("class");
   V2f *position = ecs_get_component_list("position");
   u32 *id = ecs_get_component_list("option-id");
   u32 *cursor_id = ecs_get_component_list("cursor-id");
-  for (Entity e = 0; e < ecs_entities_amount(); e++) {
+  for (Entity e = 0; e < entities_amount; e++) {
     Color color = 0xffffffff;
     char *select_start = "";
     char *select_end = "";

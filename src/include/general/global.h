@@ -41,6 +41,9 @@ typedef struct {
   f32 inventory_y;
   u32 items_amount;
   f32 items_offset;
+  u32 items_cursor_min;
+  u32 items_cursor_max;
+  u32 items_cursor_id;
   ItemDescription item_description;
 } GlobalGame;
 

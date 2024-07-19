@@ -8,7 +8,7 @@ typedef u32 Entity;
 typedef i64 SignedEntity;
 typedef u64 EntityReference;
 
-typedef void(*SystemFn)(void);
+typedef void(*SystemFn)(usize entites_amount);
 typedef enum {
   ON_SCENE_START,
   ON_SCENE_END,
@@ -24,6 +24,8 @@ typedef enum {
   ON_PRE_DRAW_SCREEN,
   ON_DRAW_SCREEN,
   ON_POS_DRAW_SCREEN,
+  ON_CREATE,
+  ON_DESTROY,
 
   SYSTEM_EVENTS_AMOUNT
 } SystemEvent;
@@ -37,7 +39,8 @@ void  __ecs_entity_remove_component(Entity e, const char *comp_name, const char 
 void *__ecs_entity_insert_component(Entity e, const char *comp_name, const char *file, u32 line);
 void  __ecs_entity_insert_empty_component(Entity e, const char *comp_name, const char *file, u32 line);
 bool  __ecs_entity_has_component(Entity e, const char *comp_name, const char *file, u32 line);
-bool  __ecs_entity_is_destroyed(Entity e, const char *file, u32 line);
+bool  __ecs_entity_is_last_frame(Entity e, const char *file, u32 line);
+bool  __ecs_entity_is_first_frame(Entity e, const char *file, u32 line);
 void __ecs_entity_destroy(Entity e, const char *file, u32 line);
 void __ecs_entity_get_reference(EntityReference *reference, Entity e, const char *file, u32 line);
 void __ecs_entity_clean_reference(EntityReference *reference, const char *file, u32 line);
@@ -46,10 +49,10 @@ void  __ecs_entity_reference_remove_component(EntityReference reference, const c
 void *__ecs_entity_reference_insert_component(EntityReference reference, const char *comp_name, const char *file, u32 line);
 void  __ecs_entity_reference_insert_empty_component(EntityReference reference, const char *comp_name, const char *file, u32 line);
 bool  __ecs_entity_reference_has_component(EntityReference reference, const char *comp_name, const char *file, u32 line);
-bool  __ecs_entity_reference_is_destroyed(EntityReference reference, const char *file, u32 line);
+bool  __ecs_entity_reference_is_last_frame(EntityReference reference, const char *file, u32 line);
+bool  __ecs_entity_reference_is_first_frame(EntityReference reference, const char *file, u32 line);
 void  __ecs_entity_reference_destroy(EntityReference reference, const char *file, u32 line);
 void *__ecs_get_component_list(const char *comp_name, const char *file, u32 line);
-usize ecs_entities_amount(void);
 void  ecs_entities_terminate(void);
 void  __ecs_system_create(const char *name, SystemFn fn, SystemEvent event, const char *file, u32 line);
 bool  __ecs_system_exists(const char *name);
@@ -79,10 +82,13 @@ void ecs_draw_screen(void);
 #define ecs_entity_insert_component(ENTITY, TYPE, COMPONENT, VALUE) do { *(TYPE *)__ecs_entity_insert_component(ENTITY, COMPONENT, __FILE__, __LINE__) = VALUE; } while(0)
 #define ecs_entity_insert_empty_component(ENTITY, COMPONENT) __ecs_entity_insert_empty_component(ENTITY, COMPONENT, __FILE__, __LINE__)
 #define ecs_entity_has_component(ENTITY, COMPONENT) __ecs_entity_has_component(ENTITY, COMPONENT, __FILE__, __LINE__)
-#define ecs_entity_is_destroyed(ENTITY) __ecs_entity_is_destroyed(ENTITY, __FILE__, __LINE__)
+#define ecs_entity_is_last_frame(ENTITY) __ecs_entity_is_last_frame(ENTITY, __FILE__, __LINE__)
+#define ecs_entity_is_first_frame(ENTITY) __ecs_entity_is_first_frame(ENTITY, __FILE__, __LINE__)
 #define ecs_entity_destroy(ENTITY) __ecs_entity_destroy(ENTITY, __FILE__, __LINE__)
 #define ecs_entity_get_reference(REFERENCE_PTR, ENTITY) __ecs_entity_get_reference(REFERENCE_PTR, ENTITY, __FILE__, __LINE__)
 #define ecs_entity_clean_reference(REFERENCE_PTR) __ecs_entity_clean_reference(REFERENCE_PTR, __FILE__, __LINE__)
+#define ecs_entity_reference_is_last_frame(REFERENCE) __ecs_entity_reference_is_last_frame(REFERENCE, COMPONENT, __FILE__, __LINE__)
+#define ecs_entity_reference_is_first_frame(REFERENCE) __ecs_entity_reference_is_first_frame(REFERENCE, COMPONENT, __FILE__, __LINE__)
 #define ecs_entity_reference_has_component(REFERENCE, COMPONENT) __ecs_entity_reference_has_component(REFERENCE, COMPONENT, __FILE__, __LINE__)
 #define ecs_entity_reference_get_component(REFERENCE, COMPONENT) __ecs_entity_reference_get_component(REFERENCE, COMPONENT, __FILE__, __LINE__)
 #define ecs_entity_reference_remove_component(REFERENCE, COMPONENT) __ecs_entity_reference_remove_component(REFERENCE, COMPONENT, __FILE__, __LINE__)

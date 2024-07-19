@@ -19,12 +19,13 @@ void prefab_terminal(void);
 void prefab_pause(void);
 void prefab_in_game_menu_option(V2f position, Tag tag, Callback callback, CallbackArg callback_arg, u32 id, u32 cursor_id, bool active, InGameMenuType type);
 void prefab_in_game_menu_option_with_u32_arg(V2f position, Tag tag, Callback callback, CallbackArg callback_arg, u32 id, u32 cursor_id, bool active, u32 arg_starting_value, const char *extra_component, InGameMenuType type);
-void prefab_item_melee(const char *name, u32 weight, u32 id, u32 cursor_id, bool equiped, u32 dice_amount, u32 dice_faces, u32 test_modifier, u32 critical_hit, u32 attribute_threshold);
-void prefab_item_ranged(const char *name, u32 weight, u32 id, u32 cursor_id, bool equiped, u32 dice_amount, u32 dice_faces, u32 test_modifier, u32 critical_hit, u32 attribute_threshold, AmmoType ammo_type);
-void prefab_item_staff(const char *name, u32 weight, u32 id, u32 cursor_id, bool equiped, SpellType spell_type, u32 reduce_spell_dt, u32 attribute_threshold);
-void prefab_item_ammo(const char *name, u32 weight, u32 id, u32 cursor_id, AmmoType ammo_type, u32 amount);
-void prefab_item_defensive(const char *name, u32 weight, u32 id, u32 cursor_id, bool equiped, u32 attribute_threshold, DefensiveType defensive_type, u32 extra_armour_points);
-void prefab_item_lockpick(const char *name, u32 weight, u32 id, u32 cursor_id, LockpickType lockpick_type, u32 amount);
-void prefab_item_potion(const char *name, u32 weight, u32 id, u32 cursor_id, u32 dice_amount, u32 dice_faces, u32 test_modifier, PotionType potion_type, u32 amount);
+void prefab_item_melee(const char *name, u32 weight, u32 id, bool equiped, u32 dice_amount, u32 dice_faces, u32 test_modifier, u32 critical_hit, u32 attribute_threshold);
+void prefab_item_ranged(const char *name, u32 weight, u32 id, bool equiped, u32 dice_amount, u32 dice_faces, u32 test_modifier, u32 critical_hit, u32 attribute_threshold, AmmoType ammo_type);
+void prefab_item_staff(const char *name, u32 weight, u32 id, bool equiped, SpellType spell_type, u32 reduce_spell_dt, u32 attribute_threshold);
+void prefab_item_ammo(const char *name, u32 weight, u32 id, AmmoType ammo_type, u32 amount);
+void prefab_item_defensive(const char *name, u32 weight, u32 id, bool equiped, u32 attribute_threshold, DefensiveType defensive_type, u32 extra_armour_points);
+void prefab_item_lockpick(const char *name, u32 weight, u32 id, LockpickType lockpick_type, u32 amount);
+void prefab_item_potion(const char *name, u32 weight, u32 id, u32 dice_amount, u32 dice_faces, u32 test_modifier, PotionType potion_type, u32 amount);
+void prefab_item_magic_component(const char *name, u32 weight, u32 id, MagicComponentType magic_component_type, u32 amount);
 
 #endif/*__PREFABS_H__*/

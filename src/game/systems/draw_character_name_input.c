@@ -6,12 +6,12 @@
 #include "general/core.h"
 
 void
-system_draw_character_name_input(void) {
+system_draw_character_name_input(usize entities_amount) {
   V2f *position = ecs_get_component_list("position");
   CharacterName *character_name = ecs_get_component_list("character-name");
   u32 *id = ecs_get_component_list("option-id");
   u32 *cursor_id = ecs_get_component_list("cursor-id");
-  for (Entity e = 0; e < ecs_entities_amount(); e++) {
+  for (Entity e = 0; e < entities_amount; e++) {
     V2f pos = v2f_add(position[e], V2F(-PX_TO_UNIT, PX_TO_UNIT));
     Color color =  0xffffffff;
     if (id[e] == global.menu.option_id[cursor_id[e]]) {

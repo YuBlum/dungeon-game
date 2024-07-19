@@ -8,13 +8,13 @@
 static const char *attrib_names[] = { "Agility", "Intelect", "Presence", "Strength", "Vigor", };
 
 void
-system_draw_attribute_input(void) {
+system_draw_attribute_input(usize entities_amount) {
   V2f *position = ecs_get_component_list("position");
   AttributeType *attribute_type = ecs_get_component_list("attribute-type");
   i32 *attribute_points = ecs_get_component_list("attribute-points");
   u32 *id = ecs_get_component_list("option-id");
   u32 *cursor_id = ecs_get_component_list("cursor-id");
-  for (Entity e = 0; e < ecs_entities_amount(); e++) {
+  for (Entity e = 0; e < entities_amount; e++) {
     Color color =  0xffffffff;
     char *select_start = "";
     char *select_end = "";

@@ -4,10 +4,10 @@
 #include "game/components.h"
 
 void
-system_cursor_navigation(void) {
+system_cursor_navigation(usize entities_amount) {
   u32 *id = ecs_get_component_list("cursor-id");
   Cursor *cursor = ecs_get_component_list("cursor");
-  for (Entity e = 0; e < ecs_entities_amount(); e++) {
+  for (Entity e = 0; e < entities_amount; e++) {
     if (global.menu.cursor_id != id[e]) continue;
     if (global.menu.option_id[id[e]] >= global.menu.option_amount[id[e]]) global.menu.option_id[id[e]] = 0;
     i32 move;

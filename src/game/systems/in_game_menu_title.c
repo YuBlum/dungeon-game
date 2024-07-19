@@ -7,8 +7,8 @@
 #include "general/global.h"
 
 void
-system_in_game_menu_title(void) {
-  for (Entity e = 0; e < ecs_entities_amount(); e++) {
+system_in_game_menu_title(usize entities_amount) {
+  for (Entity e = 0; e < entities_amount; e++) {
     const char *title;
     switch (global.game.menu_type) {
       case IGM_NONE:

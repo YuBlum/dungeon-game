@@ -6,9 +6,9 @@
 #include "general/global.h"
 
 void
-system_draw_carrying_weight(void) {
+system_draw_carrying_weight(usize entities_amount) {
   CharacterSheet *character_sheet = ecs_get_component_list("character-sheet");
-  for (Entity e = 0; e < ecs_entities_amount(); e++) {
+  for (Entity e = 0; e < entities_amount; e++) {
     if (global.game.menu_type == IGM_INVENTORY) {
       global.game.inventory_y -= 3;
       renderer_rect(V2F(0, global.game.inventory_y), V2F(10.75f + PX_TO_UNIT * 5, 2 + PX_TO_UNIT * 4), true, 0xffffffff, 1);
