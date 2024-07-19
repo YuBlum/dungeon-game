@@ -68,7 +68,6 @@ src/game/systems/draw_attribute_input.c      \
 src/game/systems/select_attribute_input.c    \
 src/game/systems/draw_menu_hint.c            \
 src/game/systems/menu_hint.c                 \
-src/game/systems/new_character_setup.c       \
 src/game/systems/submit_character_input.c    \
 src/game/systems/submit_attribute_input.c    \
 src/game/systems/delete_save_slot.c          \

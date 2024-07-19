@@ -107,13 +107,11 @@ begin_adventure_option(void) {
   serialize(CHARACTER_SHEET_ESSENCE_POINTS_CUR,  &character_sheet.essence_points_cur);
   serialize(CHARACTER_SHEET_CARRYING_WEIGHT_MAX, &character_sheet.carrying_weight_max);
   serialize(CHARACTER_SHEET_CARRYING_WEIGHT_CUR, &character_sheet.carrying_weight_cur);
-  ecs_entity_clean_reference(&new_character);
   scene_manager_goto(scene_overworld);
 }
 
 static void
 go_back_option(void) {
-  ecs_entity_clean_reference(&new_character);
   scene_manager_goto(scene_save_slots_menu);
 }
 

@@ -204,6 +204,21 @@ __ecs_entity_creation_begin(usize comps_amount, const char *comps_names[comps_am
   Archetype *archetype = ecs_find_archetype(comps_amount, comps_names, file, line);
   world.archetype_creation = archetype;
   list_grow(archetype->entity_creation_queue);
+  list_push(archetype->entity_references, list_create(sizeof (EntityReferenceInternal *)));
+}
+
+void
+__ecs_entity_creation_get_reference(EntityReference *reference, const char *file, u32 line) {
+#if DEVMODE
+  if (!world.on_entity_creation) ERROR("%s:%u: Trying to get reference of a entity on creation outside of an entity creation.", file, line);
+  if (!reference) ERROR("%s:%u: Expected pointer to an entity reference, but got NULL", file, line);
+  if ((*reference) != 0) ERROR("%s:%u: entity reference is already referecing an entity, please use 'ecs_entity_clean_reference' before calling this function", file, line);
+#endif
+  Archetype *archetype = world.archetype_creation;
+  EntityReferenceInternal *ref = (EntityReferenceInternal *)reference;
+  ref->archetype = archetype->id + 1;
+  ref->entity = list_size(archetype->entity_references);
+  list_push(archetype->entity_references[ref->entity - 1], ref);
 }
 
 void *
@@ -475,6 +490,9 @@ ecs_entities_terminate(void) {
       for (u32 i = 0; i < size; i++) {
         void *data = world.archetypes[a].entity_insert_component_data[e][i];
         if (data) free(data);
+      }
+      for (u32 i = 0; i < list_size(world.archetypes[a].entity_references[e]); i++) {
+        world.archetypes[a].entity_references[e][i]->reference = 0;
       }
       list_destroy(world.archetypes[a].entity_insert_component_data[e]);
       list_destroy(world.archetypes[a].entity_insert_component[e]);
@@ -883,7 +901,6 @@ ecs_create_entities(void) {
       }
       list_push(world.archetypes[i].entity_is_last_frame, false);
       list_push(world.archetypes[i].entity_is_first_frame, true);
-      list_push(world.archetypes[i].entity_references, list_create(sizeof (EntityReferenceInternal *)));
       list_push(world.archetypes[i].entity_remove_component, list_create(sizeof (const char *)));
       list_push(world.archetypes[i].entity_insert_component, list_create(sizeof (const char *)));
       list_push(world.archetypes[i].entity_insert_component_data, list_create(sizeof (void *)));

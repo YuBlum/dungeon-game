@@ -71,9 +71,6 @@ systems_create(void) {
   ecs_system_create("draw-menu-hint", system_draw_menu_hint, ON_DRAW_SCREEN);
   ecs_system_must_have("draw-menu-hint", "position", "menu-hint", "tag", "color");
 
-  ecs_system_create("new-character-setup", system_new_character_setup, ON_SCENE_START);
-  ecs_system_must_have("new-character-setup", "character-name", "class", "attributes", "reference-ptr");
-
   ecs_system_create("submit-character-input", system_submit_character_input, ON_POS_UPDATE);
   ecs_system_must_have("submit-character-input", "character-name", "option-id", "cursor-id", "callback");
 

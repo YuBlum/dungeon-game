@@ -33,6 +33,7 @@ typedef enum {
 void  ecs_create(void);
 void  __ecs_component_create(usize size, const char *name, const char *file, u32 line);
 void  __ecs_entity_creation_begin(usize comps_amount, const char *comps_names[comps_amount], const char *file, u32 line);
+void  __ecs_entity_creation_get_reference(EntityReference *reference, const char *file, u32 line);
 void *__ecs_entity_creation_setup_component(const char *comp_name, const char *file, u32 line);
 void  __ecs_entity_creation_end(const char *file, u32 line);
 void  __ecs_entity_remove_component(Entity e, const char *comp_name, const char *file, u32 line);
@@ -76,6 +77,7 @@ void ecs_draw_screen(void);
 #define ecs_empty_component_create(NAME) __ecs_component_create(0, NAME, __FILE__, __LINE__)
 #define ecs_get_component_list(COMPONENT) __ecs_get_component_list(COMPONENT, __FILE__, __LINE__)
 #define ecs_entity_creation_begin(...) do { const char *comps_names[] = { __VA_ARGS__ }; __ecs_entity_creation_begin(sizeof (comps_names) / sizeof (comps_names[0]), comps_names, __FILE__, __LINE__); } while(0)
+#define ecs_entity_creation_get_reference(REFERENCE_PTR) __ecs_entity_creation_get_reference(REFERENCE_PTR, __FILE__, __LINE__)
 #define ecs_entity_creation_setup_component(TYPE, COMPONENT, VALUE) do { *((TYPE *)__ecs_entity_creation_setup_component(COMPONENT, __FILE__, __LINE__)) = (VALUE); } while(0)
 #define ecs_entity_creation_end() __ecs_entity_creation_end(__FILE__, __LINE__);
 #define ecs_entity_remove_component(ENTITY, COMPONENT) __ecs_entity_remove_component(ENTITY, COMPONENT, __FILE__, __LINE__)

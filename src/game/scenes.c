@@ -40,7 +40,6 @@ scenes_create(void) {
   scene_manager_activate_system(scene_character_creation, "select-attribute-input");
   scene_manager_activate_system(scene_character_creation, "draw-menu-hint");
   scene_manager_activate_system(scene_character_creation, "menu-hint");
-  scene_manager_activate_system(scene_character_creation, "new-character-setup");
   scene_manager_activate_system(scene_character_creation, "submit-character-input");
   scene_manager_activate_system(scene_character_creation, "submit-attribute-input");
 
