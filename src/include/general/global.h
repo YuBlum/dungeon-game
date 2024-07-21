@@ -46,6 +46,8 @@ typedef struct {
   u32 items_cursor_max;
   u32 items_cursor_id;
   ItemDescription item_description;
+  bool deleted_item;
+  u32 changed_item_id;
 } GlobalGame;
 
 typedef struct {

@@ -86,9 +86,6 @@ systems_create(void) {
   ecs_system_create("activate-game-option", system_activate_game_option, ON_PRE_UPDATE);
   ecs_system_must_have("activate-game-option", "active", "in-game-menu-type", "option-id");
 
-  ecs_system_create("in-game-menu-title", system_in_game_menu_title, ON_DRAW_UI);
-  ecs_system_must_have("in-game-menu-title", "pause");
-
   ecs_system_create("draw-carrying-weight", system_draw_carrying_weight, ON_DRAW_UI);
   ecs_system_must_have("draw-carrying-weight", "character-sheet");
 

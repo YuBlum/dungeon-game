@@ -30,7 +30,6 @@ void system_delete_save_slot(usize entities_amount);
 void system_draw_terminal(usize entities_amount);
 void system_pause(usize entities_amount);
 void system_activate_game_option(usize entities_amount);
-void system_in_game_menu_title(usize entities_amount);
 void system_draw_carrying_weight(usize entities_amount);
 void system_inventory_header(usize entities_amount);
 void system_draw_item(usize entities_amount);

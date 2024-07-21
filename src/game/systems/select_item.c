@@ -6,7 +6,7 @@
 
 void
 system_select_item(usize entities_amount) {
-  if (global.game.menu_type != IGM_INVENTORY || global.game.menu_type_prv != IGM_INVENTORY) return;
+  if (global.game.menu_type_prv != IGM_INVENTORY) return;
   Item *item = ecs_get_component_list("item");
   for (Entity e = 0; e < entities_amount; e++) {
     if (global.game.items_cursor_id == global.menu.cursor_id             &&

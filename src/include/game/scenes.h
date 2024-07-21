@@ -15,6 +15,7 @@ void scene_delete_save_menu_on_update(void);
 
 void scene_overworld_on_start(void);
 void scene_overworld_on_update(void);
+void scene_overworld_on_draw(void);
 
 void scenes_create(void);
 

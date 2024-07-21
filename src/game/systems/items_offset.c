@@ -1,12 +1,10 @@
 #include "engine/ecs.h"
 #include "engine/types.h"
-#include "game/components.h"
 #include "general/core.h"
 #include "general/global.h"
 
 void
 system_items_offset(usize entities_amount) {
-  if (global.game.menu_type != IGM_INVENTORY) return;
   u32 *id = ecs_get_component_list("cursor-id");
   for (Entity e = 0; e < entities_amount; e++) {
     if (id[e] != global.game.items_cursor_id) continue;

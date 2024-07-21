@@ -10,6 +10,7 @@ typedef u32 SceneID;
 typedef struct {
   SceneFn on_start_fn;
   SceneFn on_update_fn;
+  SceneFn on_draw_fn;
   const char **systems_to_activate;
 } Scene;
 
@@ -40,7 +41,7 @@ scene_manager_create(void) {
 }
 
 void
-__scene_manager_create_scene(const char *name, SceneFn on_start_fn, SceneFn on_update_fn, const char *file, u32 line) {
+__scene_manager_create_scene(const char *name, SceneFn on_start_fn, SceneFn on_update_fn, SceneFn on_draw_fn, const char *file, u32 line) {
 #if DEVMODE
   if (!scene_manager.on_scenes_create) ERROR("%s:%u: Function 'scene_manager_create_scene' can only be called inside 'scenes_create'", file, line);
   if (hashtable_has(scene_manager.scene_ids, name)) ERROR("%s:%u: Creating scene '%s' two times", file, line, name);
@@ -50,6 +51,7 @@ __scene_manager_create_scene(const char *name, SceneFn on_start_fn, SceneFn on_u
   Scene *scene = &scene_manager.scenes[id];
   scene->on_start_fn = on_start_fn;
   scene->on_update_fn = on_update_fn;
+  scene->on_draw_fn = on_draw_fn;
   scene->systems_to_activate = list_create(sizeof (const char *));
   hashtable_insert(scene_manager.scene_ids, name, id);
 }
@@ -109,4 +111,10 @@ scene_manager_update(void) {
   scene_manager.changing = false;
   scene_manager.scene_cur = scene_manager.scene_nxt;
   scene_manager_run_scene_create(&scene_manager.scenes[scene_manager.scene_cur]);
+}
+
+void
+scene_manager_draw(void) {
+  if (scene_manager.scenes[scene_manager.scene_cur].on_draw_fn)
+    scene_manager.scenes[scene_manager.scene_cur].on_draw_fn();
 }

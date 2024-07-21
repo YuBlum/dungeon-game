@@ -29,10 +29,12 @@ main(void) {
         ecs_draw_game();
       renderer_batch_end();
       renderer_batch_start(RENDER_UI);
+        scene_manager_draw();
         ecs_draw_ui();
       renderer_batch_end();
     } else {
       renderer_batch_start(RENDER_SCREEN);
+        scene_manager_draw();
         ecs_draw_screen();
       renderer_batch_end();
     }
