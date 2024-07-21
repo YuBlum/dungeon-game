@@ -105,5 +105,17 @@ systems_create(void) {
   ecs_system_must_have("update-item-id", "item-info");
 
   ecs_system_create("item-melee-description", system_item_melee_description, ON_DRAW_UI);
-  ecs_system_must_have("item-melee-description", "item-info", "dice-test", "item-melee", "attribute-threshold");
+  ecs_system_must_have("item-melee-description", "item-info", "dice-test", "item-melee", "attribute-threshold", "critical-hit");
+
+  ecs_system_create("item-ranged-description", system_item_ranged_description, ON_DRAW_UI);
+  ecs_system_must_have("item-ranged-description", "item-info", "dice-test", "item-ranged", "attribute-threshold", "critical-hit", "ammo-type");
+
+  ecs_system_create("item-staff-description", system_item_staff_description, ON_DRAW_UI);
+  ecs_system_must_have("item-staff-description", "item-info", "item-staff", "attribute-threshold", "staff");
+
+  ecs_system_create("item-defensive-description", system_item_defensive_description, ON_DRAW_UI);
+  ecs_system_must_have("item-defensive-description", "item-info", "item-defensive", "attribute-threshold", "defensive-item");
+
+  ecs_system_create("item-potion-description", system_item_potion_description, ON_DRAW_UI);
+  ecs_system_must_have("item-potion-description", "item-info", "item-potion", "dice-test", "potion-type");
 }

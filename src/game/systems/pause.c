@@ -45,6 +45,10 @@ system_pause(usize entities_amount) {
         ecs_system_pause("select-item");
         ecs_system_pause("update-item-id");
         ecs_system_pause("item-melee-description");
+        ecs_system_pause("item-ranged-description");
+        ecs_system_pause("item-staff-description");
+        ecs_system_pause("item-defensive-description");
+        ecs_system_pause("item-potion-description");
       }
     }
     if (!pause[e]) {

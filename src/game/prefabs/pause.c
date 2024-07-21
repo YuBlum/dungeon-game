@@ -22,6 +22,10 @@ inventory_option(void) {
   ecs_system_unpause("select-item");
   ecs_system_unpause("update-item-id");
   ecs_system_unpause("item-melee-description");
+  ecs_system_unpause("item-ranged-description");
+  ecs_system_unpause("item-staff-description");
+  ecs_system_unpause("item-defensive-description");
+  ecs_system_unpause("item-potion-description");
 }
 
 static void
@@ -40,23 +44,6 @@ go_to_menu_option(void) {
   scene_manager_goto("main-menu");
 }
 
-/*
-static void
-inventory_equip_option(void) {
-  WARN("Not Implemented");
-}
-
-static void
-inventory_active_option(void) {
-  WARN("Not Implemented");
-}
-
-static void
-inventory_passive_option(void) {
-  WARN("Not Implemented");
-}
-*/
-
 void
 prefab_pause(void) {
   ecs_entity_creation_begin("pause");
@@ -72,6 +59,10 @@ prefab_pause(void) {
   ecs_system_pause("select-item");
   ecs_system_pause("update-item-id");
   ecs_system_pause("item-melee-description");
+  ecs_system_pause("item-ranged-description");
+  ecs_system_pause("item-staff-description");
+  ecs_system_pause("item-defensive-description");
+  ecs_system_pause("item-potion-description");
 
   V2f start_position = { 0, 2.5f };
 
@@ -87,16 +78,6 @@ prefab_pause(void) {
   }
   position.y -= 2;
   prefab_in_game_menu_option(position, "Go to Menu", (Callback)go_to_menu_option, 0, option_id++, 0, false, IGM_PAUSE);
-
-  /*
-  position = V2F(-5.5f, UI_TOP - 6.5f);
-  option_id = 0;
-  prefab_in_game_menu_option(position, "Equip", (Callback)inventory_equip_option, 0, option_id++, 1, false, IGM_INVENTORY);
-  position.x += 5.5f;
-  prefab_in_game_menu_option(position, "Active", (Callback)inventory_active_option, 0, option_id++, 1, false, IGM_INVENTORY);
-  position.x += 5.5f;
-  prefab_in_game_menu_option(position, "Passive", (Callback)inventory_passive_option, 0, option_id++, 1, false, IGM_INVENTORY);
-  */
 
   prefab_menu_cursor(0, false, true);
   prefab_menu_cursor(1, false, false);

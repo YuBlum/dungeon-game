@@ -254,7 +254,7 @@ prefab_item(Item item, u32 amount) {
          prefab_item_staff("Darkness Cane", 8, SPELL_EXTREME, 2, 4);
       break;
     case ITEM_SPIRITS_GUIDANCE:
-         prefab_item_staff("Spirits Guidance", 10, SPELL_COMPLEX, 3, 4);
+         prefab_item_staff("Spirits Guidance", 10, SPELL_EXTREME, 3, 4);
       break;
     case ITEM_ROCK:
       prefab_item_ammo("Rock", 1, AMMO_ROCK, amount);
@@ -335,22 +335,22 @@ prefab_item(Item item, u32 amount) {
       prefab_item_lockpick("Magical Lockpick", 4, LOCKPICK_MAGICAL, amount);
       break;
     case ITEM_HEALING_POTION:
-      prefab_item_potion("Healing Potion", 1, 1, 4, 0, POTION_HEALING, amount);
+      prefab_item_potion("Healing Potion", 1, 1, 4, 2, POTION_HEALING, amount); /* 3 to 6 */
       break;
     case ITEM_LARGE_HEALING_POTION:
-      prefab_item_potion("Large Healing Potion", 2, 2, 4, 0, POTION_HEALING, amount);
+      prefab_item_potion("Large Healing Potion", 2, 2, 4, 4, POTION_HEALING, amount); /* 6 to 12 */
       break;
     case ITEM_GREAT_HEALING_POTION:
-      prefab_item_potion("Great Healing Potion", 4, 3, 4, 0, POTION_HEALING, amount);
+      prefab_item_potion("Great Healing Potion", 4, 4, 4, 4, POTION_HEALING, amount); /* 8 to 20 */
       break;
     case ITEM_WILL_POTION:
-      prefab_item_potion("Will Potion", 1, 1, 4, 0, POTION_WILL, amount);
+      prefab_item_potion("Will Potion", 1, 1, 4, 2, POTION_WILL, amount);
       break;
     case ITEM_LARGE_WILL_POTION:
-      prefab_item_potion("Large Will Potion", 2, 2, 4, 0, POTION_WILL, amount);
+      prefab_item_potion("Large Will Potion", 2, 2, 4, 4, POTION_WILL, amount);
       break;
     case ITEM_GREAT_WILL_POTION:
-      prefab_item_potion("Great Will Potion", 4, 3, 4, 0, POTION_WILL, amount);
+      prefab_item_potion("Great Will Potion", 4, 4, 4, 4, POTION_WILL, amount);
       break;
   }
 }

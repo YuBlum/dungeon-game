@@ -37,6 +37,10 @@ void system_items_offset(usize entities_amount);
 void system_select_item(usize entities_amount);
 void system_update_item_id(usize entities_amount);
 void system_item_melee_description(usize entities_amount);
+void system_item_ranged_description(usize entities_amount);
+void system_item_staff_description(usize entities_amount);
+void system_item_defensive_description(usize entities_amount);
+void system_item_potion_description(usize entities_amount);
 
 void systems_create(void);
 
