@@ -4,7 +4,6 @@
 #include "engine/math.h"
 #include "engine/scene_manager.h"
 #include "engine/serialization.h"
-#include "game/scenes.h"
 #include "game/prefabs.h"
 #include "game/components.h"
 #include <string.h>
@@ -107,16 +106,16 @@ begin_adventure_option(void) {
   serialize(CHARACTER_SHEET_ESSENCE_POINTS_CUR,  &character_sheet.essence_points_cur);
   serialize(CHARACTER_SHEET_CARRYING_WEIGHT_MAX, &character_sheet.carrying_weight_max);
   serialize(CHARACTER_SHEET_CARRYING_WEIGHT_CUR, &character_sheet.carrying_weight_cur);
-  scene_manager_goto(scene_overworld);
+  scene_manager_goto("overworld");
 }
 
 static void
 go_back_option(void) {
-  scene_manager_goto(scene_save_slots_menu);
+  scene_manager_goto("save-slots-menu");
 }
 
 void
-scene_character_creation(void) {
+scene_character_creation_on_start(void) {
   global.all.split_screen = false;
   global.character_creation.total_attribute_points = 5;
   global.character_creation.has_name = false;
@@ -155,4 +154,9 @@ scene_character_creation(void) {
   prefab_menu_cursor(1, true, true);
   prefab_menu_cursor(2, true, true);
   prefab_menu_hint(V2F(0, SCREEN_BOTTOM + 2));
+}
+
+void
+scene_character_creation_on_update(void) {
+  global.menu.cursor_id_prv = global.menu.cursor_id;
 }

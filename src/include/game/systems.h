@@ -16,7 +16,6 @@ void system_check_save_slot(usize entities_amount);
 void system_draw_save_slot(usize entities_amount);
 void system_select_save_slot(usize entities_amount);
 void system_draw_character_name_input(usize entities_amount);
-void system_global_cursor_update(usize entities_amount);
 void system_type_character_name_input(usize entities_amount);
 void system_draw_option_with_u32_arg(usize entities_amount);
 void system_total_attribute_points(usize entities_amount);
@@ -35,8 +34,10 @@ void system_in_game_menu_title(usize entities_amount);
 void system_draw_carrying_weight(usize entities_amount);
 void system_inventory_header(usize entities_amount);
 void system_draw_item(usize entities_amount);
-void system_update_items_amount(usize entities_amount);
+void system_grow_items_amount(usize entities_amount);
+void system_shrink_items_amount(usize entities_amount);
 void system_items_offset(usize entities_amount);
+void system_select_item(usize entities_amount);
 
 void systems_create(void);
 

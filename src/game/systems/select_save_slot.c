@@ -1,5 +1,4 @@
 #include "game/components.h"
-#include "game/scenes.h"
 #include "general/global.h"
 #include "engine/ecs.h"
 #include "engine/input.h"
@@ -16,9 +15,9 @@ system_select_save_slot(usize entities_amount) {
     global.all.save_slot = id[e];
     if (character_name[e].size) {
       serialization_start();
-      scene_manager_goto(scene_overworld);
+      scene_manager_goto("overworld");
     } else {
-      scene_manager_goto(scene_character_creation);
+      scene_manager_goto("character-creation");
     }
   }
 }

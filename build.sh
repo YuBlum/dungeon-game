@@ -80,6 +80,7 @@ src/game/systems/inventory_header.c          \
 src/game/systems/draw_item.c                 \
 src/game/systems/update_items_amount.c       \
 src/game/systems/items_offset.c              \
+src/game/systems/select_item.c               \
                                              \
 src/game/scenes/main_menu.c                  \
 src/game/scenes/save_slots_menu.c            \
@@ -99,6 +100,7 @@ src/game/prefabs/solid.c                     \
 src/game/prefabs/terminal.c                  \
 src/game/prefabs/pause.c                     \
 src/game/prefabs/item.c                      \
+src/game/prefabs/all_items.c                 \
 "
 
 $CC $FLAGS $GLAD $DEFS $GENERAL $ENGINE $GAME $INCS $LIBS $OUT

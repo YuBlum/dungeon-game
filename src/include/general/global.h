@@ -37,6 +37,7 @@ typedef struct {
 
 typedef struct {
   InGameMenuType menu_type;
+  InGameMenuType menu_type_prv;
   Class class;
   f32 inventory_y;
   u32 items_amount;

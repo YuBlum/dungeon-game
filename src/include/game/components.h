@@ -197,7 +197,8 @@ typedef struct {
 } Item;
 
 typedef enum {
-  AMMO_ROCK = 0,
+  AMMO_NONE = 0,
+  AMMO_ROCK,
   AMMO_SMALL_ARROW,
   AMMO_ARROW,
   AMMO_LARGE_ARROW

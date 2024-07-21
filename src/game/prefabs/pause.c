@@ -3,18 +3,17 @@
 #include "engine/serialization.h"
 #include "engine/scene_manager.h"
 #include "game/components.h"
-#include "game/scenes.h"
 #include "game/prefabs.h"
 #include "general/global.h"
 
 static void
 inventory_option(void) {
   global.game.menu_type = IGM_INVENTORY;
-  global.menu.cursor_id = 1;
-  global.menu.option_id[1] = 0;
-  global.menu.cursor_id_prv = 1;
-  global.menu.option_id_prv[1] = 0;
-  global.menu.option_amount[1] = global.game.items_amount;
+  global.menu.cursor_id = global.game.items_cursor_id;
+  global.menu.option_id[global.game.items_cursor_id] = 0;
+  global.menu.cursor_id_prv = global.game.items_cursor_id;
+  global.menu.option_id_prv[global.game.items_cursor_id] = 0;
+  global.menu.option_amount[global.game.items_cursor_id] = global.game.items_amount;
   global.game.items_offset = 0;
   global.game.items_cursor_min = 0;
   global.game.items_cursor_max = 3;
@@ -33,7 +32,7 @@ spells_option(void) {
 static void
 go_to_menu_option(void) {
   serialization_end();
-  scene_manager_goto(scene_main_menu);
+  scene_manager_goto("main-menu");
 }
 
 /*
@@ -62,7 +61,6 @@ prefab_pause(void) {
   ecs_system_pause("cursor-navigation");
   ecs_system_pause("draw-option-ui");
   ecs_system_pause("select-option");
-  ecs_system_pause("global-cursor-update");
 
   V2f start_position = { 0, 2.5f };
 

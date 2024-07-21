@@ -20,14 +20,15 @@ system_pause(usize entities_amount) {
         ecs_system_unpause("cursor-navigation");
         ecs_system_unpause("draw-option-ui");
         ecs_system_unpause("select-option");
-        ecs_system_unpause("global-cursor-update");
         ecs_system_unpause("activate-game-option");
         ecs_system_unpause("in-game-menu-title");
         ecs_system_unpause("draw-carrying-weight");
         ecs_system_unpause("draw-item");
         ecs_system_unpause("inventory-header");
-        ecs_system_unpause("update-items-amount");
+        ecs_system_unpause("grow-items-amount");
+        ecs_system_unpause("shrink-items-amount");
         ecs_system_unpause("items-offset");
+        ecs_system_unpause("select-item");
         global.menu.cursor_id = 0;
         global.menu.option_id[0] = 0;
         global.menu.cursor_id_prv = 0;
@@ -44,7 +45,6 @@ system_pause(usize entities_amount) {
         ecs_system_pause("cursor-navigation");
         ecs_system_pause("draw-option-ui");
         ecs_system_pause("select-option");
-        ecs_system_pause("global-cursor-update");
       }
     }
     if (!pause[e]) {

@@ -49,9 +49,6 @@ systems_create(void) {
 
   ecs_system_create("draw-character-name-input", system_draw_character_name_input, ON_DRAW_SCREEN);
   ecs_system_must_have("draw-character-name-input", "position", "character-name", "option-id");
-  
-  ecs_system_create("global-cursor-update", system_global_cursor_update, ON_PRE_UPDATE);
-  ecs_system_must_have("global-cursor-update", "cursor-id", "cursor");
 
   ecs_system_create("type-character-name-input", system_type_character_name_input, ON_UPDATE);
   ecs_system_must_have("type-character-name-input", "character-name", "option-id", "cursor-id");
@@ -101,9 +98,15 @@ systems_create(void) {
   ecs_system_create("draw-item", system_draw_item, ON_DRAW_UI);
   ecs_system_must_have("draw-item", "item");
 
-  ecs_system_create("update-items-amount", system_update_items_amount, ON_CREATE);
-  ecs_system_must_have("update-items-amount", "item");
+  ecs_system_create("grow-items-amount", system_grow_items_amount, ON_CREATE);
+  ecs_system_must_have("grow-items-amount", "item");
+
+  ecs_system_create("shrink-items-amount", system_shrink_items_amount, ON_DESTROY);
+  ecs_system_must_have("shrink-items-amount", "item");
   
   ecs_system_create("items-offset", system_items_offset, ON_UPDATE);
   ecs_system_must_have("items-offset", "cursor-id");
+
+  ecs_system_create("select-item", system_select_item, ON_UPDATE);
+  ecs_system_must_have("select-item", "item");
 }

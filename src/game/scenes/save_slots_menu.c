@@ -2,7 +2,6 @@
 #include "general/global.h"
 #include "engine/scene_manager.h"
 #include "game/prefabs.h"
-#include "game/scenes.h"
 #include <stdio.h>
 #ifdef WIN32
 #include <io.h>
@@ -14,16 +13,16 @@
 
 static void
 go_back_option(void) {
-  scene_manager_goto(scene_main_menu);
+  scene_manager_goto("main-menu");
 }
 
 static void
 delete_save_option(void) {
-  scene_manager_goto(scene_delete_save_menu);
+  scene_manager_goto("delete-save-menu");
 }
 
 void
-scene_save_slots_menu(void) {
+scene_save_slots_menu_on_start(void) {
   global.all.split_screen = false;
   global.menu.option_id[0] = 0;
   global.menu.cursor_id = 0;
@@ -51,4 +50,9 @@ scene_save_slots_menu(void) {
   }
   prefab_menu_option(position, "Go Back", (Callback)go_back_option, 0, global.menu.option_amount[0]++, 0, true);
   prefab_menu_cursor(0, false, true);
+}
+
+void
+scene_save_slots_menu_on_update(void) {
+  global.menu.cursor_id_prv = global.menu.cursor_id;
 }

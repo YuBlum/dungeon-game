@@ -46,19 +46,4 @@ prefab_player(V2f position) {
     ecs_entity_creation_setup_component(CharacterSheet, "character-sheet", character_sheet);
     ecs_entity_creation_setup_component(Class, "class", global.game.class);
   ecs_entity_creation_end();
-
-  global.game.items_cursor_id = 1;
-  u32 item_id = 0;
-  prefab_item_melee          ("Wood Sword",          4, item_id++, false, 1, 4, 0, 18, 0);
-  prefab_item_melee          ("Kinfe",               4, item_id++, false, 1, 6, 0, 18, 1);
-  prefab_item_ranged         ("Slingshot",           6, item_id++, false, 1, 4, 0, 18, 0, AMMO_ROCK);
-  prefab_item_staff          ("Sacred Staff",        8, item_id++, false, SPELL_COMPLEX, 1, 2);
-  prefab_item_defensive      ("Wood Shield",         6, item_id++, false, 0, DEF_SHIELD, 1);
-  prefab_item_defensive      ("Light Armour",        8, item_id++, false, 1, DEF_ARMOUR, 1);
-  prefab_item_defensive      ("Strong Metal Armour", 8, item_id++, false, 4, DEF_ARMOUR, 4);
-  prefab_item_magic_component("Slime Fluid",         4, item_id++, MAGIC_SLIME_FLUID, 3);
-  prefab_item_magic_component("Holy Water",          6, item_id++, MAGIC_HOLY_WATER, 1);
-  prefab_item_lockpick       ("Lockpick",            8, item_id++, LOCKPICK_REGULAR, 2);
-  prefab_item_potion         ("Healing Potion",      6, item_id++, 1, 4, 0, POTION_HEALING, 2);
-  prefab_item_potion         ("Will Potion",         4, item_id++, 1, 4, 0, POTION_WILL, 1);
 }

@@ -4,7 +4,6 @@
 #include "engine/input.h"
 #include "engine/scene_manager.h"
 #include "game/components.h"
-#include "game/scenes.h"
 #include <stdio.h>
 
 void
@@ -17,6 +16,6 @@ system_delete_save_slot(usize entities_amount) {
     if (global.menu.cursor_id != cursor_id[e] || global.menu.option_id[cursor_id[e]] != id[e] || !input_key_pressed(KEY_A) || character_name[e].size == 0) continue;
     snprintf(path, SAVE_PATH_SIZE, SAVE_PATH_FMT, id[e]);
     remove(path);
-    scene_manager_goto(scene_save_slots_menu);
+    scene_manager_goto("save-slots-menu");
   }
 }

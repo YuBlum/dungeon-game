@@ -27,5 +27,6 @@ void prefab_item_defensive(const char *name, u32 weight, u32 id, bool equiped, u
 void prefab_item_lockpick(const char *name, u32 weight, u32 id, LockpickType lockpick_type, u32 amount);
 void prefab_item_potion(const char *name, u32 weight, u32 id, u32 dice_amount, u32 dice_faces, u32 test_modifier, PotionType potion_type, u32 amount);
 void prefab_item_magic_component(const char *name, u32 weight, u32 id, MagicComponentType magic_component_type, u32 amount);
+void prefab_all_items(void);
 
 #endif/*__PREFABS_H__*/
