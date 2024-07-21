@@ -61,7 +61,6 @@ src/game/systems/check_save_slot.c           \
 src/game/systems/draw_save_slot.c            \
 src/game/systems/select_save_slot.c          \
 src/game/systems/draw_character_name_input.c \
-src/game/systems/global_cursor_update.c      \
 src/game/systems/type_character_name_input.c \
 src/game/systems/total_attribute_points.c    \
 src/game/systems/draw_attribute_input.c      \
@@ -76,7 +75,7 @@ src/game/systems/pause.c                     \
 src/game/systems/activate_game_option.c      \
 src/game/systems/draw_carrying_weight.c      \
 src/game/systems/draw_item.c                 \
-src/game/systems/update_items_amount.c       \
+src/game/systems/remove_item.c               \
 src/game/systems/items_offset.c              \
 src/game/systems/select_item.c               \
 src/game/systems/update_item_id.c            \
@@ -99,7 +98,6 @@ src/game/prefabs/solid.c                     \
 src/game/prefabs/terminal.c                  \
 src/game/prefabs/pause.c                     \
 src/game/prefabs/item.c                      \
-src/game/prefabs/all_items.c                 \
 "
 
 $CC $FLAGS $GLAD $DEFS $GENERAL $ENGINE $GAME $INCS $LIBS $OUT

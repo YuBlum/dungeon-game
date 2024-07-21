@@ -8,7 +8,7 @@
 
 void
 system_draw_item(usize entities_amount) {
-  Item *item = ecs_get_component_list("item");
+  ItemInfo *item = ecs_get_component_list("item-info");
   for (Entity e = 0; e < entities_amount; e++) {
     f32 y = global.game.inventory_y - (1 + PX_TO_UNIT * 3) * (item[e].id + 1);
     if (item[e].id > global.game.items_cursor_max || item[e].id < global.game.items_cursor_min) {

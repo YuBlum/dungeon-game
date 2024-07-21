@@ -2,7 +2,6 @@
 #define __COMPONENTS_H__
 
 #include "engine/math.h"
-#include "engine/renderer.h"
 #include "engine/types.h"
 
 typedef const char *Tag;
@@ -108,7 +107,6 @@ typedef enum {
  */
 
 typedef enum {
-#if 0
   ITEM_WOOD_SWORD = 0,
   ITEM_KNIFE,
   ITEM_DAGGER,
@@ -177,14 +175,16 @@ typedef enum {
   ITEM_WILL_POTION,
   ITEM_LARGE_WILL_POTION,
   ITEM_GREAT_WILL_POTION,
-#endif
-  ITEM_MELEE = 0,
-  ITEM_RANGED,
-  ITEM_STAFF,
-  ITEM_AMMO,
-  ITEM_DEFENSIVE,
-  ITEM_LOCKPICK,
-  ITEM_POTION,
+} Item;
+
+typedef enum {
+  ITEM_TYPE_MELEE = 0,
+  ITEM_TYPE_RANGED,
+  ITEM_TYPE_STAFF,
+  ITEM_TYPE_AMMO,
+  ITEM_TYPE_DEFENSIVE,
+  ITEM_TYPE_LOCKPICK,
+  ITEM_TYPE_POTION,
 } ItemType;
 
 #define ITEM_NAME_CAP 24
@@ -194,7 +194,7 @@ typedef struct {
   u32  weight;
   u32  id;
   ItemType type;
-} Item;
+} ItemInfo;
 
 typedef enum {
   AMMO_NONE = 0,
@@ -207,7 +207,7 @@ typedef enum {
 typedef enum {
   LOCKPICK_REGULAR,
   LOCKPICK_ADVANCED,
-  LOCKPICK_MAGIC
+  LOCKPICK_MAGICAL
 } LockpickType;
 
 typedef enum {

@@ -4,13 +4,13 @@
 #include "general/global.h"
 
 void
-system_update_item_id(usize entities_amount) {
-  if (!global.game.removed_item) return;
-  global.game.fixed_items_order = true;
+system_remove_item(usize entities_amount) {
   ItemInfo *item = ecs_get_component_list("item-info");
   for (Entity e = 0; e < entities_amount; e++) {
-    if (item[e].id > global.game.changed_item_id) {
-      item[e].id--;
-    }
+    if (!ecs_entity_is_last_frame(e)) continue;
+    global.game.items_amount--;
+    global.game.removed_item = true;
+    global.game.changed_item_id = item[e].id;
   }
 }
+

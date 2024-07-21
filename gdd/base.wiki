@@ -389,14 +389,14 @@ Your inventory weight is defined by 70 + (Strength + Agility) * 10
 | Name             | Weight | Price          |
 |------------------|--------|----------------|
 | Slime Fluid      | 01     | $0010 to $0015 |
-| Sacred Wood      | 01     | $0020 to $0030 |
-| Undead Meat      | 02     | $0020 to $0030 |
-| Skullwalker Bone | 04     | $0040 to $0060 |
+| Sacred Wood      | 02     | $0020 to $0030 |
+| Undead Meat      | 01     | $0020 to $0030 |
+| Skullwalker Bone | 02     | $0040 to $0060 |
 | Holy Water       | 01     | $0050 to $0080 |
-| Animal Blood     | 02     | $0150 to $0300 |
-| Human Blood      | 02     | $0300 to $0800 |
-| Animal Organ     | 04     | $0900 to $1300 |
-| Human Organ      | 04     | $1600 to $4500 |
+| Animal Blood     | 01     | $0150 to $0300 |
+| Human Blood      | 01     | $0300 to $0800 |
+| Animal Organ     | 02     | $0900 to $1300 |
+| Human Organ      | 02     | $1600 to $4500 |
 
 === General Items ===
 | Name                 | Description                                | Weight | Price          |

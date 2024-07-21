@@ -90,20 +90,17 @@ systems_create(void) {
   ecs_system_must_have("draw-carrying-weight", "character-sheet");
 
   ecs_system_create("draw-item", system_draw_item, ON_DRAW_UI);
-  ecs_system_must_have("draw-item", "item");
+  ecs_system_must_have("draw-item", "item-info");
 
-  ecs_system_create("grow-items-amount", system_grow_items_amount, ON_CREATE);
-  ecs_system_must_have("grow-items-amount", "item");
-
-  ecs_system_create("shrink-items-amount", system_shrink_items_amount, ON_DESTROY);
-  ecs_system_must_have("shrink-items-amount", "item");
+  ecs_system_create("remove-item", system_remove_item, ON_DESTROY);
+  ecs_system_must_have("remove-item", "item-info");
   
   ecs_system_create("items-offset", system_items_offset, ON_UPDATE);
   ecs_system_must_have("items-offset", "cursor-id");
 
   ecs_system_create("select-item", system_select_item, ON_UPDATE);
-  ecs_system_must_have("select-item", "item");
+  ecs_system_must_have("select-item", "item-info");
 
   ecs_system_create("update-item-id", system_update_item_id, ON_POS_UPDATE);
-  ecs_system_must_have("update-item-id", "item");
+  ecs_system_must_have("update-item-id", "item-info");
 }

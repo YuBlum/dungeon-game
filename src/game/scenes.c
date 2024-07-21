@@ -54,8 +54,7 @@ scenes_create(void) {
   scene_manager_activate_system("overworld", "activate-game-option");
   scene_manager_activate_system("overworld", "draw-carrying-weight");
   scene_manager_activate_system("overworld", "draw-item");
-  scene_manager_activate_system("overworld", "grow-items-amount");
-  scene_manager_activate_system("overworld", "shrink-items-amount");
+  scene_manager_activate_system("overworld", "remove-item");
   scene_manager_activate_system("overworld", "items-offset");
   scene_manager_activate_system("overworld", "select-item");
   scene_manager_activate_system("overworld", "update-item-id");

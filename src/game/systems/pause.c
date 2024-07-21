@@ -21,8 +21,7 @@ system_pause(usize entities_amount) {
         ecs_system_unpause("draw-option-ui");
         ecs_system_unpause("select-option");
         ecs_system_unpause("activate-game-option");
-        ecs_system_unpause("grow-items-amount");
-        ecs_system_unpause("shrink-items-amount");
+        ecs_system_unpause("remove-item");
         global.menu.cursor_id = 0;
         global.menu.option_id[0] = 0;
         global.menu.cursor_id_prv = 0;
@@ -41,8 +40,7 @@ system_pause(usize entities_amount) {
         ecs_system_pause("select-option");
         ecs_system_pause("draw-carrying-weight");
         ecs_system_pause("draw-item");
-        ecs_system_pause("grow-items-amount");
-        ecs_system_pause("shrink-items-amount");
+        ecs_system_pause("remove-item");
         ecs_system_pause("items-offset");
         ecs_system_pause("select-item");
         ecs_system_pause("update-item-id");

@@ -9,11 +9,13 @@ void
 scene_overworld_on_start(void) {
   global.all.split_screen = true;
   global.game.items_amount = 0;
-  global.game.deleted_item = false;
+  global.game.removed_item = false;
+  global.game.fixed_items_order = false;
   tilemap_setup(GAME_W, GAME_H);
   prefab_terminal();
   prefab_player(V2FS(1));
-  prefab_all_items();
+  prefab_item(ITEM_WOOD_SWORD, 0);
+  prefab_item(ITEM_WOOD_SHIELD, 0);
   prefab_pause();
 }
 
@@ -22,7 +24,10 @@ scene_overworld_on_pre_systems(void) {
   global.menu.cursor_id_prv = global.menu.cursor_id;
   global.game.menu_type_prv = global.game.menu_type;
   if (global.game.menu_type == IGM_INVENTORY) {
-    if (global.game.fixed_items_order) global.game.deleted_item = false;
+    if (global.game.fixed_items_order) {
+      global.game.removed_item = false;
+      global.game.fixed_items_order = false;
+    }
     global.menu.option_amount[global.game.items_cursor_id] = global.game.items_amount;
     if (global.menu.option_id[global.game.items_cursor_id] == global.game.items_amount) {
       global.menu.option_id[global.game.items_cursor_id]--;

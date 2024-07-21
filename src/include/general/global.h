@@ -1,6 +1,7 @@
 #ifndef __GLOBAL_H__
 #define __GLOBAL_H__
 
+#include "engine/renderer.h"
 #include "game/components.h"
 #include "engine/types.h"
 
@@ -46,7 +47,7 @@ typedef struct {
   u32 items_cursor_max;
   u32 items_cursor_id;
   ItemDescription item_description;
-  bool deleted_item;
+  bool removed_item;
   bool fixed_items_order;
   u32 changed_item_id;
 } GlobalGame;
