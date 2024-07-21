@@ -58,4 +58,5 @@ scenes_create(void) {
   scene_manager_activate_system("overworld", "items-offset");
   scene_manager_activate_system("overworld", "select-item");
   scene_manager_activate_system("overworld", "update-item-id");
+  scene_manager_activate_system("overworld", "item-melee-description");
 }

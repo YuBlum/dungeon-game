@@ -6,6 +6,7 @@
 #include "engine/tilemap.h"
 #include "game/prefabs.h"
 #include <math.h>
+#include <string.h>
 
 void
 scene_overworld_on_start(void) {
@@ -13,6 +14,7 @@ scene_overworld_on_start(void) {
   global.game.removed_item = false;
   global.game.fixed_items_order = false;
   global.game.item_type_page = ITEM_TYPE_MELEE;
+  memset(global.game.items_amount, 0, sizeof (u32) * ITEM_TYPE_AMOUNT);
   tilemap_setup(GAME_W, GAME_H);
   prefab_terminal();
   prefab_player(V2FS(1));

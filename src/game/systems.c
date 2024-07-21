@@ -103,4 +103,7 @@ systems_create(void) {
 
   ecs_system_create("update-item-id", system_update_item_id, ON_POS_UPDATE);
   ecs_system_must_have("update-item-id", "item-info");
+
+  ecs_system_create("item-melee-description", system_item_melee_description, ON_DRAW_UI);
+  ecs_system_must_have("item-melee-description", "item-info", "dice-test", "item-melee", "attribute-threshold");
 }
