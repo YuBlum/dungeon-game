@@ -13,7 +13,6 @@ inventory_option(void) {
   global.menu.option_id[global.game.items_cursor_id] = 0;
   global.menu.cursor_id_prv = global.game.items_cursor_id;
   global.menu.option_id_prv[global.game.items_cursor_id] = 0;
-  global.menu.option_amount[global.game.items_cursor_id] = global.game.items_amount;
   global.game.items_offset = 0;
   global.game.items_cursor_min = 0;
   global.game.items_cursor_max = 3;
@@ -99,4 +98,5 @@ prefab_pause(void) {
 
   prefab_menu_cursor(0, false, true);
   prefab_menu_cursor(1, false, false);
+  global.game.items_cursor_id = 1;
 }

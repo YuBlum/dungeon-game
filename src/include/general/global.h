@@ -23,6 +23,7 @@ typedef struct {
 
 typedef struct {
   f32 dt;
+  f32 time;
   bool split_screen;
   i32 save_slot;
 } GlobalAll;
@@ -41,7 +42,7 @@ typedef struct {
   InGameMenuType menu_type_prv;
   Class class;
   f32 inventory_y;
-  u32 items_amount;
+  u32 items_amount[ITEM_TYPE_AMOUNT];
   f32 items_offset;
   u32 items_cursor_min;
   u32 items_cursor_max;
@@ -50,6 +51,7 @@ typedef struct {
   bool removed_item;
   bool fixed_items_order;
   u32 changed_item_id;
+  ItemType item_type_page;
 } GlobalGame;
 
 typedef struct {

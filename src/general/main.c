@@ -20,6 +20,7 @@ main(void) {
   scene_manager_create();
   while (window_is_running()) {
     window_frame_start();
+    global.all.time++;
     scene_manager_update();
     scene_manager_pre_systems();
     ecs_update();

@@ -50,8 +50,10 @@ components_create(void) {
   ecs_empty_component_create("menu-hint");
   ecs_empty_component_create("item-melee");
   ecs_empty_component_create("item-ranged");
+  ecs_empty_component_create("item-staff");
   ecs_empty_component_create("item-ammo");
-  ecs_empty_component_create("item-potion");
+  ecs_empty_component_create("item-defensive");
   ecs_empty_component_create("item-lockpick");
-  ecs_empty_component_create("item-component");
+  ecs_empty_component_create("item-potion");
+  ecs_empty_component_create("item-magic-component");
 }

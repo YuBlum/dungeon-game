@@ -294,16 +294,6 @@ ecs_archetype_entity_insert_empty_component(Archetype *archetype, Entity e, cons
 }
 
 static bool
-ecs_archetype_entity_has_component(Archetype *archetype, Entity e, const char *comp_name, const char *file, u32 line, const char *fn_name) {
-#if DEVMODE
-  if (!world.on_system) ERROR("%s:%u: Function '%s' must be called inside of a system.", file, line, fn_name);
-  if (!hashtable_has(world.components, comp_name)) ERROR("%s:%u: '%s' component doesn't exists", file, line, comp_name);
-  if (e >= archetype->entities_amount) ERROR("%s:%u: Trying to check component '%s' of an unexisting entity.", file, line, comp_name);
-#endif
-  return hashtable_has(archetype->component_id, comp_name);
-}
-
-static bool
 ecs_archetype_entity_is_last_frame(Archetype *archetype, Entity e, const char *file, u32 line, const char *fn_name) {
 #if DEVMODE
   if (!world.on_system) ERROR("%s:%u: Function '%s' must be called inside of a system.", file, line, fn_name);
@@ -344,11 +334,6 @@ __ecs_entity_insert_component(Entity e, const char *comp_name, const char *file,
 void
 __ecs_entity_insert_empty_component(Entity e, const char *comp_name, const char *file, u32 line) {
   ecs_archetype_entity_insert_empty_component(world.archetype_cur, e, comp_name, file, line, "ecs_entity_insert_empty_component", "ecs_entity_insert_component");
-}
-
-bool
-__ecs_entity_has_component(Entity e, const char *comp_name, const char *file, u32 line) {
-  return ecs_archetype_entity_has_component(world.archetype_cur, e, comp_name, file, line, "ecs_entity_has_component");
 }
 
 bool
@@ -455,7 +440,11 @@ __ecs_entity_reference_insert_empty_component(EntityReference reference, const c
 bool
 __ecs_entity_reference_has_component(EntityReference reference, const char *comp_name, const char *file, u32 line) {
   EntityReferenceInternal ref = ecs_entity_reference_internal(reference, file, line);
-  return ecs_archetype_entity_has_component(&world.archetypes[ref.archetype], ref.entity, comp_name, file, line, "ecs_entity_reference_has_component");
+#if DEVMODE
+  if (!world.on_system) ERROR("%s:%u: Function 'ecs_entity_reference_has_component' must be called inside of a system.", file, line);
+  if (!hashtable_has(world.components, comp_name)) ERROR("%s:%u: '%s' component doesn't exists", file, line, comp_name);
+#endif
+  return hashtable_has(world.archetypes[ref.archetype].component_id, comp_name);
 }
 
 bool
@@ -476,9 +465,13 @@ __ecs_entity_reference_destroy(EntityReference reference, const char *file, u32 
   ecs_archetype_entity_destroy(&world.archetypes[ref.archetype], ref.entity, file, line, "ecs_entity_reference_destroy");
 }
 
-usize
-ecs_entities_amount(void) {
-  return world.archetype_cur->entities_amount;
+bool
+__ecs_entities_have_component(const char *comp_name, const char *file, u32 line) {
+#if DEVMODE
+  if (!world.on_system) ERROR("%s:%u: Function 'ecs_entities_have_component' must be called inside of a system.", file, line);
+  if (!hashtable_has(world.components, comp_name)) ERROR("%s:%u: '%s' component doesn't exists", file, line, comp_name);
+#endif
+  return hashtable_has(world.archetype_cur->component_id, comp_name);
 }
 
 void
