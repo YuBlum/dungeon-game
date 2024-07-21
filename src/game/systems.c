@@ -89,9 +89,6 @@ systems_create(void) {
   ecs_system_create("draw-carrying-weight", system_draw_carrying_weight, ON_DRAW_UI);
   ecs_system_must_have("draw-carrying-weight", "character-sheet");
 
-  ecs_system_create("inventory-header", system_inventory_header, ON_DRAW_UI);
-  ecs_system_must_have("inventory-header", "pause");
-
   ecs_system_create("draw-item", system_draw_item, ON_DRAW_UI);
   ecs_system_must_have("draw-item", "item");
 
@@ -106,4 +103,7 @@ systems_create(void) {
 
   ecs_system_create("select-item", system_select_item, ON_UPDATE);
   ecs_system_must_have("select-item", "item");
+
+  ecs_system_create("update-item-id", system_update_item_id, ON_POS_UPDATE);
+  ecs_system_must_have("update-item-id", "item");
 }

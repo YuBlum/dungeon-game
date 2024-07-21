@@ -31,12 +31,12 @@ void system_draw_terminal(usize entities_amount);
 void system_pause(usize entities_amount);
 void system_activate_game_option(usize entities_amount);
 void system_draw_carrying_weight(usize entities_amount);
-void system_inventory_header(usize entities_amount);
 void system_draw_item(usize entities_amount);
 void system_grow_items_amount(usize entities_amount);
 void system_shrink_items_amount(usize entities_amount);
 void system_items_offset(usize entities_amount);
 void system_select_item(usize entities_amount);
+void system_update_item_id(usize entities_amount);
 
 void systems_create(void);
 

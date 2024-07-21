@@ -56,7 +56,7 @@ src/game/systems/draw_rect.c                 \
 src/game/systems/draw_character_sheet.c      \
 src/game/systems/draw_option.c               \
 src/game/systems/select_option.c             \
-src/game/systems/cursor_navigation_system.c  \
+src/game/systems/cursor_navigation.c         \
 src/game/systems/check_save_slot.c           \
 src/game/systems/draw_save_slot.c            \
 src/game/systems/select_save_slot.c          \
@@ -75,11 +75,11 @@ src/game/systems/draw_terminal.c             \
 src/game/systems/pause.c                     \
 src/game/systems/activate_game_option.c      \
 src/game/systems/draw_carrying_weight.c      \
-src/game/systems/inventory_header.c          \
 src/game/systems/draw_item.c                 \
 src/game/systems/update_items_amount.c       \
 src/game/systems/items_offset.c              \
 src/game/systems/select_item.c               \
+src/game/systems/update_item_id.c            \
                                              \
 src/game/scenes/main_menu.c                  \
 src/game/scenes/save_slots_menu.c            \

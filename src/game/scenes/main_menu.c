@@ -37,6 +37,6 @@ scene_main_menu_on_start(void) {
 }
 
 void
-scene_main_menu_on_update(void) {
+scene_main_menu_on_pre_systems(void) {
   global.menu.cursor_id_prv = global.menu.cursor_id;
 }

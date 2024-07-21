@@ -21,7 +21,9 @@ main(void) {
   while (window_is_running()) {
     window_frame_start();
     scene_manager_update();
+    scene_manager_pre_systems();
     ecs_update();
+    scene_manager_pos_systems();
     input_update();
     if (global.all.split_screen) {
       renderer_batch_start(RENDER_GAME);

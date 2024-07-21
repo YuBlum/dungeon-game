@@ -19,9 +19,9 @@ inventory_option(void) {
   global.game.items_cursor_max = 3;
   ecs_system_unpause("draw-carrying-weight");
   ecs_system_unpause("draw-item");
-  ecs_system_unpause("inventory-header");
   ecs_system_unpause("items-offset");
   ecs_system_unpause("select-item");
+  ecs_system_unpause("update-item-id");
 }
 
 static void
@@ -68,9 +68,9 @@ prefab_pause(void) {
   ecs_system_pause("select-option");
   ecs_system_pause("draw-carrying-weight");
   ecs_system_pause("draw-item");
-  ecs_system_pause("inventory-header");
   ecs_system_pause("items-offset");
   ecs_system_pause("select-item");
+  ecs_system_pause("update-item-id");
 
   V2f start_position = { 0, 2.5f };
 

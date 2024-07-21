@@ -9,7 +9,8 @@ typedef u32 SceneID;
 
 typedef struct {
   SceneFn on_start_fn;
-  SceneFn on_update_fn;
+  SceneFn on_pre_systems_fn;
+  SceneFn on_pos_systems_fn;
   SceneFn on_draw_fn;
   const char **systems_to_activate;
 } Scene;
@@ -41,7 +42,7 @@ scene_manager_create(void) {
 }
 
 void
-__scene_manager_create_scene(const char *name, SceneFn on_start_fn, SceneFn on_update_fn, SceneFn on_draw_fn, const char *file, u32 line) {
+__scene_manager_create_scene(const char *name, SceneFn on_start_fn, SceneFn on_pre_systems_fn, SceneFn on_pos_systems_fn, SceneFn on_draw_fn, const char *file, u32 line) {
 #if DEVMODE
   if (!scene_manager.on_scenes_create) ERROR("%s:%u: Function 'scene_manager_create_scene' can only be called inside 'scenes_create'", file, line);
   if (hashtable_has(scene_manager.scene_ids, name)) ERROR("%s:%u: Creating scene '%s' two times", file, line, name);
@@ -50,7 +51,8 @@ __scene_manager_create_scene(const char *name, SceneFn on_start_fn, SceneFn on_u
   list_grow(scene_manager.scenes);
   Scene *scene = &scene_manager.scenes[id];
   scene->on_start_fn = on_start_fn;
-  scene->on_update_fn = on_update_fn;
+  scene->on_pre_systems_fn = on_pre_systems_fn;
+  scene->on_pos_systems_fn = on_pos_systems_fn;
   scene->on_draw_fn = on_draw_fn;
   scene->systems_to_activate = list_create(sizeof (const char *));
   hashtable_insert(scene_manager.scene_ids, name, id);
@@ -102,8 +104,6 @@ scene_manager_update(void) {
     scene_manager.first_frame = false;
     scene_manager_run_scene_create(&scene_manager.scenes[0]);
   }
-  if (scene_manager.scenes[scene_manager.scene_cur].on_update_fn)
-    scene_manager.scenes[scene_manager.scene_cur].on_update_fn();
   if (!scene_manager.changing) return;
   ecs_scene_end();
   ecs_entities_terminate();
@@ -111,6 +111,18 @@ scene_manager_update(void) {
   scene_manager.changing = false;
   scene_manager.scene_cur = scene_manager.scene_nxt;
   scene_manager_run_scene_create(&scene_manager.scenes[scene_manager.scene_cur]);
+}
+
+void
+scene_manager_pre_systems(void) {
+  if (scene_manager.scenes[scene_manager.scene_cur].on_pre_systems_fn)
+    scene_manager.scenes[scene_manager.scene_cur].on_pre_systems_fn();
+}
+
+void
+scene_manager_pos_systems(void) {
+  if (scene_manager.scenes[scene_manager.scene_cur].on_pos_systems_fn)
+    scene_manager.scenes[scene_manager.scene_cur].on_pos_systems_fn();
 }
 
 void

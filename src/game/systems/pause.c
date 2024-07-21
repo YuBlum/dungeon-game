@@ -41,11 +41,11 @@ system_pause(usize entities_amount) {
         ecs_system_pause("select-option");
         ecs_system_pause("draw-carrying-weight");
         ecs_system_pause("draw-item");
-        ecs_system_pause("inventory-header");
         ecs_system_pause("grow-items-amount");
         ecs_system_pause("shrink-items-amount");
         ecs_system_pause("items-offset");
         ecs_system_pause("select-item");
+        ecs_system_pause("update-item-id");
       }
     }
     if (!pause[e]) {
