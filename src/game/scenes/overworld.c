@@ -119,6 +119,8 @@ scene_overworld_on_pre_systems(void) {
   }
 }
 
+#define BLANK_CHAR_STR "\x80\x80\x80"
+
 void
 scene_overworld_on_draw(void) {
   const char *title;
@@ -150,8 +152,8 @@ scene_overworld_on_draw(void) {
     renderer_rect(V2F(UI_LEFT - PX_TO_UNIT * 2, y + PX_TO_UNIT * 2), V2F(UI_W + PX_TO_UNIT * 4, 1 + PX_TO_UNIT * 4), false, 0xffffffff, 1);
     renderer_rect(V2F(UI_LEFT - PX_TO_UNIT * 1, y + PX_TO_UNIT * 1), V2F(UI_W + PX_TO_UNIT * 2, 1 + PX_TO_UNIT * 2), false, 0x000000ff, 1);
     renderer_rect(V2F(UI_RIGHT - 2.0f, y + PX_TO_UNIT), V2F(PX_TO_UNIT, 1 + PX_TO_UNIT * 2), false, 0xffffffff, 1);
-    renderer_text(V2F(UI_RIGHT - 1.625f, y - PX_TO_UNIT), 1, false, false, 0xff5500ff, 1, "@");
-    renderer_text(V2F(UI_RIGHT - 1.625f, y), 1, false, false, 0xffffaaff, 1, "@");
+    renderer_text(V2F(UI_RIGHT - 1.625f, y - PX_TO_UNIT), 1, false, false, 0xff5500ff, 1, "\x85");
+    renderer_text(V2F(UI_RIGHT - 1.625f, y), 1, false, false, 0xffffaaff, 1, "\x85");
     const char *page = 0;
     switch (global.game.item_type_page) {
       case ITEM_TYPE_MELEE:
@@ -181,7 +183,7 @@ scene_overworld_on_draw(void) {
       case ITEM_TYPE_AMOUNT: break;
     }
     u32 space_amount = (sinf(global.all.time * 0.15f) + 1) * 1.5 + 1;
-    renderer_text(V2F(UI_LEFT + (UI_W - 2.0f) * 0.5f, y - PX_TO_UNIT), 1, true, false, 0xff5500ff, 1, "<-%.*s%s%.*s->", space_amount, "|||", page, space_amount, "|||");
-    renderer_text(V2F(UI_LEFT + (UI_W - 2.0f) * 0.5f, y), 1, true, false, 0xffffaaff, 1, "<-%.*s%s%.*s->", space_amount, "|||", page, space_amount, "|||");
+    renderer_text(V2F(UI_LEFT + (UI_W - 2.0f) * 0.5f, y - PX_TO_UNIT), 1, true, false, 0xff5500ff, 1, "<-%.*s%s%.*s->", space_amount, BLANK_CHAR_STR, page, space_amount, BLANK_CHAR_STR);
+    renderer_text(V2F(UI_LEFT + (UI_W - 2.0f) * 0.5f, y), 1, true, false, 0xffffaaff, 1, "<-%.*s%s%.*s->", space_amount, BLANK_CHAR_STR, page, space_amount, BLANK_CHAR_STR);
   }
 }

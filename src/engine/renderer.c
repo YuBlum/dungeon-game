@@ -60,7 +60,7 @@ static usize quads_amount;
 
 static Vertex vertices[VERTICES_CAP];
 
-#define FONT_GLYPHS_AMOUNT 95
+#define FONT_GLYPHS_AMOUNT 101
 static Texture atlas;
 static Glyph font[FONT_GLYPHS_AMOUNT];
 
@@ -203,6 +203,7 @@ renderer_create(void) {
     WARN("OpenGL debug context not created");
   }
 #endif
+
   /* load atlas */
   u16 atlas_w, atlas_h;
   FILE *atlas_f = fopen("res/images/atlas.tga", "rb");
@@ -215,6 +216,7 @@ renderer_create(void) {
   fseek(atlas_f, 2, SEEK_CUR);
   u32 *atlas_buff = malloc(4 * atlas_w * atlas_h);
   fread(atlas_buff, 4, atlas_w * atlas_h, atlas_f);
+
   /* create font */
   u32 pixel_x = 0;
   for (u32 i = 0; i < FONT_GLYPHS_AMOUNT; i++) {
@@ -237,6 +239,7 @@ renderer_create(void) {
       }
     }
   }
+
   /* atlas texture */
   glGenTextures(1, &atlas);
   glBindTexture(GL_TEXTURE_2D, atlas);
@@ -244,6 +247,7 @@ renderer_create(void) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlas_w, atlas_h, 0, GL_BGRA, GL_UNSIGNED_BYTE, atlas_buff);
   free(atlas_buff);
+
   /* render targets */
   glEnable(GL_SCISSOR_TEST);
   glGenFramebuffers(1, &framebuffer);
@@ -254,9 +258,11 @@ renderer_create(void) {
   glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA, SCREEN_W_PX, SCREEN_H_PX);
   glBindRenderbuffer(GL_RENDERBUFFER, 0);
   glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderbuffer);
+
   /* shaders */
   default_shader = renderer_shader_load("default");
   glUseProgram(default_shader.id);
+
   /* indices setup */
   u32 indices[INDICES_CAP];
   {
@@ -271,6 +277,7 @@ renderer_create(void) {
       j += 4;
     }
   }
+
   /* vertices and indices objects */
   glGenVertexArrays(1, &vertex_array);
   glGenBuffers(1, &vertex_buffer);
@@ -280,6 +287,7 @@ renderer_create(void) {
   glBufferData(GL_ARRAY_BUFFER, sizeof (vertices), 0, GL_DYNAMIC_DRAW);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof (indices), indices, GL_STATIC_DRAW);
+
   /* attributes */
   glEnableVertexAttribArray(0);
   glEnableVertexAttribArray(1);
@@ -287,6 +295,7 @@ renderer_create(void) {
   glVertexAttribPointer(0, 2, GL_FLOAT, false, sizeof (Vertex), (void *)offsetof (Vertex, position));
   glVertexAttribPointer(1, 2, GL_FLOAT, false, sizeof (Vertex), (void *)offsetof (Vertex, texcoord));
   glVertexAttribPointer(2, 4, GL_FLOAT, false, sizeof (Vertex), (void *)offsetof (Vertex, blend));
+
   /* blending */
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -364,7 +373,7 @@ __renderer_sprite(V2f position, V2i sprite_start, V2i sprite_end, V2f scale, boo
 }
 
 static f32
-renderer_text_width(f32 scale, const char *str) {
+renderer_text_width(f32 scale, const u8 *str) {
   f32 width = 0;
   for (u32 i = 0; i < 1024; i++) {
     u32 glyph_index = 94;
@@ -376,7 +385,9 @@ renderer_text_width(f32 scale, const char *str) {
     } else if (str[i] == ' ') {
       width += 5*PX_TO_UNIT * scale;
       continue;
-    } else if (str[i] >= '!' && str[i] <= '~') {
+    } else if (str[i] == 0xff) {
+      continue;
+    } else if ((str[i] >= '!' && str[i] <= '~') || (str[i] >= 0x80 && str[i] <= 0x85)) {
       glyph_index = str[i] - '!';
     }
     width += (font[glyph_index].width_unit + PX_TO_UNIT) * scale;
@@ -385,7 +396,7 @@ renderer_text_width(f32 scale, const char *str) {
 }
 
 static f32
-renderer_text_height(f32 scale, const char *str) {
+renderer_text_height(f32 scale, const u8 *str) {
   f32 height = 1;
   for (u32 i = 0; i < 1024; i++) {
     if (str[i] == '\0') {
@@ -400,9 +411,9 @@ renderer_text_height(f32 scale, const char *str) {
 void
 __renderer_text(V2f position, f32 scale, bool center_x, bool center_y, f32 r, f32 g, f32 b, f32 a, Layer layer, const char *file, u32 line, const char *fmt, ...) {
   va_list args;
-  char str[1024];
+  u8 str[1024];
   va_start(args, fmt);
-  vsnprintf(str, 1024, fmt, args);
+  vsnprintf((char *)str, 1024, fmt, args);
   va_end(args);
   V2f glyph_pos = position;
   if (center_x) glyph_pos.x -= renderer_text_width(scale, str) * 0.5f;
@@ -434,8 +445,8 @@ __renderer_text(V2f position, f32 scale, bool center_x, bool center_y, f32 r, f3
       if (str[i + 0] != '#' || !is_hex) ERROR("%s:%u: Invalid color parameter: %u", file, line, i);
       if (str[i + 9] != ']') ERROR("%s:%u: Unclosed color parameter: %u", file, line, i);
 #endif
-      char *end;
-      Color color = strtoul(&str[i + 1], &end, 16);
+      u8 *end;
+      Color color = strtoul((char *)&str[i + 1], (char **)&end, 16);
       u32 change = end - (str + i);
       i += change;
       blend_cur.r = COLOR_NR(color);
@@ -443,9 +454,10 @@ __renderer_text(V2f position, f32 scale, bool center_x, bool center_y, f32 r, f3
       blend_cur.b = COLOR_NB(color);
       blend_cur.a = COLOR_NA(color);
       continue;
-    } else if (str[i] == '\xff') {
+    } else if (str[i] == 0xff) {
       blend_cur = blend_base;
-    } else if (str[i] >= '!' && str[i] <= '~') {
+      continue;
+    } else if ((str[i] >= '!' && str[i] <= '~') || (str[i] >= 0x80 && str[i] <= 0x85)) {
       glyph_index = str[i] - '!';
     }
     renderer_request_quad_top_left(glyph_pos, V2F(font[glyph_index].width_unit * scale, scale), blend_cur, V2I(font[glyph_index].start_x, 0), V2I(font[glyph_index].end_x, 8), layer, file, line);
