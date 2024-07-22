@@ -370,6 +370,9 @@ renderer_text_width(f32 scale, const char *str) {
     u32 glyph_index = 94;
     if (str[i] == '\0' || str[i] == '\n') {
       break;
+    } else if (str[i] == '[' && str[i + 1] == '#') {
+      i+=11;
+      continue;
     } else if (str[i] == ' ') {
       width += 5*PX_TO_UNIT * scale;
       continue;
@@ -404,6 +407,8 @@ __renderer_text(V2f position, f32 scale, bool center_x, bool center_y, f32 r, f3
   V2f glyph_pos = position;
   if (center_x) glyph_pos.x -= renderer_text_width(scale, str) * 0.5f;
   if (center_y) glyph_pos.y += renderer_text_height(scale, str) * 0.5f;
+  Blend blend_base = { r, g, b, a };
+  Blend blend_cur = blend_base;
   for (u32 i = 0; i < 1024; i++) {
     u32 glyph_index = 94;
     if (str[i] == '\0') {
@@ -416,10 +421,34 @@ __renderer_text(V2f position, f32 scale, bool center_x, bool center_y, f32 r, f3
     } else if (str[i] == ' ') {
       glyph_pos.x += 5*PX_TO_UNIT * scale;
       continue;
+    } else if (str[i] == '[' && str[i + 1] == '#') {
+      i++;
+#if DEVMODE
+      bool is_hex = true;
+      for (u32 j = i + 1; j < i + 9; j++) {
+        if ((str[j] < '0' || str[j] > '9') && (str[j] < 'a' || str[j] > 'f') && (str[j] < 'A' || str[j] > 'F')) {
+          is_hex = false;
+          break;
+        }
+      }
+      if (str[i + 0] != '#' || !is_hex) ERROR("%s:%u: Invalid color parameter: %u", file, line, i);
+      if (str[i + 9] != ']') ERROR("%s:%u: Unclosed color parameter: %u", file, line, i);
+#endif
+      char *end;
+      Color color = strtoul(&str[i + 1], &end, 16);
+      u32 change = end - (str + i);
+      i += change;
+      blend_cur.r = COLOR_NR(color);
+      blend_cur.g = COLOR_NG(color);
+      blend_cur.b = COLOR_NB(color);
+      blend_cur.a = COLOR_NA(color);
+      continue;
+    } else if (str[i] == '\xff') {
+      blend_cur = blend_base;
     } else if (str[i] >= '!' && str[i] <= '~') {
       glyph_index = str[i] - '!';
     }
-    renderer_request_quad_top_left(glyph_pos, V2F(font[glyph_index].width_unit * scale, scale), (Blend){r,g,b,a}, V2I(font[glyph_index].start_x, 0), V2I(font[glyph_index].end_x, 8), layer, file, line);
+    renderer_request_quad_top_left(glyph_pos, V2F(font[glyph_index].width_unit * scale, scale), blend_cur, V2I(font[glyph_index].start_x, 0), V2I(font[glyph_index].end_x, 8), layer, file, line);
     glyph_pos.x += (font[glyph_index].width_unit + PX_TO_UNIT) * scale;
   }
 }

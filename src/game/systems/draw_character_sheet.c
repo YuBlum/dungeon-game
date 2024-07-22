@@ -35,22 +35,17 @@ system_draw_character_sheet(usize entities_amount) {
 
     pos.y -= 0.5f;
     pos.x = UI_LEFT + 0.5f;
-    renderer_text(pos, 1, false, false, BORDER_COLOR, 0, "# HP");
-    renderer_text(v2f_add(pos, V2F(3.75f, 0)), 1, false, false, 0xffff00ff, 0, "%.2d/%.2d", defensive_stats[e].hit_points_cur, defensive_stats[e].hit_points_max);
+    renderer_text(pos, 1, false, false, BORDER_COLOR, 0, "# HP [#ffff00ff]%.2d/%.2d", defensive_stats[e].hit_points_cur, defensive_stats[e].hit_points_max);
 
     pos.y -= 1.5f;
-    renderer_text(pos, 1, false, false, BORDER_COLOR, 0, "` EP");
-    renderer_text(v2f_add(pos, V2F(3.75f, 0)), 1, false, false, 0xffff00ff, 0, "%.2d/%.2d", character_sheet[e].essence_points_cur, character_sheet[e].essence_points_max);
+    renderer_text(pos, 1, false, false, BORDER_COLOR, 0, "` EP [#ffff00ff]%.2d/%.2d", character_sheet[e].essence_points_cur, character_sheet[e].essence_points_max);
 
     pos.x = UI_RIGHT - 7.5f - PX_TO_UNIT;
     pos.y += 1.5f;
-    renderer_text(pos, 1, false, false, BORDER_COLOR, 0, "\\ AP");
-    renderer_text(v2f_add(pos, V2F(4.75f, 0)), 1, false, false, 0xffff00ff, 0, "%.2d", defensive_stats[e].armour_points);
+    renderer_text(pos, 1, false, false, BORDER_COLOR, 0, "\\ AP   [#ffff00ff]%.2d", defensive_stats[e].armour_points);
 
     pos.y -= 1.5f;
-    renderer_text(pos, 1, false, false, BORDER_COLOR, 0, "& FP");
-    renderer_text(v2f_add(pos, V2F(3.75f, 0)), 1, false, false, 0xffff00ff, 0, "%.2d/%.2d", character_sheet[e].food_points_cur, character_sheet[e].food_points_max);
-
+    renderer_text(pos, 1, false, false, BORDER_COLOR, 0, "& FP [#ffff00ff]%.2d/%.2d", character_sheet[e].food_points_cur, character_sheet[e].food_points_max);
 
     pos.y -= 1.5f;
     pos.x = UI_LEFT;

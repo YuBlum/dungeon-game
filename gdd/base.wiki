@@ -217,7 +217,7 @@ You start with one Slingshot with 10 rocks and 2 Lockpicks.
 === Wizard ===
 Wizards have more EP than the other classes, this is the only class that can use magic.
 
-You start with the Weak Fire Ball spell and a Mini Staff.
+You start with the Weak Fire Ball spell and a Small Staff.
 
 ==== Wizard Progression ====
 | LVL | Progression         |
@@ -334,34 +334,34 @@ Your inventory weight is defined by 70 + (Strength + Agility) * 10
 | God's Spear | 3d12 + STR | 16           | 5        | 40     | $6000 to $9500 |
 
 ==== Ranged ====
-| Name                | Damage  | Critical Hit | Ammo Type   | Agility | Weight | Price          |
-|---------------------|---------|--------------|-------------|---------|--------|----------------|
-| Slingshot           | 1d4     | 18           | Rock        | 0       | 02     | $0010 to $0015 |
-| Big Slingshot       | 1d4     | 16           | Rock        | 1       | 02     | $0020 to $0030 |
-| Mini Throwing-Knife | 1d6     | 18           | -           | 1       | 04     | $0015 to $0025 |
-| Shortbow            | 1d6     | 16           | Small Arrow | 2       | 08     | $0050 to $0080 |
-| Throwing-Knife      | 1d8     | 16           | -           | 2       | 06     | $0020 to $0040 |
-| Light Crossbow      | 1d8     | 16           | Small Arrow | 2       | 16     | $0110 to $0130 |
-| Hand Crossbow       | 2d4     | 18           | Arrow       | 3       | 26     | $0200 to $0250 |
-| Longbow             | 1d10    | 18           | Arrow       | 3       | 36     | $0300 to $0400 |
-| Hunting Bow         | 1d10    | 16           | Arrow       | 3       | 34     | $0380 to $0500 |
-| Heavy Crossbow      | 2d4 + 2 | 18           | Large Arrow | 4       | 50     | $0450 to $0600 |
-| Masterbow           | 2d6 + 2 | 16           | Large Arrow | 4       | 45     | $0800 to $1200 |
-| Killer Crossbow     | 2d8     | 16           | Large Arrow | 5       | 58     | $2500 to $5000 |
+| Name                 | Damage  | Critical Hit | Ammo Type   | Agility | Weight | Price          |
+|----------------------|---------|--------------|-------------|---------|--------|----------------|
+| Slingshot            | 1d4     | 18           | Rock        | 0       | 02     | $0010 to $0015 |
+| Big Slingshot        | 1d4     | 16           | Rock        | 1       | 02     | $0020 to $0030 |
+| Small Throwing-Knife | 1d6     | 18           | -           | 1       | 04     | $0015 to $0025 |
+| Shortbow             | 1d6     | 16           | Small Arrow | 2       | 08     | $0050 to $0080 |
+| Throwing-Knife       | 1d8     | 16           | -           | 2       | 06     | $0020 to $0040 |
+| Light Crossbow       | 1d8     | 16           | Small Arrow | 2       | 16     | $0110 to $0130 |
+| Hand Crossbow        | 2d4     | 18           | Arrow       | 3       | 26     | $0200 to $0250 |
+| Longbow              | 1d10    | 18           | Arrow       | 3       | 36     | $0300 to $0400 |
+| Hunting Bow          | 1d10    | 16           | Arrow       | 3       | 34     | $0380 to $0500 |
+| Heavy Crossbow       | 2d4 + 2 | 18           | Large Arrow | 4       | 50     | $0450 to $0600 |
+| Masterbow            | 2d6 + 2 | 16           | Large Arrow | 4       | 45     | $0800 to $1200 |
+| Killer Crossbow      | 2d8     | 16           | Large Arrow | 5       | 58     | $2500 to $5000 |
 
 ==== Staffs ====
-| Name              | Spell Cast Type           | Reduce Spell DT by | Presence | Weight | Price          |
-|-------------------|---------------------------|--------------------|----------|--------|----------------|
-| Mini Staff        | Regular                   | 0                  | 0        | 02     | $0010 to $0020 |
-| Staff             | Regular                   | 1                  | 0        | 04     | $0030 to $0060 |
-| Big Staff         | Regular                   | 2                  | 1        | 06     | $0080 to $0150 |
-| Mini Sacred Staff | Regular, Complex          | 0                  | 1        | 04     | $0120 to $0300 |
-| Sacred Staff      | Regular, Complex          | 1                  | 2        | 06     | $0140 to $0520 |
-| Essenced Staff    | Regular, Complex          | 2                  | 2        | 06     | $0300 to $0600 |
-| Blessed Trunk     | Regular, Complex, Extreme | 0                  | 3        | 08     | $0610 to $0820 |
-| Eden Wood         | Regular, Complex, Extreme | 1                  | 3        | 08     | $0820 to $1200 |
-| Darkness Cane     | Regular, Complex, Extreme | 2                  | 4        | 08     | $2600 to $5000 |
-| Spirits Guidance  | Regular, Complex, Extreme | 3                  | 4        | 10     | $4800 to $8300 |
+| Name               | Spell Cast Type           | Reduce Spell DT by | Presence | Weight | Price          |
+|--------------------|---------------------------|--------------------|----------|--------|----------------|
+| Small Staff        | Regular                   | 0                  | -2       | 02     | $0010 to $0020 |
+| Staff              | Regular                   | 1                  | 0        | 04     | $0030 to $0060 |
+| Big Staff          | Regular                   | 2                  | 1        | 06     | $0080 to $0150 |
+| Small Sacred Staff | Regular, Complex          | 0                  | 1        | 04     | $0120 to $0300 |
+| Sacred Staff       | Regular, Complex          | 1                  | 2        | 06     | $0140 to $0520 |
+| Essenced Staff     | Regular, Complex          | 2                  | 2        | 06     | $0300 to $0600 |
+| Blessed Trunk      | Regular, Complex, Extreme | 0                  | 3        | 08     | $0610 to $0820 |
+| Eden Wood          | Regular, Complex, Extreme | 1                  | 3        | 08     | $0820 to $1200 |
+| Darkness Cane      | Regular, Complex, Extreme | 2                  | 4        | 08     | $2600 to $5000 |
+| Spirits Guidance   | Regular, Complex, Extreme | 3                  | 4        | 10     | $4800 to $8300 |
 
 ==== Ammo ====
 | Name        | Weight | Price          |
@@ -375,7 +375,7 @@ Your inventory weight is defined by 70 + (Strength + Agility) * 10
 | Name                | Extra PA | Strength | Weight | Price          |
 |---------------------|----------|----------|--------|----------------|
 | Wood Shield         | 1        | 0        | 06     | $0050 to $0100 |
-| Mini Metal Shield   | 2        | 2        | 12     | $0100 to $0200 |
+| Small Metal Shield  | 2        | 2        | 12     | $0100 to $0200 |
 | Metal Shield        | 3        | 3        | 18     | $0260 to $0410 |
 | Strong Metal Shield | 4        | 4        | 24     | $0450 to $0860 |
 | Titanium Shield     | 5        | 5        | 36     | $1200 to $2600 |

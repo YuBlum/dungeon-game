@@ -14,7 +14,7 @@ setup_item(ItemInfo *item, const char *name, ItemType type, u32 weight) {
 }
 
 static void
-prefab_item_melee(const char *name, u32 weight, u32 dice_amount, u32 dice_faces, u32 test_modifier, u32 critical_hit, u32 attribute_threshold) {
+prefab_item_melee(const char *name, u32 weight, u32 dice_amount, u32 dice_faces, u32 test_modifier, u32 critical_hit, i32 attribute_threshold) {
   DiceTest dice_test = {
     dice_amount,
     dice_faces,
@@ -26,14 +26,14 @@ prefab_item_melee(const char *name, u32 weight, u32 dice_amount, u32 dice_faces,
     ecs_entity_creation_setup_component(ItemInfo, "item-info", item);
     ecs_entity_creation_setup_component(DiceTest, "dice-test", dice_test);
     ecs_entity_creation_setup_component(u32, "critical-hit", critical_hit);
-    ecs_entity_creation_setup_component(u32, "attribute-threshold", attribute_threshold);
+    ecs_entity_creation_setup_component(i32, "attribute-threshold", attribute_threshold);
     ecs_entity_creation_setup_component(bool, "item-equiped", false);
     ecs_entity_creation_setup_component(bool, "active", false);
   ecs_entity_creation_end();
 }
 
 static void
-prefab_item_ranged(const char *name, u32 weight, u32 dice_amount, u32 dice_faces, u32 test_modifier, u32 critical_hit, u32 attribute_threshold, AmmoType ammo_type, u32 amount) {
+prefab_item_ranged(const char *name, u32 weight, u32 dice_amount, u32 dice_faces, u32 test_modifier, u32 critical_hit, i32 attribute_threshold, AmmoType ammo_type, u32 amount) {
   DiceTest dice_test = {
     dice_amount,
     dice_faces,
@@ -51,14 +51,14 @@ prefab_item_ranged(const char *name, u32 weight, u32 dice_amount, u32 dice_faces
     ecs_entity_creation_setup_component(DiceTest, "dice-test", dice_test);
     ecs_entity_creation_setup_component(u32, "critical-hit", critical_hit);
     ecs_entity_creation_setup_component(AmmoType, "ammo-type", ammo_type);
-    ecs_entity_creation_setup_component(u32, "attribute-threshold", attribute_threshold);
+    ecs_entity_creation_setup_component(i32, "attribute-threshold", attribute_threshold);
     ecs_entity_creation_setup_component(bool, "item-equiped", false);
     ecs_entity_creation_setup_component(bool, "active", false);
   ecs_entity_creation_end();
 }
 
 static void
-prefab_item_staff(const char *name, u32 weight, SpellType spell_type, u32 reduce_spell_dt, u32 attribute_threshold) {
+prefab_item_staff(const char *name, u32 weight, SpellType spell_type, u32 reduce_spell_dt, i32 attribute_threshold) {
   Staff staff = {
     spell_type,
     reduce_spell_dt
@@ -68,7 +68,7 @@ prefab_item_staff(const char *name, u32 weight, SpellType spell_type, u32 reduce
   ecs_entity_creation_begin("item-info", "active", "staff", "attribute-threshold", "item-equiped", "item-staff");
     ecs_entity_creation_setup_component(ItemInfo, "item-info", item);
     ecs_entity_creation_setup_component(Staff, "staff", staff);
-    ecs_entity_creation_setup_component(u32, "attribute-threshold", attribute_threshold);
+    ecs_entity_creation_setup_component(i32, "attribute-threshold", attribute_threshold);
     ecs_entity_creation_setup_component(bool, "item-equiped", false);
     ecs_entity_creation_setup_component(bool, "active", false);
   ecs_entity_creation_end();
@@ -87,7 +87,7 @@ prefab_item_ammo(const char *name, u32 weight, AmmoType ammo_type, u32 amount) {
 }
 
 static void
-prefab_item_defensive(const char *name, u32 weight, u32 attribute_threshold, DefensiveType defensive_type, u32 extra_armour_points) {
+prefab_item_defensive(const char *name, u32 weight, i32 attribute_threshold, DefensiveType defensive_type, u32 extra_armour_points) {
   DefensiveItem defensive_item = {
     defensive_type,
     extra_armour_points
@@ -96,7 +96,7 @@ prefab_item_defensive(const char *name, u32 weight, u32 attribute_threshold, Def
   setup_item(&item, name, ITEM_TYPE_DEFENSIVE, weight);
   ecs_entity_creation_begin("item-info", "active", "attribute-threshold", "item-equiped", "defensive-item", "item-defensive");
     ecs_entity_creation_setup_component(ItemInfo, "item-info", item);
-    ecs_entity_creation_setup_component(u32, "attribute-threshold", attribute_threshold);
+    ecs_entity_creation_setup_component(i32, "attribute-threshold", attribute_threshold);
     ecs_entity_creation_setup_component(bool, "item-equiped", false);
     ecs_entity_creation_setup_component(DefensiveItem, "defensive-item", defensive_item);
     ecs_entity_creation_setup_component(bool, "active", false);
@@ -194,40 +194,40 @@ prefab_item(Item item, u32 amount) {
       prefab_item_ranged("Slingshot", 2, 1, 4, 0, 18, 0, AMMO_ROCK, 0);
       break;
     case ITEM_BIG_SLINGSHOT:
-      prefab_item_ranged("Big Slingshot", 2, 1, 4, 0, 16, 0, AMMO_ROCK, 0);
+      prefab_item_ranged("Big Slingshot", 2, 1, 4, 0, 16, 1, AMMO_ROCK, 0);
       break;
     case ITEM_SMALL_THROWING_KNIFE:
-      prefab_item_ranged("Small Throwing-Knife", 4, 1, 6, 0, 18, 0, AMMO_NONE, amount);
+      prefab_item_ranged("Small Throwing-Knife", 4, 1, 6, 0, 18, 1, AMMO_NONE, amount);
       break;
     case ITEM_SHORTBOW:
-      prefab_item_ranged("Shortbow", 8, 1,  6, 0, 16, 0, AMMO_SMALL_ARROW, 0);
+      prefab_item_ranged("Shortbow", 8, 1,  6, 0, 16, 2, AMMO_SMALL_ARROW, 0);
       break;
     case ITEM_THROWING_KNIFE:
-      prefab_item_ranged("Throwing-Knife", 6, 1, 8, 0, 16, 0, AMMO_NONE, amount);
+      prefab_item_ranged("Throwing-Knife", 6, 1, 8, 0, 16, 2, AMMO_NONE, amount);
       break;
     case ITEM_LIGHT_CROSSBOW:
-      prefab_item_ranged("Light Crossbow", 16, 1, 8, 0, 16, 0, AMMO_SMALL_ARROW, 0);
+      prefab_item_ranged("Light Crossbow", 16, 1, 8, 0, 16, 2, AMMO_SMALL_ARROW, 0);
       break;
     case ITEM_HAND_CROSSBOW:
-      prefab_item_ranged("Hand Crossbow", 26, 2, 4, 0, 18, 0, AMMO_ARROW, 0);
+      prefab_item_ranged("Hand Crossbow", 26, 2, 4, 0, 18, 3, AMMO_ARROW, 0);
       break;
     case ITEM_LONGBOW:
-      prefab_item_ranged("Longbow", 36, 1, 10, 0, 18, 0, AMMO_ARROW, 0);
+      prefab_item_ranged("Longbow", 36, 1, 10, 0, 18, 3, AMMO_ARROW, 0);
       break;
     case ITEM_HUNTING_BOW:
-      prefab_item_ranged("Hunting Bow", 34, 1, 10, 0, 16, 0, AMMO_ARROW, 0);
+      prefab_item_ranged("Hunting Bow", 34, 1, 10, 0, 16, 3, AMMO_ARROW, 0);
       break;
     case ITEM_HEAVY_CROSSBOW:
-      prefab_item_ranged("Heavy Crossbow", 50, 2, 4, 2, 18, 0, AMMO_LARGE_ARROW, 0);
+      prefab_item_ranged("Heavy Crossbow", 50, 2, 4, 2, 18, 4, AMMO_LARGE_ARROW, 0);
       break;
     case ITEM_MASTERBOW:
-      prefab_item_ranged("Masterbow", 45, 2,  6, 2, 16, 0, AMMO_LARGE_ARROW, 0);
+      prefab_item_ranged("Masterbow", 45, 2,  6, 2, 16, 4, AMMO_LARGE_ARROW, 0);
       break;
     case ITEM_KILLER_CROSSBOW:
-      prefab_item_ranged("Killer Crossbow", 58, 2, 8, 0, 16, 0, AMMO_LARGE_ARROW, 0);
+      prefab_item_ranged("Killer Crossbow", 58, 2, 8, 0, 16, 5, AMMO_LARGE_ARROW, 0);
       break;
     case ITEM_SMALL_STAFF:
-      prefab_item_staff("Small Staff", 2, SPELL_REGULAR, 0, 0);
+      prefab_item_staff("Small Staff", 2, SPELL_REGULAR, 0, -2);
       break;
     case ITEM_STAFF:
        prefab_item_staff("Staff", 4, SPELL_REGULAR, 1, 0);
