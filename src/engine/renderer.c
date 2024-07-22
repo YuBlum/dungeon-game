@@ -61,6 +61,7 @@ static usize quads_amount;
 static Vertex vertices[VERTICES_CAP];
 
 #define FONT_GLYPHS_AMOUNT 101
+#define FONT_LAST_GLYPH (FONT_GLYPHS_AMOUNT + '!' - 1)
 static Texture atlas;
 static Glyph font[FONT_GLYPHS_AMOUNT];
 
@@ -221,16 +222,12 @@ renderer_create(void) {
   u32 pixel_x = 0;
   for (u32 i = 0; i < FONT_GLYPHS_AMOUNT; i++) {
     u8 pixel_alpha;
-    for (; pixel_x < ATLAS_WIDTH; pixel_x++) {
-      pixel_alpha = atlas_buff[pixel_x] & 0xFF;
-      if (pixel_alpha) break;
-    }
     font[i].start_x = pixel_x;
     for (; pixel_x < ATLAS_WIDTH; pixel_x++) {
       pixel_alpha = atlas_buff[pixel_x] & 0xFF;
       if (!pixel_alpha) break;
     }
-    font[i].end_x = pixel_x;
+    font[i].end_x = pixel_x++;
     font[i].width_unit = (font[i].end_x - font[i].start_x) * PX_TO_UNIT;
     for (u32 y = 0; y < 8; y++) {
       for (u32 x = font[i].start_x; x < font[i].end_x; x++) {
@@ -387,7 +384,7 @@ renderer_text_width(f32 scale, const u8 *str) {
       continue;
     } else if (str[i] == 0xff) {
       continue;
-    } else if ((str[i] >= '!' && str[i] <= '~') || (str[i] >= 0x80 && str[i] <= 0x85)) {
+    } else if ((str[i] >= '!' && str[i] <= '~') || (str[i] >= 0x80 && str[i] <= FONT_LAST_GLYPH)) {
       glyph_index = str[i] - '!';
     }
     width += (font[glyph_index].width_unit + PX_TO_UNIT) * scale;
@@ -457,7 +454,7 @@ __renderer_text(V2f position, f32 scale, bool center_x, bool center_y, f32 r, f3
     } else if (str[i] == 0xff) {
       blend_cur = blend_base;
       continue;
-    } else if ((str[i] >= '!' && str[i] <= '~') || (str[i] >= 0x80 && str[i] <= 0x85)) {
+    } else if ((str[i] >= '!' && str[i] <= '~') || (str[i] >= 0x80 && str[i] <= FONT_LAST_GLYPH)) {
       glyph_index = str[i] - '!';
     }
     renderer_request_quad_top_left(glyph_pos, V2F(font[glyph_index].width_unit * scale, scale), blend_cur, V2I(font[glyph_index].start_x, 0), V2I(font[glyph_index].end_x, 8), layer, file, line);
