@@ -104,6 +104,9 @@ systems_create(void) {
   ecs_system_create("update-item-id", system_update_item_id, ON_POS_UPDATE);
   ecs_system_must_have("update-item-id", "item-info");
 
+  ecs_system_create("update-equiped-item-id", system_update_equiped_item_id, ON_POS_UPDATE);
+  ecs_system_must_have("update-equiped-item-id", "item-info", "item-equiped");
+
   ecs_system_create("item-melee-description", system_item_melee_description, ON_DRAW_UI);
   ecs_system_must_have("item-melee-description", "item-info", "dice-test", "item-melee", "attribute-threshold", "critical-hit");
 
@@ -118,4 +121,7 @@ systems_create(void) {
 
   ecs_system_create("item-potion-description", system_item_potion_description, ON_DRAW_UI);
   ecs_system_must_have("item-potion-description", "item-info", "item-potion", "dice-test", "potion-type");
+
+  ecs_system_create("select-item-weapon", system_select_item_weapon, ON_UPDATE);
+  ecs_system_must_have("select-item-weapon", "item-info", "item-equiped", "callback");
 }

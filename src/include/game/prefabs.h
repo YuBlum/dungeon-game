@@ -5,7 +5,7 @@
 #include "engine/ecs.h"
 #include "engine/math.h"
 
-void prefab_player(V2f position);
+void prefab_player(V2f position, EntityReference *ref);
 void prefab_solid(V2f position);
 void prefab_menu_option(V2f position, Tag tag, Callback callback, CallbackArg callback_arg, u32 id, u32 cursor_id, bool active);
 void prefab_menu_option_with_u32_arg(V2f position, Tag tag, Callback callback, CallbackArg callback_arg, u32 id, u32 cursor_id, bool active, u32 arg_starting_value, const char *extra_component);
@@ -19,6 +19,6 @@ void prefab_terminal(void);
 void prefab_pause(void);
 void prefab_in_game_menu_option(V2f position, Tag tag, Callback callback, CallbackArg callback_arg, u32 id, u32 cursor_id, bool active, InGameMenuType type);
 void prefab_in_game_menu_option_with_u32_arg(V2f position, Tag tag, Callback callback, CallbackArg callback_arg, u32 id, u32 cursor_id, bool active, u32 arg_starting_value, const char *extra_component, InGameMenuType type);
-void prefab_item(Item item, u32 amount);
+void prefab_item(Item item, Callback get_player, u32 amount);
 
 #endif/*__PREFABS_H__*/

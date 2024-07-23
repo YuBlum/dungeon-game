@@ -1,13 +1,13 @@
+#include "engine/ecs.h"
 #include "game/components.h"
 #include "engine/math.h"
 #include "engine/renderer.h"
 #include "engine/serialization.h"
 #include "engine/tilemap.h"
 #include "general/global.h"
-#include "game/prefabs.h"
 
 void
-prefab_player(V2f position) {
+prefab_player(V2f position, EntityReference *ref) {
   position = tilemap_snap_to_grid(position);
   CharacterName name;
   Attributes attributes;
@@ -33,7 +33,8 @@ prefab_player(V2f position) {
   deserialize(CHARACTER_SHEET_ESSENCE_POINTS_CUR,  &character_sheet.essence_points_cur);
   deserialize(CHARACTER_SHEET_CARRYING_WEIGHT_MAX, &character_sheet.carrying_weight_max);
   deserialize(CHARACTER_SHEET_CARRYING_WEIGHT_CUR, &character_sheet.carrying_weight_cur);
-  ecs_entity_creation_begin("position", "direction", "position-lerp", "speed", "color", "input", "bump", "attributes", "defensive-stats", "character-name", "character-sheet", "class", "tile");
+  ecs_entity_creation_begin("position", "direction", "position-lerp", "speed", "color", "input", "bump", "attributes", "defensive-stats", "character-name", "character-sheet", "class", "tile", "dice-test", "critical-hit");
+    ecs_entity_creation_get_reference(ref);
     ecs_entity_creation_setup_component(V2f, "position", position);
     ecs_entity_creation_setup_component(V2f, "direction", V2FS(0));
     ecs_entity_creation_setup_component(PositionLerp, "position-lerp", ((PositionLerp){ position, position, 1.0f }));
@@ -45,5 +46,7 @@ prefab_player(V2f position) {
     ecs_entity_creation_setup_component(CharacterName, "character-name", name);
     ecs_entity_creation_setup_component(CharacterSheet, "character-sheet", character_sheet);
     ecs_entity_creation_setup_component(Class, "class", global.game.class);
+    ecs_entity_creation_setup_component(DiceTest, "dice-test", ((DiceTest){ 0, 0, 1 }));
+    ecs_entity_creation_setup_component(u32, "critical-hit", 18);
   ecs_entity_creation_end();
 }

@@ -8,84 +8,92 @@
 #include <math.h>
 #include <string.h>
 
+static EntityReference player;
+
+static void
+get_player_callback(EntityReference *ref) {
+  *ref = player;
+}
+
 void
 scene_overworld_on_start(void) {
   global.all.split_screen = true;
   global.game.removed_item = false;
+  global.game.rearrenged_item = false;
   global.game.fixed_items_order = false;
   global.game.item_type_page = ITEM_TYPE_MELEE;
   memset(global.game.items_amount, 0, sizeof (u32) * ITEM_TYPE_AMOUNT);
   tilemap_setup(GAME_W, GAME_H);
   prefab_terminal();
-  prefab_player(V2FS(1));
-  prefab_item(ITEM_WOOD_SWORD, 99);
-  prefab_item(ITEM_KNIFE, 99);
-  prefab_item(ITEM_DAGGER, 99);
-  prefab_item(ITEM_SHORTSWORD, 99);
-  prefab_item(ITEM_HANDAXE, 99);
-  prefab_item(ITEM_LONGSWORD, 99);
-  prefab_item(ITEM_TRIDANT, 99);
-  prefab_item(ITEM_WARHAMMER, 99);
-  prefab_item(ITEM_GREATSWORD, 99);
-  prefab_item(ITEM_BATTLEAXE, 99);
-  prefab_item(ITEM_MAUL, 99);
-  prefab_item(ITEM_DREAMSWORD, 99);
-  prefab_item(ITEM_MASTERSWORD, 99);
-  prefab_item(ITEM_GODS_WEAPON, 99);
-  prefab_item(ITEM_SLINGSHOT, 99);
-  prefab_item(ITEM_BIG_SLINGSHOT, 99);
-  prefab_item(ITEM_SMALL_THROWING_KNIFE, 99);
-  prefab_item(ITEM_SHORTBOW, 99);
-  prefab_item(ITEM_THROWING_KNIFE, 99);
-  prefab_item(ITEM_LIGHT_CROSSBOW, 99);
-  prefab_item(ITEM_HAND_CROSSBOW, 99);
-  prefab_item(ITEM_LONGBOW, 99);
-  prefab_item(ITEM_HUNTING_BOW, 99);
-  prefab_item(ITEM_HEAVY_CROSSBOW, 99);
-  prefab_item(ITEM_MASTERBOW, 99);
-  prefab_item(ITEM_KILLER_CROSSBOW, 99);
-  prefab_item(ITEM_SMALL_STAFF, 99);
-  prefab_item(ITEM_STAFF, 99);
-  prefab_item(ITEM_BIG_STAFF, 99);
-  prefab_item(ITEM_SMALL_SACRED_STAFF, 99);
-  prefab_item(ITEM_SACRED_STAFF, 99);
-  prefab_item(ITEM_ESSENCED_STAFF, 99);
-  prefab_item(ITEM_BLESSED_TRUNK, 99);
-  prefab_item(ITEM_EDEN_WOOD, 99);
-  prefab_item(ITEM_DARKNESS_CANE, 99);
-  prefab_item(ITEM_SPIRITS_GUIDANCE, 99);
-  prefab_item(ITEM_ROCK, 99);
-  prefab_item(ITEM_SMALL_ARROW, 99);
-  prefab_item(ITEM_ARROW, 99);
-  prefab_item(ITEM_LARGE_ARROW, 99);
-  prefab_item(ITEM_WOOD_SHIELD, 99);
-  prefab_item(ITEM_SMALL_METAL_SHIELD, 99);
-  prefab_item(ITEM_METAL_SHIELD, 99);
-  prefab_item(ITEM_STRONG_METAL_SHIELD, 99);
-  prefab_item(ITEM_TITANIUM_SHIELD, 99);
-  prefab_item(ITEM_LIGHT_ARMOUR, 99);
-  prefab_item(ITEM_WEAK_METAL_ARMOUR, 99);
-  prefab_item(ITEM_METAL_ARMOUR, 99);
-  prefab_item(ITEM_STRONG_METAL_ARMOUR, 99);
-  prefab_item(ITEM_TITANIUM_ARMOUR, 99);
-  prefab_item(ITEM_SLIME_FLUID, 99);
-  prefab_item(ITEM_SACRED_WOOD, 99);
-  prefab_item(ITEM_UNDEAD_MEAT, 99);
-  prefab_item(ITEM_SKULLWALKER_BONE, 99);
-  prefab_item(ITEM_HOLY_WATER, 99);
-  prefab_item(ITEM_ANIMAL_BLOOD, 99);
-  prefab_item(ITEM_HUMAN_BLOOD, 99);
-  prefab_item(ITEM_ANIMAL_ORGAN, 99);
-  prefab_item(ITEM_HUMAN_ORGAN, 99);
-  prefab_item(ITEM_LOCKPICK, 99);
-  prefab_item(ITEM_ADVANCED_LOCKPICK, 99);
-  prefab_item(ITEM_MAGICAL_LOCKPICK, 99);
-  prefab_item(ITEM_HEALING_POTION, 99);
-  prefab_item(ITEM_LARGE_HEALING_POTION, 99);
-  prefab_item(ITEM_GREAT_HEALING_POTION, 99);
-  prefab_item(ITEM_WILL_POTION, 99);
-  prefab_item(ITEM_LARGE_WILL_POTION, 99);
-  prefab_item(ITEM_GREAT_WILL_POTION, 99);
+  prefab_player(V2FS(1), &player);
+  prefab_item(ITEM_WOOD_SWORD, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_KNIFE, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_DAGGER, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_SHORTSWORD, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_HANDAXE, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_LONGSWORD, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_TRIDANT, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_WARHAMMER, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_GREATSWORD, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_BATTLEAXE, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_MAUL, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_DREAMSWORD, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_MASTERSWORD, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_GODS_WEAPON, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_SLINGSHOT, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_BIG_SLINGSHOT, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_SMALL_THROWING_KNIFE, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_SHORTBOW, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_THROWING_KNIFE, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_LIGHT_CROSSBOW, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_HAND_CROSSBOW, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_LONGBOW, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_HUNTING_BOW, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_HEAVY_CROSSBOW, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_MASTERBOW, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_KILLER_CROSSBOW, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_SMALL_STAFF, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_STAFF, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_BIG_STAFF, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_SMALL_SACRED_STAFF, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_SACRED_STAFF, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_ESSENCED_STAFF, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_BLESSED_TRUNK, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_EDEN_WOOD, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_DARKNESS_CANE, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_SPIRITS_GUIDANCE, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_ROCK, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_SMALL_ARROW, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_ARROW, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_LARGE_ARROW, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_WOOD_SHIELD, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_SMALL_METAL_SHIELD, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_METAL_SHIELD, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_STRONG_METAL_SHIELD, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_TITANIUM_SHIELD, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_LIGHT_ARMOUR, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_WEAK_METAL_ARMOUR, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_METAL_ARMOUR, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_STRONG_METAL_ARMOUR, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_TITANIUM_ARMOUR, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_SLIME_FLUID, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_SACRED_WOOD, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_UNDEAD_MEAT, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_SKULLWALKER_BONE, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_HOLY_WATER, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_ANIMAL_BLOOD, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_HUMAN_BLOOD, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_ANIMAL_ORGAN, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_HUMAN_ORGAN, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_LOCKPICK, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_ADVANCED_LOCKPICK, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_MAGICAL_LOCKPICK, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_HEALING_POTION, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_LARGE_HEALING_POTION, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_GREAT_HEALING_POTION, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_WILL_POTION, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_LARGE_WILL_POTION, (Callback)get_player_callback, 99);
+  prefab_item(ITEM_GREAT_WILL_POTION, (Callback)get_player_callback, 99);
   prefab_pause();
 }
 
@@ -95,6 +103,7 @@ scene_overworld_on_pre_systems(void) {
   global.game.menu_type_prv = global.game.menu_type;
   if (global.game.menu_type == IGM_INVENTORY) {
     if (global.game.fixed_items_order) {
+      global.game.rearrenged_item = false;
       global.game.removed_item = false;
       global.game.fixed_items_order = false;
     }
@@ -172,7 +181,7 @@ scene_overworld_on_draw(void) {
         page = "Defensive";
         break;
       case ITEM_TYPE_LOCKPICK:
-        page = "Lockpick";
+        page = "Lockpick & Keys";
         break;
       case ITEM_TYPE_POTION:
         page = "Potion";

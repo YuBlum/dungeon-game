@@ -1,7 +1,6 @@
 #ifndef __GLOBAL_H__
 #define __GLOBAL_H__
 
-#include "engine/renderer.h"
 #include "game/components.h"
 #include "engine/types.h"
 
@@ -28,14 +27,11 @@ typedef struct {
   i32 save_slot;
 } GlobalAll;
 
-
-#define ITEM_DESCRIPTION_LINE_CAP 4
-#define ITEM_DESCRIPTION_LINE_STR_CAP 21
 typedef struct {
-  char  line_buff[ITEM_DESCRIPTION_LINE_CAP][ITEM_DESCRIPTION_LINE_STR_CAP];
-  u32   line_size[ITEM_DESCRIPTION_LINE_CAP];
-  Color line_color[ITEM_DESCRIPTION_LINE_CAP];
-} ItemDescription;
+  ItemType type;
+  u32 id;
+  bool has_item;
+} SelectedItem;
 
 typedef struct {
   InGameMenuType menu_type;
@@ -47,11 +43,14 @@ typedef struct {
   u32 items_cursor_min;
   u32 items_cursor_max;
   u32 items_cursor_id;
-  ItemDescription item_description;
   bool removed_item;
+  bool rearrenged_item;
   bool fixed_items_order;
   u32 changed_item_id;
   ItemType item_type_page;
+  SelectedItem weapon;
+  SelectedItem armour;
+  SelectedItem shield;
 } GlobalGame;
 
 typedef struct {

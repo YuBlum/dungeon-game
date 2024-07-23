@@ -58,9 +58,11 @@ scenes_create(void) {
   scene_manager_activate_system("overworld", "items-offset");
   scene_manager_activate_system("overworld", "select-item");
   scene_manager_activate_system("overworld", "update-item-id");
+  scene_manager_activate_system("overworld", "update-equiped-item-id");
   scene_manager_activate_system("overworld", "item-melee-description");
   scene_manager_activate_system("overworld", "item-ranged-description");
   scene_manager_activate_system("overworld", "item-staff-description");
   scene_manager_activate_system("overworld", "item-defensive-description");
   scene_manager_activate_system("overworld", "item-potion-description");
+  scene_manager_activate_system("overworld", "select-item-weapon");
 }

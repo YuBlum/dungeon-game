@@ -21,11 +21,13 @@ inventory_option(void) {
   ecs_system_unpause("items-offset");
   ecs_system_unpause("select-item");
   ecs_system_unpause("update-item-id");
+  ecs_system_unpause("update-equiped-item-id");
   ecs_system_unpause("item-melee-description");
   ecs_system_unpause("item-ranged-description");
   ecs_system_unpause("item-staff-description");
   ecs_system_unpause("item-defensive-description");
   ecs_system_unpause("item-potion-description");
+  ecs_system_unpause("select-item-weapon");
 }
 
 static void
@@ -58,11 +60,13 @@ prefab_pause(void) {
   ecs_system_pause("items-offset");
   ecs_system_pause("select-item");
   ecs_system_pause("update-item-id");
+  ecs_system_pause("update-equiped-item-id");
   ecs_system_pause("item-melee-description");
   ecs_system_pause("item-ranged-description");
   ecs_system_pause("item-staff-description");
   ecs_system_pause("item-defensive-description");
   ecs_system_pause("item-potion-description");
+  ecs_system_pause("select-item-weapon");
 
   V2f start_position = { 0, 2.5f };
 
