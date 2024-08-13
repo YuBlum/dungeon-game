@@ -58,11 +58,19 @@ scenes_create(void) {
   scene_manager_activate_system("overworld", "items-offset");
   scene_manager_activate_system("overworld", "select-item");
   scene_manager_activate_system("overworld", "update-item-id");
-  scene_manager_activate_system("overworld", "update-equiped-item-id");
+  scene_manager_activate_system("overworld", "update-weapon-item-id");
+  scene_manager_activate_system("overworld", "update-shield-item-id");
+  scene_manager_activate_system("overworld", "update-armour-item-id");
   scene_manager_activate_system("overworld", "item-melee-description");
   scene_manager_activate_system("overworld", "item-ranged-description");
   scene_manager_activate_system("overworld", "item-staff-description");
   scene_manager_activate_system("overworld", "item-defensive-description");
   scene_manager_activate_system("overworld", "item-potion-description");
   scene_manager_activate_system("overworld", "select-item-weapon");
+  scene_manager_activate_system("overworld", "select-item-shield");
+  scene_manager_activate_system("overworld", "select-item-armour");
+  scene_manager_activate_system("overworld", "equip-type-none");
+  scene_manager_activate_system("overworld", "equip-type-weapon");
+  scene_manager_activate_system("overworld", "equip-type-shield");
+  scene_manager_activate_system("overworld", "equip-type-armour");
 }

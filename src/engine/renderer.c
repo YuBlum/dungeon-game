@@ -60,7 +60,7 @@ static usize quads_amount;
 
 static Vertex vertices[VERTICES_CAP];
 
-#define FONT_GLYPHS_AMOUNT 101
+#define FONT_GLYPHS_AMOUNT 102
 #define FONT_LAST_GLYPH (FONT_GLYPHS_AMOUNT + '!' - 1)
 static Texture atlas;
 static Glyph font[FONT_GLYPHS_AMOUNT];

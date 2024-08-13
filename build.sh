@@ -80,6 +80,7 @@ src/game/systems/items_offset.c              \
 src/game/systems/select_item.c               \
 src/game/systems/update_item_id.c            \
 src/game/systems/item_description.c          \
+src/game/systems/equip_type_item.c           \
                                              \
 src/game/scenes/main_menu.c                  \
 src/game/scenes/save_slots_menu.c            \

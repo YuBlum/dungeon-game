@@ -33,6 +33,13 @@ typedef struct {
   bool has_item;
 } SelectedItem;
 
+typedef enum {
+  EQUIP_NONE = 0,
+  EQUIP_WEAPON,
+  EQUIP_ARMOUR,
+  EQUIP_SHIELD
+} ItemEquipType;
+
 typedef struct {
   InGameMenuType menu_type;
   InGameMenuType menu_type_prv;
@@ -44,13 +51,14 @@ typedef struct {
   u32 items_cursor_max;
   u32 items_cursor_id;
   bool removed_item;
-  bool rearrenged_item;
+  bool rearranged_item;
   bool fixed_items_order;
   u32 changed_item_id;
   ItemType item_type_page;
   SelectedItem weapon;
   SelectedItem armour;
   SelectedItem shield;
+  ItemEquipType equip_type;
 } GlobalGame;
 
 typedef struct {

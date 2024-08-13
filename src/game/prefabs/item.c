@@ -22,7 +22,7 @@ prefab_item_melee(const char *name, Callback get_player, u32 weight, u32 dice_am
   };
   ItemInfo item;
   setup_item(&item, name, ITEM_TYPE_MELEE, weight);
-  ecs_entity_creation_begin("item-info", "dice-test", "critical-hit", "attribute-threshold", "item-equiped", "item-melee", "callback");
+  ecs_entity_creation_begin("item-info", "dice-test", "critical-hit", "attribute-threshold", "item-equiped", "item-melee", "callback", "item-weapon");
     ecs_entity_creation_setup_component(ItemInfo, "item-info", item);
     ecs_entity_creation_setup_component(DiceTest, "dice-test", dice_test);
     ecs_entity_creation_setup_component(u32, "critical-hit", critical_hit);
@@ -42,9 +42,9 @@ prefab_item_ranged(const char *name, Callback get_player, u32 weight, u32 dice_a
   ItemInfo item;
   setup_item(&item, name, ITEM_TYPE_RANGED, weight);
   if (amount == 0) {
-    ecs_entity_creation_begin("item-info", "dice-test", "critical-hit", "ammo-type", "attribute-threshold", "item-equiped", "item-ranged", "callback");
+    ecs_entity_creation_begin("item-info", "dice-test", "critical-hit", "ammo-type", "attribute-threshold", "item-equiped", "item-ranged", "callback", "item-weapon");
   } else {
-    ecs_entity_creation_begin("item-info", "dice-test", "critical-hit", "ammo-type", "attribute-threshold", "item-equiped", "item-ranged", "item-amount", "callback");
+    ecs_entity_creation_begin("item-info", "dice-test", "critical-hit", "ammo-type", "attribute-threshold", "item-equiped", "item-ranged", "item-amount", "callback", "item-weapon");
       ecs_entity_creation_setup_component(u32, "item-amount", amount);
   }
     ecs_entity_creation_setup_component(ItemInfo, "item-info", item);
@@ -65,7 +65,7 @@ prefab_item_staff(const char *name, Callback get_player, u32 weight, SpellType s
   };
   ItemInfo item;
   setup_item(&item, name, ITEM_TYPE_STAFF, weight);
-  ecs_entity_creation_begin("item-info", "staff", "attribute-threshold", "item-equiped", "item-staff", "callback");
+  ecs_entity_creation_begin("item-info", "staff", "attribute-threshold", "item-equiped", "item-staff", "callback", "item-weapon");
     ecs_entity_creation_setup_component(ItemInfo, "item-info", item);
     ecs_entity_creation_setup_component(Staff, "staff", staff);
     ecs_entity_creation_setup_component(i32, "attribute-threshold", attribute_threshold);
@@ -92,8 +92,13 @@ prefab_item_defensive(const char *name, Callback get_player, u32 weight, i32 att
     extra_armour_points
   };
   ItemInfo item;
-  setup_item(&item, name, ITEM_TYPE_DEFENSIVE, weight);
-  ecs_entity_creation_begin("item-info", "attribute-threshold", "item-equiped", "defensive-item", "item-defensive", "callback");
+  if (defensive_type == DEF_SHIELD) {
+    setup_item(&item, name, ITEM_TYPE_SHIELD, weight);
+    ecs_entity_creation_begin("item-info", "attribute-threshold", "item-equiped", "defensive-item", "item-defensive", "callback", "item-shield");
+  } else {
+    setup_item(&item, name, ITEM_TYPE_ARMOUR, weight);
+    ecs_entity_creation_begin("item-info", "attribute-threshold", "item-equiped", "defensive-item", "item-defensive", "callback", "item-armour");
+  }
     ecs_entity_creation_setup_component(ItemInfo, "item-info", item);
     ecs_entity_creation_setup_component(i32, "attribute-threshold", attribute_threshold);
     ecs_entity_creation_setup_component(bool, "item-equiped", false);

@@ -68,7 +68,7 @@ system_item_staff_description(usize entities_amount) {
 
 void
 system_item_defensive_description(usize entities_amount) {
-  if (global.game.item_type_page != ITEM_TYPE_DEFENSIVE) return;
+  if (global.game.item_type_page != ITEM_TYPE_SHIELD && global.game.item_type_page != ITEM_TYPE_ARMOUR) return;
   ItemInfo *item = ecs_get_component_list("item-info");
   i32 *attribute_threshold = ecs_get_component_list("attribute-threshold");
   DefensiveItem *defensive = ecs_get_component_list("defensive-item");

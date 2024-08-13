@@ -42,7 +42,15 @@ void system_item_staff_description(usize entities_amount);
 void system_item_defensive_description(usize entities_amount);
 void system_item_potion_description(usize entities_amount);
 void system_select_item_weapon(usize entities_amount);
-void system_update_equiped_item_id(usize entities_amount);
+void system_select_item_armour(usize entities_amount);
+void system_select_item_shield(usize entities_amount);
+void system_update_weapon_item_id(usize entities_amount);
+void system_update_armour_item_id(usize entities_amount);
+void system_update_shield_item_id(usize entities_amount);
+void system_equip_type_none(usize entities_amount);
+void system_equip_type_weapon(usize entities_amount);
+void system_equip_type_shield(usize entities_amount);
+void system_equip_type_armour(usize entities_amount);
 
 void systems_create(void);
 

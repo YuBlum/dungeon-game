@@ -21,13 +21,21 @@ inventory_option(void) {
   ecs_system_unpause("items-offset");
   ecs_system_unpause("select-item");
   ecs_system_unpause("update-item-id");
-  ecs_system_unpause("update-equiped-item-id");
+  ecs_system_unpause("update-weapon-item-id");
+  ecs_system_unpause("update-shield-item-id");
+  ecs_system_unpause("update-armour-item-id");
   ecs_system_unpause("item-melee-description");
   ecs_system_unpause("item-ranged-description");
   ecs_system_unpause("item-staff-description");
   ecs_system_unpause("item-defensive-description");
   ecs_system_unpause("item-potion-description");
   ecs_system_unpause("select-item-weapon");
+  ecs_system_unpause("select-item-shield");
+  ecs_system_unpause("select-item-armour");
+  ecs_system_unpause("equip-type-none");
+  ecs_system_unpause("equip-type-weapon");
+  ecs_system_unpause("equip-type-shield");
+  ecs_system_unpause("equip-type-armour");
 }
 
 static void
@@ -60,13 +68,21 @@ prefab_pause(void) {
   ecs_system_pause("items-offset");
   ecs_system_pause("select-item");
   ecs_system_pause("update-item-id");
-  ecs_system_pause("update-equiped-item-id");
+  ecs_system_pause("update-weapon-item-id");
+  ecs_system_pause("update-shield-item-id");
+  ecs_system_pause("update-armour-item-id");
   ecs_system_pause("item-melee-description");
   ecs_system_pause("item-ranged-description");
   ecs_system_pause("item-staff-description");
   ecs_system_pause("item-defensive-description");
   ecs_system_pause("item-potion-description");
   ecs_system_pause("select-item-weapon");
+  ecs_system_pause("select-item-shield");
+  ecs_system_pause("select-item-armour");
+  ecs_system_pause("equip-type-none");
+  ecs_system_pause("equip-type-weapon");
+  ecs_system_pause("equip-type-shield");
+  ecs_system_pause("equip-type-armour");
 
   V2f start_position = { 0, 2.5f };
 

@@ -19,9 +19,10 @@ void
 scene_overworld_on_start(void) {
   global.all.split_screen = true;
   global.game.removed_item = false;
-  global.game.rearrenged_item = false;
+  global.game.rearranged_item = false;
   global.game.fixed_items_order = false;
   global.game.item_type_page = ITEM_TYPE_MELEE;
+  global.game.equip_type = EQUIP_WEAPON;
   memset(global.game.items_amount, 0, sizeof (u32) * ITEM_TYPE_AMOUNT);
   tilemap_setup(GAME_W, GAME_H);
   prefab_terminal();
@@ -103,7 +104,7 @@ scene_overworld_on_pre_systems(void) {
   global.game.menu_type_prv = global.game.menu_type;
   if (global.game.menu_type == IGM_INVENTORY) {
     if (global.game.fixed_items_order) {
-      global.game.rearrenged_item = false;
+      global.game.rearranged_item = false;
       global.game.removed_item = false;
       global.game.fixed_items_order = false;
     }
@@ -177,8 +178,11 @@ scene_overworld_on_draw(void) {
       case ITEM_TYPE_STAFF:
         page = "Staff";
         break;
-      case ITEM_TYPE_DEFENSIVE:
-        page = "Defensive";
+      case ITEM_TYPE_SHIELD:
+        page = "Shield";
+        break;
+      case ITEM_TYPE_ARMOUR:
+        page = "Armour";
         break;
       case ITEM_TYPE_LOCKPICK:
         page = "Lockpick & Keys";
@@ -191,7 +195,7 @@ scene_overworld_on_draw(void) {
         break;
       case ITEM_TYPE_AMOUNT: break;
     }
-    u32 space_amount = (sinf(global.all.time * 0.15f) + 1) * 1.5 + 1;
+    u32 space_amount = (sinf(global.all.time * 10) + 1) * 1.5 + 1;
     renderer_text(V2F(UI_LEFT + (UI_W - 2.0f) * 0.5f, y - PX_TO_UNIT), 1, true, false, 0xff5500ff, 1, "<-%.*s%s%.*s->", space_amount, BLANK_CHAR_STR, page, space_amount, BLANK_CHAR_STR);
     renderer_text(V2F(UI_LEFT + (UI_W - 2.0f) * 0.5f, y), 1, true, false, 0xffffaaff, 1, "<-%.*s%s%.*s->", space_amount, BLANK_CHAR_STR, page, space_amount, BLANK_CHAR_STR);
   }

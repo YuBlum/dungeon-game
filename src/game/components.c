@@ -56,4 +56,7 @@ components_create(void) {
   ecs_empty_component_create("item-lockpick");
   ecs_empty_component_create("item-potion");
   ecs_empty_component_create("item-magic-component");
+  ecs_empty_component_create("item-weapon");
+  ecs_empty_component_create("item-armour");
+  ecs_empty_component_create("item-shield");
 }
